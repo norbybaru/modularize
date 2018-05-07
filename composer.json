@@ -1,0 +1,31 @@
+{
+    "name": "norbybaru/modularize",
+    "description": "Generate modular structure files for laravel",
+    "keywords": ["laravel", "modular", "modules", "module", "structure", "pattern", "Artem", "Schander", "modular", "laravel-modular", "modularize", "norbybaru", "norby", "baru"],
+    "require": {
+        "php": ">=5.6.0",
+        "laravel/framework": ">=5.1"
+    },
+    "license": "MIT",
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "Norby Baruani",
+            "email": "norbybaru@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "NorbyBaru\\Modularize\\": "packages/norbybaru/modularize/src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "NorbyBaru\\Modularize\\ModularizeServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev"
+}

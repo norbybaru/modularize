@@ -1,0 +1,7 @@
+<?php
+
+Route::group(['module' => 'SampleUCtitle', 'middleware' => ['api'], 'namespace' => 'SampleNamespace\Controllers'], function() {
+
+    Route::resource('SampleTitle', 'SampleUCtitleController');
+
+});

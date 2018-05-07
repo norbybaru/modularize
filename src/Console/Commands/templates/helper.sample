@@ -1,0 +1,10 @@
+<?php namespace SampleNamespace;
+
+/**
+ * SampleUCtitle Helper
+ * @package SampleNamespace
+ */
+ class Helper
+ {
+
+ }
