@@ -1,9 +1,11 @@
+# Modularize
+
 The package encourage implementation of modular app.
 You can easily generate modules with this package for your Laravel app.
 
 This package support Laravel 5.3 +
 
-##Installation
+## Installation
 
 Run the following command from your projects root
 ```shell
@@ -16,7 +18,8 @@ For Laravel versions lower than 5.5, this step is important after running above 
 NorbyBaru\Modularize\ModularizeServiceProvider::class
 ```
 
-##Usage
+## Usage
+
 Open your terminal and run command:
 ```
 php artisan module:generate -h 
@@ -72,3 +75,7 @@ laravel/
                 │   └── web.php
                 └── Helper.php
 ```
+
+Credits to:
+- ["Modular Structure in Laravel 5" tutorial](http://ziyahanalbeniz.blogspot.com.tr/2015/03/modular-structure-in-laravel-5.html)
+- ["Artem Schander - L5 Modular"](https://github.com/Artem-Schander/L5Modular)
