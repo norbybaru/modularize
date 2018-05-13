@@ -6,7 +6,12 @@ use NorbyBaru\Modularize\Console\Commands\ModuleCommand;
 
 /**
  * Class ModularizeServiceProvider
+ *
+ * Bootstrap your app with modular classes
+ *
  * @package NorbyBaru\Modularize
+ * @version 1.1.0
+ * @since 1.0.0
  */
 class ModularizeServiceProvider extends ServiceProvider
 {
@@ -22,7 +27,27 @@ class ModularizeServiceProvider extends ServiceProvider
     {
 
         if (is_dir(app_path().'/Modules/')) {
-            $modules = config("modules.enable") ?: array_map('class_basename', $this->files->directories(app_path().'/Modules/'));
+            $modules = config("modules.enable")
+                ?: array_map(
+                    'class_basename',
+                    $this->files->directories(app_path().'/Modules/')
+                );
+
+            foreach ($modules as $key => $module) {
+                if (!$this->files->exists(app_path() . '/Modules/' . $module . '/Controllers')) {
+                    unset($modules[$key]);
+
+                    $directories = array_map(
+                        'class_basename',
+                        $this->files->directories(app_path().'/Modules/' . $module)
+                    );
+
+                    foreach ($directories as $directory) {
+                        array_push($modules, $module . '/' . $directory);
+                    }
+                }
+            }
+
             foreach ($modules as $module) {
                 // Allow routes to be cached
                 if (!$this->app->routesAreCached()) {
@@ -48,11 +73,11 @@ class ModularizeServiceProvider extends ServiceProvider
                 }
 
                 if ($this->files->isDirectory($views)) {
-                    $this->loadViewsFrom($views, $module);
+                    $this->loadViewsFrom($views, strtolower(str_replace('/', '.', $module)));
                 }
 
                 if ($this->files->isDirectory($trans)) {
-                    $this->loadTranslationsFrom($trans, $module);
+                    $this->loadTranslationsFrom($trans, strtolower(str_replace('/', '.', $module)));
                 }
             }
         }

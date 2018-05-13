@@ -1,10 +1,19 @@
 <?php namespace NorbyBaru\Modularize\Console\Commands;
 
-use Illuminate\Console\Command;
 use Illuminate\Console\GeneratorCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
+/**
+ * Class ModuleCommand
+ *
+ * Command to generate module on your laravel app. This support laravel 5.1 - 5.6
+ *
+ * @package NorbyBaru\Modularize\Console\Commands
+ * @author Norby Baruani <norby.baruani@gmail.com>
+ * @version 1.1.0
+ * @since 1.0.0
+ */
 class ModuleCommand extends GeneratorCommand
 {
     /**
@@ -12,7 +21,11 @@ class ModuleCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'module:generate {name} {--no-migration : Do not create new migration files} {--no-translation : Do not create module translation filesystem}';
+    protected $signature = 'module:generate 
+                            {name : Module name}
+                            {--group= : Optional grouping name}
+                            {--no-migration : Do not create new migration files} 
+                            {--no-translation : Do not create module translation filesystem}';
 
     /**
      * The console command description.
@@ -27,6 +40,13 @@ class ModuleCommand extends GeneratorCommand
      * @var string
      */
     protected $currentStub;
+
+    /**
+     * Module group name
+     *
+     * @var string
+     */
+    protected $group;
 
     /**
      * The type of class being generated.
@@ -51,8 +71,16 @@ class ModuleCommand extends GeneratorCommand
     {
         $this->version = (int) str_replace('.', '', app()->version());
 
+        $this->group = $this->option('group')
+            ? studly_case($this->option('group'))
+            : null;
+
+        $name = ($this->group)
+            ? $this->group . '/' . studly_case($this->getNameInput())
+            : studly_case($this->getNameInput()) ;
+
         // check if module exists
-        if ($this->files->exists(app_path().'/Modules/'.studly_case($this->getNameInput()))) {
+        if ($this->files->exists(app_path() . '/Modules/' . $name)) {
             $this->error($this->type.' already exists!');
             return;
         }
@@ -145,16 +173,28 @@ class ModuleCommand extends GeneratorCommand
         }
 
         if (! isset($folder)) {
-            $folder = ($type != 'routes' && $type != 'helper') ? ucfirst($type).'s\\'. ($type === 'translation' ? 'en\\':'') : '';
+            $folder = ($type != 'routes' && $type != 'helper')
+                ? ucfirst($type).'s\\'. ($type === 'translation' ? 'en\\':'')
+                : '';
         }
 
-        $qualifyClass = method_exists($this, 'qualifyClass') ? 'qualifyClass' : 'parseName';
-        $name = $this->$qualifyClass('Modules\\'.studly_case(ucfirst($this->getNameInput())).'\\'.$folder.$filename);
+        $qualifyClass = method_exists($this, 'qualifyClass')
+            ? 'qualifyClass'
+            : 'parseName';
+
+        $module = ($this->group)
+            ? $this->group . '\\' . studly_case(ucfirst($this->getNameInput()))
+            : studly_case(ucfirst($this->getNameInput()));
+
+        $name = $this->$qualifyClass('Modules\\'. $module .'\\' . $folder . $filename);
+
         if ($this->files->exists($path = $this->getPath($name))) {
             $this->error($this->type.' already exists!');
             return;
         }
+
         $this->currentStub = __DIR__ . '/templates/' .$type.'.sample';
+        $this->info($path);
         $this->makeDirectory($path);
         $this->files->put($path, $this->buildClass($name));
     }
@@ -167,7 +207,16 @@ class ModuleCommand extends GeneratorCommand
     protected function getNamespace($name)
     {
         $name = str_replace('\\routes\\', '\\', $name);
-        return trim(implode('\\', array_map('ucfirst', array_slice(explode('\\', studly_case($name)), 0, -1))), '\\');
+        return trim(
+            implode(
+                '\\',
+                array_map(
+                    'ucfirst',
+                    array_slice(explode('\\', studly_case($name)), 0, -1)
+                )
+            ),
+            '\\'
+        );
     }
 
     /**
@@ -212,10 +261,30 @@ class ModuleCommand extends GeneratorCommand
      */
     protected function replaceName(&$stub, $name)
     {
+        $title = ($this->group) ? $this->group . '.' . $name : $name;
+
         $stub = str_replace('SampleTitle', $name, $stub);
+        $stub = str_replace('SampleViewTitle', strtolower(studly_case($title)), $stub);
         $stub = str_replace('SampleUCtitle', ucfirst(studly_case($name)), $stub);
+
+        $stub = ($this->group)
+            ? str_replace('SampleModuleGroup', strtolower($this->group), $stub)
+            : $this->removePrefixFromRoutes($stub);
+
         return $this;
     }
+
+    /**
+     * Remove prefix from routes when there its not a module group
+     *
+     * @param $stub
+     * @return mixed
+     */
+    private function removePrefixFromRoutes(&$stub)
+    {
+        return str_replace("'prefix' => 'SampleModuleGroup', ", '', $stub);
+    }
+
     /**
      * Replace the class name for the given stub.
      *

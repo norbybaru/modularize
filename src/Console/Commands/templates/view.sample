@@ -1,2 +1,2 @@
 <?php
-    echo trans('SampleUCtitle::example.welcome');
+    echo trans('SampleViewTitle::example.welcome');

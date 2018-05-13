@@ -16,7 +16,7 @@ class SampleClass extends Controller
      */
     public function index()
     {
-        return view("SampleUCtitle::index");
+        return view("SampleViewTitle::index");
     }
 
     /**
