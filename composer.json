@@ -1,6 +1,7 @@
 {
     "name": "norbybaru/modularize",
     "description": "Generate modular structure files for laravel",
+    "homepage": "https://github.com/norbybaru/modularize",
     "keywords": ["laravel", "modular", "modules", "module", "structure", "pattern", "Artem", "Schander", "modular", "laravel-modular", "modularize", "norbybaru", "norby", "baru"],
     "require": {
         "php": ">=5.6.4",
