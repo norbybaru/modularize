@@ -17,8 +17,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "App\\": "app/",
-            "NorbyBaru\\Modularize\\": "packages/norbybaru/modularize/src"
+            "NorbyBaru\\Modularize\\": "src/"
         }
     },
     "extra": {
