@@ -2,7 +2,7 @@
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
-use NorbyBaru\Modularize\Console\Commands\ModuleCommand;
+use norbybaru\modularize\Console\Commands\ModuleCommand;
 
 /**
  * Class ModularizeServiceProvider
