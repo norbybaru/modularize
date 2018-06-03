@@ -1,4 +1,4 @@
-<?php namespace NorbyBaru\Modularize\Console\Commands;
+<?php namespace norbybaru\modularize\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -9,9 +9,9 @@ use Symfony\Component\Console\Input\InputOption;
  *
  * Command to generate module on your laravel app. This support laravel 5.1 - 5.6
  *
- * @package NorbyBaru\Modularize\Console\Commands
- * @author Norby Baruani <norby.baruani@gmail.com>
- * @version 1.1.0
+ * @package norbybaru\modularize\Console\Commands
+ * @author Norby Baruani <norbybaru@gmail.com>
+ * @version 1.2.1
  * @since 1.0.0
  */
 class ModuleCommand extends GeneratorCommand

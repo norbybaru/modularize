@@ -1,4 +1,4 @@
-<?php namespace NorbyBaru\Modularize;
+<?php namespace norbybaru\modularize;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
@@ -9,8 +9,9 @@ use NorbyBaru\Modularize\Console\Commands\ModuleCommand;
  *
  * Bootstrap your app with modular classes
  *
- * @package NorbyBaru\Modularize
- * @version 1.1.0
+ * @author Norby Baruani <norbybaru@gmail.com>
+ * @package norbybaru\modularize
+ * @version 1.2.1
  * @since 1.0.0
  */
 class ModularizeServiceProvider extends ServiceProvider
