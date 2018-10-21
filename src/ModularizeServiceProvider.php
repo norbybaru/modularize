@@ -11,7 +11,7 @@ use NorbyBaru\Modularize\Console\Commands\ModuleCommand;
  *
  * @author Norby Baruani <norbybaru@gmail.com>
  * @package Norbybaru\Modularize
- * @version 1.2.1
+ * @version 1.2.2
  * @since 1.0.0
  */
 class ModularizeServiceProvider extends ServiceProvider

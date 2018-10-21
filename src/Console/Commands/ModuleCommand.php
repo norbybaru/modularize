@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
  *
  * @package NorbyBaru\Modularize\Console\Commands
  * @author Norby Baruani <norbybaru@gmail.com>
- * @version 1.2.1
+ * @version 1.2.2
  * @since 1.0.0
  */
 class ModuleCommand extends GeneratorCommand
