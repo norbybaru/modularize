@@ -1,8 +1,8 @@
-<?php namespace norbybaru\modularize;
+<?php namespace NorbyBaru\Modularize;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
-use norbybaru\modularize\Console\Commands\ModuleCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleCommand;
 
 /**
  * Class ModularizeServiceProvider
@@ -10,7 +10,7 @@ use norbybaru\modularize\Console\Commands\ModuleCommand;
  * Bootstrap your app with modular classes
  *
  * @author Norby Baruani <norbybaru@gmail.com>
- * @package norbybaru\modularize
+ * @package Norbybaru\Modularize
  * @version 1.2.1
  * @since 1.0.0
  */
@@ -73,12 +73,14 @@ class ModularizeServiceProvider extends ServiceProvider
                     include_once $helper;
                 }
 
+                //Load views
                 if ($this->files->isDirectory($views)) {
-                    $this->loadViewsFrom($views, strtolower(str_replace('/', '.', $module)));
+                    $this->loadViewsFrom($views, strtolower(str_replace('.-', '.', snake_case(str_replace('/', '.', $module), '-'))));
                 }
 
+                //Load translations
                 if ($this->files->isDirectory($trans)) {
-                    $this->loadTranslationsFrom($trans, strtolower(str_replace('/', '.', $module)));
+                    $this->loadTranslationsFrom($trans, strtolower(str_replace('.-', '.', snake_case(str_replace('/', '.', $module), '-'))));
                 }
             }
         }

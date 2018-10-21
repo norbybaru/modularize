@@ -17,13 +17,13 @@
     ],
     "autoload": {
         "psr-4": {
-            "norbybaru\\modularize\\": "src/"
+            "NorbyBaru\\Modularize\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "norbybaru\\modularize\\ModularizeServiceProvider"
+                "NorbyBaru\\Modularize\\ModularizeServiceProvider"
             ]
         }
     },

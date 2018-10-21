@@ -1,4 +1,4 @@
-<?php namespace norbybaru\modularize\Console\Commands;
+<?php namespace NorbyBaru\Modularize\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputOption;
  *
  * Command to generate module on your laravel app. This support laravel 5.1 - 5.6
  *
- * @package norbybaru\modularize\Console\Commands
+ * @package NorbyBaru\Modularize\Console\Commands
  * @author Norby Baruani <norbybaru@gmail.com>
  * @version 1.2.1
  * @since 1.0.0
@@ -194,7 +194,14 @@ class ModuleCommand extends GeneratorCommand
         }
 
         $this->currentStub = __DIR__ . '/templates/' .$type.'.sample';
-        $this->info($path);
+
+        //Group samples
+        if ($this->group && $type == 'routes') {
+            $this->currentStub = __DIR__ . '/templates/routesGroup.sample';
+        } elseif ($this->group && $type == 'web') {
+            $this->currentStub = __DIR__ . '/templates/webGroup.sample';
+        }
+
         $this->makeDirectory($path);
         $this->files->put($path, $this->buildClass($name));
     }
@@ -263,8 +270,8 @@ class ModuleCommand extends GeneratorCommand
     {
         $title = ($this->group) ? $this->group . '.' . $name : $name;
 
-        $stub = str_replace('SampleTitle', $name, $stub);
-        $stub = str_replace('SampleViewTitle', strtolower(studly_case($title)), $stub);
+        $stub = str_replace('SampleTitle', strtolower($name), $stub);
+        $stub = str_replace('SampleViewTitle', strtolower(snake_case($title, '-')), $stub);
         $stub = str_replace('SampleUCtitle', ucfirst(studly_case($name)), $stub);
 
         $stub = ($this->group)

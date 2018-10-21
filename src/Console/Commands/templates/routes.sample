@@ -13,9 +13,8 @@
 Route::group([
     'module' => 'SampleUCtitle',
     'middleware' => ['web'],
-    'prefix' => 'SampleModuleGroup',
-    'namespace' => 'SampleNamespace\Controllers'],
-function() {
+    'namespace' => 'SampleNamespace\Controllers'
+], function() {
 
     Route::resource('SampleTitle', 'SampleUCtitleController');
 
