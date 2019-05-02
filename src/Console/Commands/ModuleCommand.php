@@ -24,7 +24,8 @@ class ModuleCommand extends GeneratorCommand
     protected $signature = 'module:generate 
                             {name : Module name}
                             {--group= : Optional grouping name}
-                            {--no-migration : Do not create new migration files} 
+                            {--no-migration : Do not create  migration files}
+                            {--no-request : Do not create module request file}
                             {--no-translation : Do not create module translation filesystem}';
 
     /**
@@ -113,6 +114,11 @@ class ModuleCommand extends GeneratorCommand
             $this->generate('translation');
         }
 
+        //Flag for no request
+        if (!$this->option('no-request')) {
+            $this->generate('request');
+        }
+
         //Flag for no migrations
         if (!$this->option('no-migration')) {
             // without hacky studly_case function
@@ -144,17 +150,18 @@ class ModuleCommand extends GeneratorCommand
             case 'controller':
                 $filename = studly_case($this->getNameInput()).ucfirst($type);
                 break;
+            case 'request':
+                $filename = studly_case($this->getNameInput()).ucfirst($type);
+                break;
             case 'model':
                 $filename = studly_case($this->getNameInput());
                 break;
             case 'view':
                 $filename = 'index.blade';
                 break;
-
             case 'translation':
                 $filename = 'example';
                 break;
-
             case 'routes':
                 $filename = 'routes';
                 break;
@@ -166,7 +173,6 @@ class ModuleCommand extends GeneratorCommand
                 $filename = 'api';
                 $folder = 'routes\\';
                 break;
-
             case 'helper':
                 $filename = 'Helper';
                 break;
