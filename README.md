@@ -8,13 +8,13 @@ This package support Laravel 5.3 +
 ## Installation
 
 Run the following command from your projects root
-```shell
+```php
 composer require norbybaru/modularize
 ```
 
 For Laravel versions lower than 5.5, this step is important after running above script.
-- Open your config/app.php file and add custom service provider:
-```
+- Open your `config/app.php` file and add custom service provider:
+```php
 NorbyBaru\Modularize\ModularizeServiceProvider::class
 ```
 
@@ -26,7 +26,7 @@ php artisan module:generate -h
 ```
 
 You will see output with all different options to use.
-Simple example will be to generate a user module directory, run command:
+Simple example will be to generate a **`user`** module directory, run command:
 ```php
 php artisan module:generate user   
 ```
