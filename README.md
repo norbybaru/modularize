@@ -27,11 +27,11 @@ php artisan module:generate -h
 
 You will see output with all different options to use.
 Simple example will be to generate a user module directory, run command:
-```
+```php
 php artisan module:generate user   
 ```
 This will generate files with following structures:
-```
+```php
 laravel/
     app/
     └── Modules/
@@ -40,6 +40,8 @@ laravel/
             │   └── UserController.php
             ├── Models/
             │   └── User.php
+            ├── Requests/
+            │   └── UserRequest.php
             ├── Views/
             │   └── index.blade.php
             ├── Translations/
@@ -51,11 +53,11 @@ laravel/
             └── Helper.php
 ```
 The package allow you to group modules as well with command:
-```
+```php
 php artisan module:generate user --group=admin
 ```
 This will output:
-```
+```php
 laravel/
     app/
     └── Modules/
@@ -65,6 +67,8 @@ laravel/
                 │   └── UserController.php
                 ├── Models/
                 │   └── User.php
+                ├── Requests/
+                │   └── UserRequest.php
                 ├── Views/
                 │   └── index.blade.php
                 ├── Translations/
