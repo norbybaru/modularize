@@ -1,6 +1,7 @@
 <?php namespace NorbyBaru\Modularize\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
+use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -73,12 +74,12 @@ class ModuleCommand extends GeneratorCommand
         $this->version = (int) str_replace('.', '', app()->version());
 
         $this->group = $this->option('group')
-            ? studly_case($this->option('group'))
+            ? Str::studly($this->option('group'))
             : null;
 
         $name = ($this->group)
-            ? $this->group . '/' . studly_case($this->getNameInput())
-            : studly_case($this->getNameInput()) ;
+            ? $this->group . '/' . Str::studly($this->getNameInput())
+            : Str::studly($this->getNameInput()) ;
 
         // check if module exists
         if ($this->files->exists(app_path() . '/Modules/' . $name)) {
@@ -123,7 +124,7 @@ class ModuleCommand extends GeneratorCommand
         if (!$this->option('no-migration')) {
             // without hacky studly_case function
             // foo-bar results in foo-bar and not in foo_bar
-            $table = str_plural(snake_case(studly_case($this->getNameInput())));
+            $table = Str::of($this->getNameInput())->plural()->snake()->studly();
             $this->call('make:migration', ['name' => "create_{$table}_table", '--create' => $table]);
         }
 
@@ -148,13 +149,13 @@ class ModuleCommand extends GeneratorCommand
     {
         switch ($type) {
             case 'controller':
-                $filename = studly_case($this->getNameInput()).ucfirst($type);
+                $filename = Str::studly($this->getNameInput()).ucfirst($type);
                 break;
             case 'request':
-                $filename = studly_case($this->getNameInput()).ucfirst($type);
+                $filename = Str::studly($this->getNameInput()).ucfirst($type);
                 break;
             case 'model':
-                $filename = studly_case($this->getNameInput());
+                $filename = Str::studly($this->getNameInput());
                 break;
             case 'view':
                 $filename = 'index.blade';
@@ -189,8 +190,8 @@ class ModuleCommand extends GeneratorCommand
             : 'parseName';
 
         $module = ($this->group)
-            ? $this->group . '\\' . studly_case(ucfirst($this->getNameInput()))
-            : studly_case(ucfirst($this->getNameInput()));
+            ? $this->group . '\\' . Str::of($this->getNameInput())->studly()->ucfirst()
+            : Str::of($this->getNameInput())->studly()->ucfirst();
 
         $name = $this->$qualifyClass('Modules\\'. $module .'\\' . $folder . $filename);
 
@@ -225,7 +226,7 @@ class ModuleCommand extends GeneratorCommand
                 '\\',
                 array_map(
                     'ucfirst',
-                    array_slice(explode('\\', studly_case($name)), 0, -1)
+                    array_slice(explode('\\', Str::studly($name)), 0, -1)
                 )
             ),
             '\\'
@@ -277,8 +278,8 @@ class ModuleCommand extends GeneratorCommand
         $title = ($this->group) ? $this->group . '.' . $name : $name;
 
         $stub = str_replace('SampleTitle', strtolower($name), $stub);
-        $stub = str_replace('SampleViewTitle', strtolower(snake_case($title, '-')), $stub);
-        $stub = str_replace('SampleUCtitle', ucfirst(studly_case($name)), $stub);
+        $stub = str_replace('SampleViewTitle', strtolower(Str::snake($title, '-')), $stub);
+        $stub = str_replace('SampleUCtitle', ucfirst(Str::studly($name)), $stub);
 
         $stub = ($this->group)
             ? str_replace('SampleModuleGroup', strtolower($this->group), $stub)

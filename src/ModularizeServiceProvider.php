@@ -2,6 +2,7 @@
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use NorbyBaru\Modularize\Console\Commands\ModuleCommand;
 
 /**
@@ -75,12 +76,12 @@ class ModularizeServiceProvider extends ServiceProvider
 
                 //Load views
                 if ($this->files->isDirectory($views)) {
-                    $this->loadViewsFrom($views, strtolower(str_replace('.-', '.', snake_case(str_replace('/', '.', $module), '-'))));
+                    $this->loadViewsFrom($views, strtolower(str_replace('.-', '.', Str::snake(str_replace('/', '.', $module), '-'))));
                 }
 
                 //Load translations
                 if ($this->files->isDirectory($trans)) {
-                    $this->loadTranslationsFrom($trans, strtolower(str_replace('.-', '.', snake_case(str_replace('/', '.', $module), '-'))));
+                    $this->loadTranslationsFrom($trans, strtolower(str_replace('.-', '.', Str::snake(str_replace('/', '.', $module), '-'))));
                 }
             }
         }
