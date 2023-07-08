@@ -57,7 +57,7 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
         if ($this->files->exists($path = $this->getPath($name))) {
             $this->logFileExist($name);
 
-            return;
+            return true;
         }
 
         $this->setStubFile("model.{$type}");
@@ -77,6 +77,8 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
         }
 
         $this->logFileCreated($name);
+
+        return true;
     }
 
     private function makeAll()

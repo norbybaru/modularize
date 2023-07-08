@@ -40,7 +40,7 @@ class ModuleMakeProviderCommand extends ModuleMakerCommand
         if ($this->files->exists($path = $this->getPath($name))) {
             $this->logFileExist($name);
 
-            return;
+            return true;
         }
 
         $this->setStubFile('provider.');
@@ -49,6 +49,8 @@ class ModuleMakeProviderCommand extends ModuleMakerCommand
         $this->files->put($path, $this->buildClass($name));
 
         $this->logFileCreated($name);
+
+        return true;
     }
 
     protected function getFolderPath(): string

@@ -49,7 +49,7 @@ class ModuleMakePolicyCommand extends ModuleMakerCommand
         if ($this->files->exists($path = $this->getPath($name))) {
             $this->logFileExist($name);
 
-            return;
+            return true;
         }
 
         $this->setStubFile("policy.{$type}");
@@ -61,12 +61,14 @@ class ModuleMakePolicyCommand extends ModuleMakerCommand
             $this->files->put($path, $this->buildModel($stub, $model));
             $this->logFileCreated($name);
 
-            return;
+            return true;
         }
 
         $this->files->put($path, $stub);
 
         $this->logFileCreated($name);
+
+        return true;
     }
 
     protected function getFolderPath(): string

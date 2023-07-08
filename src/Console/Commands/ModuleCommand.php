@@ -78,7 +78,7 @@ class ModuleCommand extends GeneratorCommand
         if ($this->files->exists(app_path().'/Modules/'.$name)) {
             $this->error($this->type.' already exists!');
 
-            return;
+            return true;
         }
 
         $this->generate('migration');
