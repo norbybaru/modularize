@@ -6,7 +6,6 @@ use Illuminate\Support\Str;
 
 class ModuleMakeNotificationCommand extends ModuleMakerCommand
 {
-
     /**
      * The name and signature of the console command.
      *
@@ -25,7 +24,7 @@ class ModuleMakeNotificationCommand extends ModuleMakerCommand
      */
     protected $description = 'Generate notification for module';
 
-     /**
+    /**
      * The type of class being generated.
      *
      * @var string
@@ -38,14 +37,15 @@ class ModuleMakeNotificationCommand extends ModuleMakerCommand
         $filename = Str::studly($this->getNameInput());
         $folder = $this->getFolderPath();
 
-        $name = $this->qualifyClass('Modules\\'. $module .'\\' . $folder . '\\'. $filename);
+        $name = $this->qualifyClass('Modules\\'.$module.'\\'.$folder.'\\'.$filename);
 
         if ($this->files->exists($path = $this->getPath($name))) {
             $this->logFileExist($name);
+
             return;
         }
 
-        $this->setStubFile("notification.");
+        $this->setStubFile('notification.');
         $this->makeDirectory($path);
 
         $this->files->put($path, $this->buildClass($name));
@@ -57,5 +57,4 @@ class ModuleMakeNotificationCommand extends ModuleMakerCommand
     {
         return 'Notifications';
     }
-
 }

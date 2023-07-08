@@ -35,14 +35,15 @@ class ModuleMakeRequestCommand extends ModuleMakerCommand
         $filename = Str::studly($this->getNameInput());
         $folder = $this->getFolderPath();
 
-        $name = $this->qualifyClass('Modules\\'. $module .'\\' . $folder . '\\'. $filename);
+        $name = $this->qualifyClass('Modules\\'.$module.'\\'.$folder.'\\'.$filename);
 
         if ($this->files->exists($path = $this->getPath($name))) {
             $this->logFileExist($name);
+
             return;
         }
 
-        $this->setStubFile("request.");
+        $this->setStubFile('request.');
         $this->makeDirectory($path);
 
         $this->files->put($path, $this->buildClass($name));

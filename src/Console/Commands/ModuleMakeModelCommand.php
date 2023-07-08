@@ -7,7 +7,6 @@ use Symfony\Component\Console\Input\InputArgument;
 
 class ModuleMakeModelCommand extends ModuleMakerCommand
 {
-
     /**
      * The name and signature of the console command.
      *
@@ -47,16 +46,17 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
         $filename = Str::studly($this->getNameInput());
         $folder = $this->getFolderPath();
 
-        $type = "";
+        $type = '';
 
         if ($this->option('pivot')) {
             $type = 'pivot.';
         }
 
-        $name = $this->qualifyClass('Modules\\'. $module .'\\' . $folder . '\\'. $filename);
+        $name = $this->qualifyClass('Modules\\'.$module.'\\'.$folder.'\\'.$filename);
 
         if ($this->files->exists($path = $this->getPath($name))) {
             $this->logFileExist($name);
+
             return;
         }
 
@@ -65,7 +65,7 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
         $this->files->put($path, $this->buildClass($name));
 
         if ($this->option('migration')) {
-           $this->makeMigration(name: $filename, module: $module);
+            $this->makeMigration(name: $filename, module: $module);
         }
 
         if ($this->option('controller')) {
@@ -150,7 +150,7 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
 
     protected function setStubFile(string $file): void
     {
-        $this->currentStub = $this->currentStub . $file . "sample";
+        $this->currentStub = $this->currentStub.$file.'sample';
     }
 
     /**
@@ -160,8 +160,8 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
      */
     protected function getArguments()
     {
-        return array(
+        return [
             ['name', InputArgument::REQUIRED, 'The name of the model'],
-        );
+        ];
     }
 }

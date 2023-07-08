@@ -2,8 +2,8 @@
 
 namespace NorbyBaru\Modularize\Console\Commands;
 
-use Illuminate\Support\Str;
 use Illuminate\Console\GeneratorCommand;
+use Illuminate\Support\Str;
 
 abstract class ModuleMakerCommand extends GeneratorCommand
 {
@@ -12,9 +12,9 @@ abstract class ModuleMakerCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $currentStub = __DIR__ . '/templates/';
+    protected $currentStub = __DIR__.'/templates/';
 
-     /**
+    /**
      * Get the stub file for the generator.
      *
      * @return string
@@ -26,7 +26,7 @@ abstract class ModuleMakerCommand extends GeneratorCommand
 
     public function getModuleInput(): string
     {
-        if (!$module = $this->option('module')) {
+        if (! $module = $this->option('module')) {
             $module = $this->ask('What is the name of the module?');
         }
 
@@ -36,14 +36,15 @@ abstract class ModuleMakerCommand extends GeneratorCommand
     /**
      * Build the class with the given name.
      *
-     * @param  string $name
+     * @param  string  $name
      * @return string
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function buildClass($name)
     {
         $stub = $this->files->get($this->getStub());
-        
+
         return $this->replaceName($stub, $this->getNameInput())
             ->replaceNamespace($stub, $name)
             ->replaceClass($stub, $name);
@@ -51,7 +52,7 @@ abstract class ModuleMakerCommand extends GeneratorCommand
 
     protected function buildModel(string $stub, string $model): string
     {
-       return $this->replaceModelName($stub, class_basename($model))
+        return $this->replaceModelName($stub, class_basename($model))
             ->replaceModelNamespace($stub, $model)
             ->replaceModelClass($stub, $model);
     }
@@ -69,7 +70,7 @@ abstract class ModuleMakerCommand extends GeneratorCommand
             ->replaceClass($stub, $name);
     }
 
-     /**
+    /**
      * Replace the namespace for the given stub.
      *
      * @param  string  $stub
@@ -88,7 +89,7 @@ abstract class ModuleMakerCommand extends GeneratorCommand
                 'SampleRootNamespace',
                 'NamespacedDummyUserModel',
                 '{{ namespacedUserModel }}',
-                '{{namespacedUserModel}}'
+                '{{namespacedUserModel}}',
             ],
             replace: [
                 $this->getNamespace($name),
@@ -130,13 +131,12 @@ abstract class ModuleMakerCommand extends GeneratorCommand
     /**
      * Remove prefix from routes when there its not a module group
      *
-     * @param $stub
      * @return mixed
      */
     private function removePrefixFromRoutes(&$stub)
     {
         return str_replace(
-            search: "'prefix' => 'SampleModuleGroup', ", 
+            search: "'prefix' => 'SampleModuleGroup', ",
             replace: '',
             subject: $stub
         );
@@ -152,12 +152,12 @@ abstract class ModuleMakerCommand extends GeneratorCommand
     protected function replaceClass($stub, $name)
     {
         $class = class_basename($name);
-        
+
         return str_replace(
             search: [
                 '{{ class }}',
                 '{{class}}',
-                'SampleClass'
+                'SampleClass',
             ],
             replace: [
                 $class,
@@ -171,14 +171,15 @@ abstract class ModuleMakerCommand extends GeneratorCommand
     protected function replaceModelClass($stub, $name): string
     {
         $class = class_basename($name);
-        $user = class_basename( $this->userProviderModel());
+        $user = class_basename($this->userProviderModel());
+
         return str_replace(
             search: [
                 '{{ model }}',
                 '{{model}}',
                 'model',
                 '{{ user }}',
-                '{{user}}'
+                '{{user}}',
             ],
             replace: [
                 $class,
@@ -196,7 +197,7 @@ abstract class ModuleMakerCommand extends GeneratorCommand
         $stub = str_replace(
             search: [
                 '{{ namespacedModel }}',
-                '{{namespacedModel}}'
+                '{{namespacedModel}}',
             ],
             replace: $this->getNamespace($name),
             subject: $stub
@@ -210,7 +211,7 @@ abstract class ModuleMakerCommand extends GeneratorCommand
         $stub = str_replace(
             search: [
                 '{{ modelVariable }}',
-                '{{modelVariable}}'
+                '{{modelVariable}}',
             ],
             replace: [
                 Str::of($name)->lower(),
@@ -253,7 +254,7 @@ abstract class ModuleMakerCommand extends GeneratorCommand
 
     protected function setStubFile(string $file): void
     {
-        $this->currentStub = $this->currentStub . $file . "sample";
+        $this->currentStub = $this->currentStub.$file.'sample';
     }
 
     protected function logFileCreated(string $path)

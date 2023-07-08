@@ -36,16 +36,17 @@ class ModuleMakeResourceCommand extends ModuleMakerCommand
         $filename = Str::studly($this->getNameInput());
         $folder = $this->getFolderPath();
 
-        $name = $this->qualifyClass('Modules\\'. $module .'\\' . $folder . '\\'. $filename);
+        $name = $this->qualifyClass('Modules\\'.$module.'\\'.$folder.'\\'.$filename);
 
         if ($this->files->exists($path = $this->getPath($name))) {
             $this->logFileExist($name);
+
             return;
         }
 
-        $type = "";
+        $type = '';
         if ($this->option('collection')) {
-            $type = "collection.";
+            $type = 'collection.';
         }
 
         $this->setStubFile("resource.{$type}");
@@ -53,7 +54,7 @@ class ModuleMakeResourceCommand extends ModuleMakerCommand
 
         $this->files->put($path, $this->buildClass($name));
 
-        $this->logFileCreated($name);   
+        $this->logFileCreated($name);
     }
 
     protected function getFolderPath(): string

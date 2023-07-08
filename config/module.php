@@ -3,5 +3,5 @@
 return [
     'enabled' => true,
 
-    'path' => 'app'
+    'path' => 'app',
 ];

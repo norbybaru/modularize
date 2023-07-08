@@ -1,13 +1,13 @@
-<?php 
+<?php
 
 namespace NorbyBaru\Modularize;
 
-use Illuminate\Support\Str;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use NorbyBaru\Modularize\Console\Commands\ModuleCommand;
-use NorbyBaru\Modularize\Console\Commands\ModuleMakeMigrationCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeControllerCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleMakeMigrationCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeModelCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeNotificationCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakePolicyCommand;
@@ -29,34 +29,34 @@ class ModularizeServiceProvider extends ServiceProvider
     {
 
         if (is_dir(app_path().'/Modules/')) {
-            $modules = config("modules.enable")
+            $modules = config('modules.enable')
                 ?: array_map(
                     'class_basename',
                     $this->files->directories(app_path().'/Modules/')
                 );
 
             foreach ($modules as $key => $module) {
-                if (!$this->files->exists(app_path() . '/Modules/' . $module . '/Controllers')) {
+                if (! $this->files->exists(app_path().'/Modules/'.$module.'/Controllers')) {
                     unset($modules[$key]);
 
                     $directories = array_map(
                         'class_basename',
-                        $this->files->directories(app_path().'/Modules/' . $module)
+                        $this->files->directories(app_path().'/Modules/'.$module)
                     );
 
                     foreach ($directories as $directory) {
-                        array_push($modules, $module . '/' . $directory);
+                        array_push($modules, $module.'/'.$directory);
                     }
                 }
             }
 
             foreach ($modules as $module) {
                 // Allow routes to be cached
-                if (!$this->app->routesAreCached()) {
+                if (! $this->app->routesAreCached()) {
                     $route_files = [
-                        app_path() . '/Modules/' . $module . '/routes.php',
-                        app_path() . '/Modules/' . $module . '/routes/web.php',
-                        app_path() . '/Modules/' . $module . '/routes/api.php',
+                        app_path().'/Modules/'.$module.'/routes.php',
+                        app_path().'/Modules/'.$module.'/routes/web.php',
+                        app_path().'/Modules/'.$module.'/routes/api.php',
                     ];
 
                     foreach ($route_files as $route_file) {
@@ -66,9 +66,9 @@ class ModularizeServiceProvider extends ServiceProvider
                     }
                 }
 
-                $helper = app_path() . '/Modules/' . $module . '/helper.php';
-                $views  = app_path() . '/Modules/' . $module . '/Views';
-                $trans  = app_path() . '/Modules/' . $module . '/Translations';
+                $helper = app_path().'/Modules/'.$module.'/helper.php';
+                $views = app_path().'/Modules/'.$module.'/Views';
+                $trans = app_path().'/Modules/'.$module.'/Translations';
 
                 if ($this->files->exists($helper)) {
                     include_once $helper;
@@ -102,7 +102,7 @@ class ModularizeServiceProvider extends ServiceProvider
 
     private function getModuleNamespace(string $name): string
     {
-        return  Str::of($name)
+        return Str::of($name)
             ->replace(search: '/', replace: '.')
             ->snake('-')
             ->replace(search: '.-', replace: '.')
@@ -111,7 +111,7 @@ class ModularizeServiceProvider extends ServiceProvider
 
     private function autoloadHelperFile(string $module): void
     {
-        $helper = app_path() . '/Modules/' . $module . '/helper.php';
+        $helper = app_path().'/Modules/'.$module.'/helper.php';
 
         if ($this->files->exists($helper)) {
             include_once $helper;
@@ -120,11 +120,11 @@ class ModularizeServiceProvider extends ServiceProvider
 
     private function autoloadRouteFiles(string $module): void
     {
-        if (!$this->app->routesAreCached()) {
+        if (! $this->app->routesAreCached()) {
             $route_files = [
-                app_path() . '/Modules/' . $module . '/routes.php',
-                app_path() . '/Modules/' . $module . '/routes/web.php',
-                app_path() . '/Modules/' . $module . '/routes/api.php',
+                app_path().'/Modules/'.$module.'/routes.php',
+                app_path().'/Modules/'.$module.'/routes/web.php',
+                app_path().'/Modules/'.$module.'/routes/api.php',
             ];
 
             foreach ($route_files as $route_file) {
@@ -137,7 +137,7 @@ class ModularizeServiceProvider extends ServiceProvider
 
     private function loadViewNamespace(string $module): void
     {
-        $path  = app_path() . '/Modules/' . $module . '/Views';
+        $path = app_path().'/Modules/'.$module.'/Views';
 
         if ($this->files->isDirectory(directory: $path)) {
             $this->loadViewsFrom(
@@ -149,8 +149,8 @@ class ModularizeServiceProvider extends ServiceProvider
 
     private function loadTranslationNamespace(string $module): void
     {
-        $path  = app_path() . '/Modules/' . $module . '/Translations';
-    
+        $path = app_path().'/Modules/'.$module.'/Translations';
+
         if ($this->files->isDirectory(directory: $path)) {
             $this->loadTranslationsFrom(
                 path: $path,
@@ -171,7 +171,6 @@ class ModularizeServiceProvider extends ServiceProvider
 
     /**
      * Register module" console command.
-     *
      */
     protected function registerMakeCommand()
     {

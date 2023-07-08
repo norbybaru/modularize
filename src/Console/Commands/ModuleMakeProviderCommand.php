@@ -3,7 +3,6 @@
 namespace NorbyBaru\Modularize\Console\Commands;
 
 use Illuminate\Support\Str;
-use NorbyBaru\Modularize\Console\Commands\ModuleMakerCommand;
 
 class ModuleMakeProviderCommand extends ModuleMakerCommand
 {
@@ -23,7 +22,7 @@ class ModuleMakeProviderCommand extends ModuleMakerCommand
      */
     protected $description = 'Generate provider for module';
 
-     /**
+    /**
      * The type of class being generated.
      *
      * @var string
@@ -36,14 +35,15 @@ class ModuleMakeProviderCommand extends ModuleMakerCommand
         $filename = Str::studly($this->getNameInput());
         $folder = $this->getFolderPath();
 
-        $name = $this->qualifyClass('Modules\\'. $module .'\\' . $folder . '\\'. $filename);
+        $name = $this->qualifyClass('Modules\\'.$module.'\\'.$folder.'\\'.$filename);
 
         if ($this->files->exists($path = $this->getPath($name))) {
             $this->logFileExist($name);
+
             return;
         }
 
-        $this->setStubFile("provider.");
+        $this->setStubFile('provider.');
         $this->makeDirectory($path);
 
         $this->files->put($path, $this->buildClass($name));

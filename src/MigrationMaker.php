@@ -2,8 +2,8 @@
 
 namespace NorbyBaru\Modularize;
 
-use Illuminate\Support\Str;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Str;
 
 class MigrationMaker
 {
@@ -12,8 +12,6 @@ class MigrationMaker
     /**
      * Create a new migration creator instance.
      *
-     * @param  \Illuminate\Filesystem\Filesystem  $files
-     * @param  string  $customStubPath
      * @return void
      */
     public function __construct(protected Filesystem $files, protected string $customStubPath)
@@ -64,7 +62,6 @@ class MigrationMaker
                             : $this->stubPath().'/migration.update.sample';
         }
 
-
         return $this->files->get($stub);
     }
 
@@ -96,7 +93,6 @@ class MigrationMaker
             ->plural()
             ->snake();
     }
-    
 
     /**
      * Get the full path to the migration.
@@ -118,7 +114,7 @@ class MigrationMaker
      */
     protected function classPath($name)
     {
-        $name = Str::replaceFirst("App\\", '', $name);
+        $name = Str::replaceFirst('App\\', '', $name);
 
         return app_path().'/'.str_replace('\\', '/', $name);
     }
@@ -142,5 +138,4 @@ class MigrationMaker
     {
         return __DIR__.'/stubs';
     }
-
 }

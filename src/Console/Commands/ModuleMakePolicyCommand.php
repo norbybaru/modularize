@@ -6,7 +6,6 @@ use Illuminate\Support\Str;
 
 class ModuleMakePolicyCommand extends ModuleMakerCommand
 {
-
     /**
      * The name and signature of the console command.
      *
@@ -25,7 +24,7 @@ class ModuleMakePolicyCommand extends ModuleMakerCommand
      */
     protected $description = 'Generate policy for module';
 
-     /**
+    /**
      * The type of class being generated.
      *
      * @var string
@@ -38,17 +37,18 @@ class ModuleMakePolicyCommand extends ModuleMakerCommand
         $filename = Str::studly($this->getNameInput());
         $folder = $this->getFolderPath();
 
-        $type = "";
+        $type = '';
 
         if ($model = $this->option('model')) {
             $type = 'model.';
-            $model = $this->qualifyClass('Modules\\'. $module .'\\' . 'Models' . '\\'. $model);
+            $model = $this->qualifyClass('Modules\\'.$module.'\\'.'Models'.'\\'.$model);
         }
 
-        $name = $this->qualifyClass('Modules\\'. $module .'\\' . $folder . '\\'. $filename);
+        $name = $this->qualifyClass('Modules\\'.$module.'\\'.$folder.'\\'.$filename);
 
         if ($this->files->exists($path = $this->getPath($name))) {
             $this->logFileExist($name);
+
             return;
         }
 
@@ -60,6 +60,7 @@ class ModuleMakePolicyCommand extends ModuleMakerCommand
         if ($model) {
             $this->files->put($path, $this->buildModel($stub, $model));
             $this->logFileCreated($name);
+
             return;
         }
 

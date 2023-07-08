@@ -40,7 +40,7 @@ class ModuleMakeControllerCommand extends ModuleMakerCommand
         $filename = Str::studly($this->getNameInput());
         $folder = $this->getFolderPath();
 
-        $type = "plain.";
+        $type = 'plain.';
 
         if ($this->option('api')) {
             $type = 'api.';
@@ -54,10 +54,11 @@ class ModuleMakeControllerCommand extends ModuleMakerCommand
             $type = '';
         }
 
-        $name = $this->qualifyClass('Modules\\'. $module .'\\' . $folder . '\\'. $filename);
+        $name = $this->qualifyClass('Modules\\'.$module.'\\'.$folder.'\\'.$filename);
 
         if ($this->files->exists($path = $this->getPath($name))) {
             $this->logFileExist($name);
+
             return;
         }
 
@@ -75,19 +76,18 @@ class ModuleMakeControllerCommand extends ModuleMakerCommand
 
     protected function setStubFile(string $file): void
     {
-        $this->currentStub = $this->currentStub . $file . "sample";
+        $this->currentStub = $this->currentStub.$file.'sample';
     }
 
-
-     /**
+    /**
      * Get the console command arguments.
      *
      * @return array
      */
     protected function getArguments()
     {
-        return array(
+        return [
             ['name', InputArgument::REQUIRED, 'The name of the controller'],
-        );
+        ];
     }
 }

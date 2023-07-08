@@ -2,11 +2,11 @@
 
 namespace NorbyBaru\Modularize\Console\Commands;
 
-use Illuminate\Support\Str;
 use Illuminate\Console\GeneratorCommand;
+use Illuminate\Support\Str;
 use NorbyBaru\Modularize\MigrationMaker;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 class ModuleCommand extends GeneratorCommand
 {
@@ -34,7 +34,7 @@ class ModuleCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $currentStub = __DIR__ . '/templates/';
+    protected $currentStub = __DIR__.'/templates/';
 
     /**
      * Module group name
@@ -71,12 +71,13 @@ class ModuleCommand extends GeneratorCommand
             : null;
 
         $name = ($this->group)
-            ? $this->group . '/' . Str::studly($this->getNameInput())
-            : Str::studly($this->getNameInput()) ;
+            ? $this->group.'/'.Str::studly($this->getNameInput())
+            : Str::studly($this->getNameInput());
 
         // check if module exists
-        if ($this->files->exists(app_path() . '/Modules/' . $name)) {
+        if ($this->files->exists(app_path().'/Modules/'.$name)) {
             $this->error($this->type.' already exists!');
+
             return;
         }
 
@@ -105,17 +106,17 @@ class ModuleCommand extends GeneratorCommand
         }
 
         //Flag for no translation
-        if (!$this->option('no-translation')) {
+        if (! $this->option('no-translation')) {
             $this->generate('translation');
         }
 
         //Flag for no request
-        if (!$this->option('no-request')) {
+        if (! $this->option('no-request')) {
             $this->generate('request');
         }
 
         //Flag for no migrations
-        if (!$this->option('no-migration')) {
+        if (! $this->option('no-migration')) {
             $this->generate('migration');
             // without hacky studly_case function
             // foo-bar results in foo-bar and not in foo_bar
@@ -129,6 +130,7 @@ class ModuleCommand extends GeneratorCommand
 
     /**
      * @return mixed
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function fire()
@@ -137,9 +139,7 @@ class ModuleCommand extends GeneratorCommand
     }
 
     /**
-     * @param $type
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     *
      */
     protected function generate($type)
     {
@@ -180,7 +180,7 @@ class ModuleCommand extends GeneratorCommand
 
         if (! isset($folder)) {
             $folder = ($type != 'routes' && $type != 'helper')
-                ? ucfirst($type).'s\\'. ($type === 'translation' ? 'en\\':'')
+                ? ucfirst($type).'s\\'.($type === 'translation' ? 'en\\' : '')
                 : '';
         }
 
@@ -189,28 +189,30 @@ class ModuleCommand extends GeneratorCommand
             : 'parseName';
 
         $module = ($this->group)
-            ? $this->group . '\\' . Str::of($this->getNameInput())->studly()->ucfirst()
+            ? $this->group.'\\'.Str::of($this->getNameInput())->studly()->ucfirst()
             : Str::of($this->getNameInput())->studly()->ucfirst();
 
-        $name = $this->$qualifyClass('Modules\\'. $module .'\\' . $folder . $filename);
+        $name = $this->$qualifyClass('Modules\\'.$module.'\\'.$folder.$filename);
 
         if ($this->files->exists($path = $this->getPath($name))) {
             $this->error($this->type.' already exists!');
+
             return;
         }
 
-        $this->currentStub = __DIR__ . '/templates/' .$type.'.sample';
+        $this->currentStub = __DIR__.'/templates/'.$type.'.sample';
 
         //Group samples
         if ($this->group && $type == 'routes') {
-            $this->currentStub = __DIR__ . '/templates/routesGroup.sample';
+            $this->currentStub = __DIR__.'/templates/routesGroup.sample';
         } elseif ($this->group && $type == 'web') {
-            $this->currentStub = __DIR__ . '/templates/webGroup.sample';
+            $this->currentStub = __DIR__.'/templates/webGroup.sample';
         }
 
         $this->makeDirectory($path);
         $this->files->put($path, $this->buildClass($name));
     }
+
     /**
      * Get the full namespace name for a given class.
      *
@@ -220,6 +222,7 @@ class ModuleCommand extends GeneratorCommand
     protected function getNamespace($name)
     {
         $name = str_replace('\\routes\\', '\\', $name);
+
         return trim(
             implode(
                 '\\',
@@ -235,13 +238,15 @@ class ModuleCommand extends GeneratorCommand
     /**
      * Build the class with the given name.
      *
-     * @param  string $name
+     * @param  string  $name
      * @return string
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function buildClass($name)
     {
         $stub = $this->files->get($this->getStub());
+
         return $this->replaceName($stub, $this->getNameInput())
             ->replaceNamespace($stub, $name)
             ->replaceClass($stub, $name);
@@ -274,7 +279,7 @@ class ModuleCommand extends GeneratorCommand
      */
     protected function replaceName(&$stub, $name)
     {
-        $title = ($this->group) ? $this->group . '.' . $name : $name;
+        $title = ($this->group) ? $this->group.'.'.$name : $name;
 
         $stub = str_replace('SampleTitle', strtolower($name), $stub);
         $stub = str_replace('SampleViewTitle', strtolower(Str::snake($title, '-')), $stub);
@@ -290,7 +295,6 @@ class ModuleCommand extends GeneratorCommand
     /**
      * Remove prefix from routes when there its not a module group
      *
-     * @param $stub
      * @return mixed
      */
     private function removePrefixFromRoutes(&$stub)
@@ -308,8 +312,10 @@ class ModuleCommand extends GeneratorCommand
     protected function replaceClass($stub, $name)
     {
         $class = class_basename($name);
+
         return str_replace('SampleClass', $class, $stub);
     }
+
     /**
      * Get the stub file for the generator.
      *
@@ -332,6 +338,7 @@ class ModuleCommand extends GeneratorCommand
         $name = Str::replaceFirst($this->rootNamespace(), '', $name);
 
         dd($this->laravel['path'], app_path());
+
         return $this->laravel['path'].'/'.str_replace('\\', '/', $name);
     }
 
@@ -342,10 +349,11 @@ class ModuleCommand extends GeneratorCommand
      */
     protected function getArguments()
     {
-        return array(
+        return [
             ['name', InputArgument::REQUIRED, 'Module name.'],
-        );
+        ];
     }
+
     /**
      * Get the console command options.
      *

@@ -2,14 +2,13 @@
 
 namespace NorbyBaru\Modularize\Console\Commands;
 
-use Illuminate\Support\Str;
 use Illuminate\Console\GeneratorCommand;
-use Symfony\Component\Console\Input\InputOption;
+use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 class ModuleMakeMigrationCommand extends GeneratorCommand
 {
-
     /**
      * The name and signature of the console command.
      *
@@ -34,24 +33,24 @@ class ModuleMakeMigrationCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $currentStub = __DIR__ . '/templates/';
+    protected $currentStub = __DIR__.'/templates/';
 
     protected string $folder = 'Database\\migration';
 
     public function handle()
     {
-        if (!$module = $this->option('module')) {
+        if (! $module = $this->option('module')) {
             $module = $this->ask('What is the name of the module?');
         }
 
         $module = Str::studly($module);
 
         $name = Str::studly($this->getNameInput());
-        
+
         $create = $this->option('create');
         $update = $this->option('table');
 
-        $path = $this->qualifyClass('Modules\\'. $module .'\\' . $this->folder);
+        $path = $this->qualifyClass('Modules\\'.$module.'\\'.$this->folder);
         $path = $this->classPath($path);
 
         $arguments = [
@@ -69,7 +68,7 @@ class ModuleMakeMigrationCommand extends GeneratorCommand
             'make:migration',
             $arguments
         );
-        
+
     }
 
     private function getPluralName(string $name): string
@@ -79,7 +78,7 @@ class ModuleMakeMigrationCommand extends GeneratorCommand
             ->snake();
     }
 
-     /**
+    /**
      * Get the destination class path.
      *
      * @param  string  $name
@@ -90,7 +89,7 @@ class ModuleMakeMigrationCommand extends GeneratorCommand
         return str_replace('\\', '/', $name);
     }
 
-     /**
+    /**
      * Get the stub file for the generator.
      *
      * @return string
@@ -107,9 +106,9 @@ class ModuleMakeMigrationCommand extends GeneratorCommand
      */
     protected function getArguments()
     {
-        return array(
+        return [
             ['name', InputArgument::REQUIRED, 'The name of the migration'],
-        );
+        ];
     }
 
     /**
@@ -123,5 +122,4 @@ class ModuleMakeMigrationCommand extends GeneratorCommand
             ['--module', null, InputOption::VALUE_REQUIRED, 'Name of module migration should belong to.'],
         ];
     }
-
 }
