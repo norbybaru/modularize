@@ -4,11 +4,12 @@
     "homepage": "https://github.com/norbybaru/modularize",
     "keywords": ["laravel", "modular", "modules", "module", "structure", "modular", "laravel-modular", "modularize"],
     "require": {
-        "php": ">=5.6.4",
-        "illuminate/support": "^5.6 || ^6.0 || ^7.0"
+        "php": "^8.0",
+        "illuminate/console": "^10.13",
+        "illuminate/support": "^8.0|^9.52|^10.0"
     },
     "license": "MIT",
-    "version": "1.2.2",
+    "version": "2.0",
     "authors": [
         {
             "name": "Norby Baruani",
@@ -27,5 +28,18 @@
             ]
         }
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "analyse": "vendor/bin/phpstan analyse",
+        "fmt": "./vendor/bin/pint -v",
+        "test": "phpunit"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "require-dev": {
+        "laravel/framework": "^10.13",
+        "laravel/pint": "^1.10"
+    }
 }

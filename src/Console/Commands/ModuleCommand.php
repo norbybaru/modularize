@@ -1,20 +1,13 @@
-<?php namespace NorbyBaru\Modularize\Console\Commands;
+<?php
 
-use Illuminate\Console\GeneratorCommand;
+namespace NorbyBaru\Modularize\Console\Commands;
+
 use Illuminate\Support\Str;
-use Symfony\Component\Console\Input\InputArgument;
+use Illuminate\Console\GeneratorCommand;
+use NorbyBaru\Modularize\MigrationMaker;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputArgument;
 
-/**
- * Class ModuleCommand
- *
- * Command to generate module on your laravel app. This support laravel 5.1 - 5.6
- *
- * @package NorbyBaru\Modularize\Console\Commands
- * @author Norby Baruani <norbybaru@gmail.com>
- * @version 1.2.2
- * @since 1.0.0
- */
 class ModuleCommand extends GeneratorCommand
 {
     /**
@@ -41,7 +34,7 @@ class ModuleCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $currentStub;
+    protected $currentStub = __DIR__ . '/templates/';
 
     /**
      * Module group name
@@ -87,6 +80,7 @@ class ModuleCommand extends GeneratorCommand
             return;
         }
 
+        $this->generate('migration');
         // Create Controller
         $this->generate('controller');
 
@@ -122,10 +116,12 @@ class ModuleCommand extends GeneratorCommand
 
         //Flag for no migrations
         if (!$this->option('no-migration')) {
+            $this->generate('migration');
             // without hacky studly_case function
             // foo-bar results in foo-bar and not in foo_bar
-            $table = Str::of($this->getNameInput())->plural()->snake()->studly();
-            $this->call('make:migration', ['name' => "create_{$table}_table", '--create' => $table]);
+            //$table = Str::of($this->getNameInput())->plural()->snake()->studly();
+            //MigrationMaker::make($this->files, __DIR__ . '/templates/')->create($table, true);
+            //$this->call('make:migration', ['name' => "create{$table}_table", '--create' => $table]);
         }
 
         $this->info($this->type.' created successfully.');
@@ -176,6 +172,9 @@ class ModuleCommand extends GeneratorCommand
                 break;
             case 'helper':
                 $filename = 'Helper';
+                break;
+            case 'migration':
+                $folder = 'Database\\migration\\';
                 break;
         }
 
@@ -319,6 +318,21 @@ class ModuleCommand extends GeneratorCommand
     protected function getStub()
     {
         return $this->currentStub;
+    }
+
+    /**
+     * Get the destination class path.
+     *
+     * @param  string  $name
+     * @return string
+     */
+    protected function classPath($name)
+    {
+        dd($this->rootNamespace());
+        $name = Str::replaceFirst($this->rootNamespace(), '', $name);
+
+        dd($this->laravel['path'], app_path());
+        return $this->laravel['path'].'/'.str_replace('\\', '/', $name);
     }
 
     /**
