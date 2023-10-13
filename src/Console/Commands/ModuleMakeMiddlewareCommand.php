@@ -3,46 +3,38 @@
 namespace NorbyBaru\Modularize\Console\Commands;
 
 use Illuminate\Support\Str;
+use NorbyBaru\Modularize\Console\Commands\ModuleMakerCommand;
 
-class ModuleMakePolicyCommand extends ModuleMakerCommand
+class ModuleMakeMiddlewareCommand extends ModuleMakerCommand
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'module:make:policy 
-                            {name : The name of the policy}
-                            {--module= : Name of module policy should belong to}
-                            {--model= : The model that the policy applies to}
-                            {--guard= : The guard that the policy relies on}';
+    protected $signature = 'module:make:middleware 
+                            {name : The name of the middleware}
+                            {--module= : Name of module middleware should belong to}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Generate policy for module';
+    protected $description = 'Generate middleware for module';
 
     /**
      * The type of class being generated.
      *
      * @var string
      */
-    protected $type = 'Policy';
+    protected $type = 'Middleware';
 
     public function handle()
     {
         $module = $this->getModuleInput();
         $filename = Str::studly($this->getNameInput());
         $folder = $this->getFolderPath();
-
-        $type = '';
-
-        if ($model = $this->option('model')) {
-            $type = 'model.';
-            $model = $this->qualifyClass('Modules\\'.$module.'\\'.'Models'.'\\'.$model);
-        }
 
         $name = $this->qualifyClass('Modules\\'.$module.'\\'.$folder.'\\'.$filename);
 
@@ -52,17 +44,11 @@ class ModuleMakePolicyCommand extends ModuleMakerCommand
             return true;
         }
 
-        $this->setStubFile("policy.{$type}");
+        $type = '';
+        $this->setStubFile("middleware.{$type}");
         $this->makeDirectory($path);
 
         $stub = $this->buildClass($name);
-
-        if ($model) {
-            $this->files->put($path, $this->buildModel($stub, $model));
-            $this->logFileCreated($name);
-
-            return true;
-        }
 
         $this->files->put($path, $stub);
 
@@ -73,6 +59,7 @@ class ModuleMakePolicyCommand extends ModuleMakerCommand
 
     protected function getFolderPath(): string
     {
-        return 'Policies';
+        return 'Middleware';
     }
+
 }

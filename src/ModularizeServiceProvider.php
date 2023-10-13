@@ -5,6 +5,7 @@ namespace NorbyBaru\Modularize;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use NorbyBaru\Modularize\Console\Commands\ModuleMakeMiddlewareCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeControllerCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeMigrationCommand;
@@ -51,38 +52,10 @@ class ModularizeServiceProvider extends ServiceProvider
             }
 
             foreach ($modules as $module) {
-                // Allow routes to be cached
-                if (! $this->app->routesAreCached()) {
-                    $route_files = [
-                        app_path().'/Modules/'.$module.'/routes.php',
-                        app_path().'/Modules/'.$module.'/routes/web.php',
-                        app_path().'/Modules/'.$module.'/routes/api.php',
-                    ];
-
-                    foreach ($route_files as $route_file) {
-                        if ($this->files->exists($route_file)) {
-                            include $route_file;
-                        }
-                    }
-                }
-
-                $helper = app_path().'/Modules/'.$module.'/helper.php';
-                $views = app_path().'/Modules/'.$module.'/Views';
-                $trans = app_path().'/Modules/'.$module.'/Translations';
-
-                if ($this->files->exists($helper)) {
-                    include_once $helper;
-                }
-
-                //Load views
-                if ($this->files->isDirectory($views)) {
-                    $this->loadViewsFrom($views, strtolower(str_replace('.-', '.', Str::snake(str_replace('/', '.', $module), '-'))));
-                }
-
-                //Load translations
-                if ($this->files->isDirectory($trans)) {
-                    $this->loadTranslationsFrom($trans, strtolower(str_replace('.-', '.', Str::snake(str_replace('/', '.', $module), '-'))));
-                }
+                $this->autoloadRoutes($module);
+                $this->autoloadHelper($module);
+                $this->autoloadViews($module);
+                $this->autoloadTranslations($module);
             }
         }
     }
@@ -109,7 +82,7 @@ class ModularizeServiceProvider extends ServiceProvider
             ->lower();
     }
 
-    private function autoloadHelperFile(string $module): void
+    private function autoloadHelper(string $module): void
     {
         $helper = app_path().'/Modules/'.$module.'/helper.php';
 
@@ -118,7 +91,7 @@ class ModularizeServiceProvider extends ServiceProvider
         }
     }
 
-    private function autoloadRouteFiles(string $module): void
+    private function autoloadRoutes(string $module): void
     {
         if (! $this->app->routesAreCached()) {
             $route_files = [
@@ -135,7 +108,7 @@ class ModularizeServiceProvider extends ServiceProvider
         }
     }
 
-    private function loadViewNamespace(string $module): void
+    private function autoloadViews(string $module): void
     {
         $path = app_path().'/Modules/'.$module.'/Views';
 
@@ -147,7 +120,7 @@ class ModularizeServiceProvider extends ServiceProvider
         }
     }
 
-    private function loadTranslationNamespace(string $module): void
+    private function autoloadTranslations(string $module): void
     {
         $path = app_path().'/Modules/'.$module.'/Translations';
 
@@ -174,31 +147,11 @@ class ModularizeServiceProvider extends ServiceProvider
      */
     protected function registerMakeCommand()
     {
-        // $bind_method = method_exists($this->app, 'bindShared') ? 'bindShared' : 'singleton';
-        // $this->app->singleton('modules.generate', function () {
-        //     return new ModuleCommand($this->files);
-        // });
-
-        // $this->app->bind('modules.generate', ModuleCommand::class);
-        // $this->app->bind('modules.make:controller', ModuleMakeControllerCommand::class);
-        // $this->app->bind('modules.make.model', ModuleMakeModelCommand::class);
-        // $this->app->bind('modules.make:migration',  ModuleMakeMigrationCommand::class);
-        // $this->app->bind('modules.make.policy', ModuleMakePolicyCommand::class);
-        // $this->app->bind('modules.make.resource', ModuleMakeResourceCommand::class);
-        // $this->app->bind('modules.make.request', ModuleMakeRequestCommand::class);
-
-        // $this->commands('modules.generate');
-        // $this->commands('modules.make:controller');
-        // $this->commands('modules.make.model');
-        // $this->commands('modules.make:migration');
-        // $this->commands('modules.make.policy');
-        // $this->commands('modules.make.request');
-        // $this->commands('modules.make.resource');
-
         $this->commands([
             ModuleCommand::class,
             ModuleMakeControllerCommand::class,
             ModuleMakeModelCommand::class,
+            ModuleMakeMiddlewareCommand::class,
             ModuleMakeMigrationCommand::class,
             ModuleMakeNotificationCommand::class,
             ModuleMakeProviderCommand::class,
