@@ -5,9 +5,12 @@ namespace NorbyBaru\Modularize;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
-use NorbyBaru\Modularize\Console\Commands\ModuleMakeMiddlewareCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeControllerCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleMakeEventCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleMakeJobCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleMakeListenerCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleMakeMiddlewareCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeMigrationCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeModelCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeNotificationCommand;
@@ -150,6 +153,9 @@ class ModularizeServiceProvider extends ServiceProvider
         $this->commands([
             ModuleCommand::class,
             ModuleMakeControllerCommand::class,
+            ModuleMakeEventCommand::class,
+            ModuleMakeJobCommand::class,
+            ModuleMakeListenerCommand::class,
             ModuleMakeModelCommand::class,
             ModuleMakeMiddlewareCommand::class,
             ModuleMakeMigrationCommand::class,

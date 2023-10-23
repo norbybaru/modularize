@@ -4,30 +4,30 @@ namespace NorbyBaru\Modularize\Console\Commands;
 
 use Illuminate\Support\Str;
 
-class ModuleMakeMiddlewareCommand extends ModuleMakerCommand
+class ModuleMakeEventCommand extends ModuleMakerCommand
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'module:make:middleware 
-                            {name : The name of the middleware}
-                            {--module= : Name of module middleware should belong to}';
+    protected $signature = 'module:make:event 
+                            {name : The name of the event}
+                            {--module= : Name of module event should belong to}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Generate middleware for module';
+    protected $description = 'Generate event for module';
 
     /**
      * The type of class being generated.
      *
      * @var string
      */
-    protected $type = 'Middleware';
+    protected $type = 'Event';
 
     public function handle()
     {
@@ -37,27 +37,17 @@ class ModuleMakeMiddlewareCommand extends ModuleMakerCommand
 
         $name = $this->qualifyClass('Modules\\'.$module.'\\'.$folder.'\\'.$filename);
 
-        if ($this->files->exists($path = $this->getPath($name))) {
-            $this->logFileExist($name);
-
+        if (! $path = $this->getFilePath($name)) {
             return true;
         }
 
-        $type = '';
-        $this->setStubFile("middleware.{$type}");
-        $this->makeDirectory($path);
-
-        $stub = $this->buildClass($name);
-
-        $this->files->put($path, $stub);
-
-        $this->logFileCreated($name);
+        $this->generateFile($path, $name);
 
         return true;
     }
 
     protected function getFolderPath(): string
     {
-        return 'Middleware';
+        return 'Events';
     }
 }

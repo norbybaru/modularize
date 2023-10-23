@@ -178,10 +178,14 @@ abstract class ModuleMakerCommand extends GeneratorCommand
                 '{{ model }}',
                 '{{model}}',
                 'model',
+                '{{ event }}',
+                '{{event}}',
                 '{{ user }}',
                 '{{user}}',
             ],
             replace: [
+                $class,
+                $class,
                 $class,
                 $class,
                 $class,
@@ -198,8 +202,10 @@ abstract class ModuleMakerCommand extends GeneratorCommand
             search: [
                 '{{ namespacedModel }}',
                 '{{namespacedModel}}',
+                '{{ eventNamespace }}',
+                '{{eventNamespace}}',
             ],
-            replace: $this->getNamespace($name),
+            replace: $this->getModelNamespace($name),
             subject: $stub
         );
 
@@ -245,11 +251,49 @@ abstract class ModuleMakerCommand extends GeneratorCommand
         );
     }
 
+    protected function getModelNamespace($name)
+    {
+        return trim(
+            implode(
+                '\\',
+                array_map(
+                    'ucfirst',
+                    array_slice(explode('\\', Str::studly($name)), 0)
+                )
+            ),
+            '\\'
+        );
+    }
+
     protected function getPluralName(string $name): string
     {
         return Str::of($name)
             ->plural()
             ->snake();
+    }
+
+    protected function getFilePath(string $name): ?string
+    {
+        if ($this->files->exists($path = $this->getPath($name))) {
+            $this->logFileExist($name);
+
+            return null;
+        }
+
+        return $path;
+    }
+
+    protected function generateFile(string $path, string $filename, string $stubType = ''): void
+    {
+        $stubPrefix = strtolower($this->type);
+        $this->setStubFile("{$stubPrefix}.{$stubType}");
+        $this->makeDirectory($path);
+
+        $stub = $this->buildClass($filename);
+
+        $this->files->put($path, $stub);
+
+        $this->logFileCreated($filename);
     }
 
     protected function setStubFile(string $file): void
