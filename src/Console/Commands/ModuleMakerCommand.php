@@ -311,5 +311,38 @@ abstract class ModuleMakerCommand extends GeneratorCommand
         $this->components->error(sprintf('%s [%s] already exist.', $this->type, $path));
     }
 
+    /**
+     * Get the destination class path.
+     *
+     * @param  string  $name
+     * @return string
+     */
+    protected function getPath($name)
+    {
+        $name = Str::replaceFirst($this->rootNamespace(), '', $name);
+
+        return $this->getModuleRootPath().'/'.str_replace('\\', '/', $name).'.php';
+    }
+
+    protected function getModuleRootPath(): string
+    {
+        return base_path(config('modularize.root_path'));
+    }
+
+    protected function getModuleRootDirectory(): string
+    {
+        return config('modularize.root_path');
+    }
+
+    /**
+     * Get the root namespace for the class.
+     *
+     * @return string
+     */
+    protected function rootNamespace()
+    {
+        return 'Modules\\';
+    }
+
     abstract protected function getFolderPath(): string;
 }

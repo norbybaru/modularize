@@ -2,6 +2,7 @@
 
 namespace NorbyBaru\Modularize;
 
+use Illuminate\Contracts\Foundation\CachesRoutes;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -18,6 +19,7 @@ use NorbyBaru\Modularize\Console\Commands\ModuleMakePolicyCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeProviderCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeRequestCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeResourceCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleMakeTestCommand;
 
 class ModularizeServiceProvider extends ServiceProvider
 {
@@ -31,34 +33,46 @@ class ModularizeServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->publishConfig();
 
-        if (is_dir(app_path().'/Modules/')) {
-            $modules = config('modules.enable')
-                ?: array_map(
-                    'class_basename',
-                    $this->files->directories(app_path().'/Modules/')
-                );
+        $moduleRootPath = base_path(config('modularize.root_path'));
+        //$moduleRootPath  = app_path('/Modules');
 
-            foreach ($modules as $key => $module) {
-                if (! $this->files->exists(app_path().'/Modules/'.$module.'/Controllers')) {
-                    unset($modules[$key]);
+        //dd($moduleRootPath, app_path());
+        if (is_dir($moduleRootPath)) {
 
-                    $directories = array_map(
-                        'class_basename',
-                        $this->files->directories(app_path().'/Modules/'.$module)
-                    );
-
-                    foreach ($directories as $directory) {
-                        array_push($modules, $module.'/'.$directory);
-                    }
-                }
+            if (! config('modularize.enable')) {
+                return;
             }
 
+            $modules = array_map(
+                'class_basename',
+                $this->files->directories($moduleRootPath)
+            );
+
+            // foreach ($modules as $key => $module) {
+            //     if (! $this->files->exists("{$moduleRootPath}/{$module}/Controllers")) {
+            //         unset($modules[$key]);
+
+            //         $directories = array_map(
+            //             'class_basename',
+            //             $this->files->directories($moduleRootPath.'/'.$module)
+            //         );
+
+            //         foreach ($directories as $directory) {
+            //             array_push($modules, $module.'/'.$directory);
+            //         }
+            //     }
+            // }
+
             foreach ($modules as $module) {
-                $this->autoloadRoutes($module);
-                $this->autoloadHelper($module);
-                $this->autoloadViews($module);
-                $this->autoloadTranslations($module);
+                $this->autoloadServiceProvider($moduleRootPath, $module);
+                $this->autoloadConfig($moduleRootPath, $module);
+                $this->autoloadMigration($moduleRootPath, $module);
+                $this->autoloadRoutes($moduleRootPath, $module);
+                $this->autoloadHelper($moduleRootPath, $module);
+                $this->autoloadViews($moduleRootPath, $module);
+                $this->autoloadTranslations($moduleRootPath, $module);
             }
         }
     }
@@ -71,8 +85,33 @@ class ModularizeServiceProvider extends ServiceProvider
     public function register()
     {
         $this->files = new Filesystem;
+
+        $this->mergeConfigFrom($this->configPath(), 'modularize');
+
         if ($this->app->runningInConsole()) {
             $this->registerMakeCommand();
+        }
+    }
+
+    /**
+     * Return config file.
+     *
+     * @return string
+     */
+    protected function configPath()
+    {
+        return __DIR__.'/../config/modularize.php';
+    }
+
+    /**
+     * Publish config file.
+     */
+    protected function publishConfig()
+    {
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                $this->configPath() => config_path('modularize.php'),
+            ], 'modularize-config');
         }
     }
 
@@ -85,35 +124,77 @@ class ModularizeServiceProvider extends ServiceProvider
             ->lower();
     }
 
-    private function autoloadHelper(string $module): void
+    /**
+     * Load module migration files
+     */
+    private function autoloadMigration(string $moduleRootPath, string $module)
     {
-        $helper = app_path().'/Modules/'.$module.'/helper.php';
+        $this->loadMigrationsFrom("{$moduleRootPath}/{$module}/Database/migrations");
+    }
 
-        if ($this->files->exists($helper)) {
+    /**
+     * Load module config.php file
+     */
+    private function autoloadConfig(string $moduleRootPath, string $module)
+    {
+        $config = "{$moduleRootPath}/{$module}/config.php";
+
+        if ($this->files->exists($config)) {
+            $this->mergeConfigFrom($config, Str::slug($module));
+        }
+    }
+
+    /**
+     * Load and register module service provider
+     */
+    private function autoloadServiceProvider(string $moduleRootPath, string $module)
+    {
+        $provider = "{$moduleRootPath}/{$module}/Providers/{$module}ServiceProvider.php";
+
+        if ($this->files->exists($provider)) {
+            $this->app->register($provider);
+        }
+    }
+
+    private function autoloadHelper(string $moduleRootPath, string $module): void
+    {
+        $path = "{$moduleRootPath}/$module/helper.php";
+
+        if ($this->files->exists($path)) {
             include_once $helper;
         }
     }
 
-    private function autoloadRoutes(string $module): void
+    private function autoloadRoutes(string $moduleRootPath, string $module): void
     {
-        if (! $this->app->routesAreCached()) {
-            $route_files = [
-                app_path().'/Modules/'.$module.'/routes.php',
-                app_path().'/Modules/'.$module.'/routes/web.php',
-                app_path().'/Modules/'.$module.'/routes/api.php',
+        if (! config('modularize.autoload_routes')) {
+            return;
+        }
+
+        $path = "{$moduleRootPath}/{$module}";
+        if (! ($this->app instanceof CachesRoutes && $this->app->routesAreCached())) {
+            $routeFiles = [
+                $path.'/routes.php',
+                $path.'/Routes/',
             ];
 
-            foreach ($route_files as $route_file) {
-                if ($this->files->exists($route_file)) {
-                    include $route_file;
+            foreach ($routeFiles as $path) {
+                if ($this->files->isDirectory(directory: $path)) {
+                    foreach ($this->files->files(directory: $path) as $file) {
+                        include $file->getPathname();
+                    }
+                } else {
+                    if ($this->files->exists(path: $path)) {
+                        include $path;
+                    }
                 }
             }
         }
     }
 
-    private function autoloadViews(string $module): void
+    private function autoloadViews(string $moduleRootPath, string $module): void
     {
-        $path = app_path().'/Modules/'.$module.'/Views';
+        $path = "{$moduleRootPath}/{$module}/Views";
 
         if ($this->files->isDirectory(directory: $path)) {
             $this->loadViewsFrom(
@@ -123,9 +204,9 @@ class ModularizeServiceProvider extends ServiceProvider
         }
     }
 
-    private function autoloadTranslations(string $module): void
+    private function autoloadTranslations(string $moduleRootPath, string $module): void
     {
-        $path = app_path().'/Modules/'.$module.'/Translations';
+        $path = "{$moduleRootPath}/{$module}/Translations";
 
         if ($this->files->isDirectory(directory: $path)) {
             $this->loadTranslationsFrom(
@@ -138,11 +219,11 @@ class ModularizeServiceProvider extends ServiceProvider
     // protected function loadSeeders($seed_list)
     // {
     //     $this->callAfterResolving(DatabaseSeeder::class, function ($seeder) use ($seed_list) {
-    //                 foreach ((array) $seed_list as $path) {
-    //                     $seeder->call($seed_list);
-    //                     // here goes the code that will print out in console that the migration was succesful
-    //                 }
-    //             });
+    //         foreach ((array) $seed_list as $path) {
+    //             $seeder->call($seed_list);
+    //             // here goes the code that will print out in console that the migration was succesful
+    //         }
+    //     });
     // }
 
     /**
@@ -164,6 +245,7 @@ class ModularizeServiceProvider extends ServiceProvider
             ModuleMakePolicyCommand::class,
             ModuleMakeResourceCommand::class,
             ModuleMakeRequestCommand::class,
+            ModuleMakeTestCommand::class,
         ]);
     }
 }

@@ -2,12 +2,11 @@
 
 namespace NorbyBaru\Modularize\Console\Commands;
 
-use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
-class ModuleMakeMigrationCommand extends GeneratorCommand
+class ModuleMakeMigrationCommand extends ModuleMakerCommand
 {
     /**
      * The name and signature of the console command.
@@ -50,7 +49,7 @@ class ModuleMakeMigrationCommand extends GeneratorCommand
         $create = $this->option('create');
         $update = $this->option('table');
 
-        $path = $this->qualifyClass('Modules\\'.$module.'\\'.$this->folder);
+        $path = $this->qualifyClass($module.'\\'.$this->folder);
         $path = $this->classPath($path);
 
         $arguments = [
@@ -71,11 +70,9 @@ class ModuleMakeMigrationCommand extends GeneratorCommand
 
     }
 
-    private function getPluralName(string $name): string
+    protected function getFolderPath(): string
     {
-        return Str::of($name)
-            ->plural()
-            ->snake();
+        return 'Migrations';
     }
 
     /**

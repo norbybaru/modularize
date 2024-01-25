@@ -41,10 +41,10 @@ class ModuleMakePolicyCommand extends ModuleMakerCommand
 
         if ($model = $this->option('model')) {
             $type = 'model.';
-            $model = $this->qualifyClass('Modules\\'.$module.'\\'.'Models'.'\\'.$model);
+            $model = $this->qualifyClass($module.'\\'.'Models'.'\\'.$model);
         }
 
-        $name = $this->qualifyClass('Modules\\'.$module.'\\'.$folder.'\\'.$filename);
+        $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
 
         if ($this->files->exists($path = $this->getPath($name))) {
             $this->logFileExist($name);

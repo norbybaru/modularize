@@ -36,7 +36,7 @@ class ModuleMakeJobCommand extends ModuleMakerCommand
         $filename = Str::studly($this->getNameInput());
         $folder = $this->getFolderPath();
 
-        $name = $this->qualifyClass('Modules\\'.$module.'\\'.$folder.'\\'.$filename);
+        $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
 
         if (! $path = $this->getFilePath($name)) {
             return true;

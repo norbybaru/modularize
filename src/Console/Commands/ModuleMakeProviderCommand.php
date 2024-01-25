@@ -35,7 +35,7 @@ class ModuleMakeProviderCommand extends ModuleMakerCommand
         $filename = Str::studly($this->getNameInput());
         $folder = $this->getFolderPath();
 
-        $name = $this->qualifyClass('Modules\\'.$module.'\\'.$folder.'\\'.$filename);
+        $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
 
         if ($this->files->exists($path = $this->getPath($name))) {
             $this->logFileExist($name);

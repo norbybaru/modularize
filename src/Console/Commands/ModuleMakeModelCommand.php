@@ -52,7 +52,7 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
             $type = 'pivot.';
         }
 
-        $name = $this->qualifyClass('Modules\\'.$module.'\\'.$folder.'\\'.$filename);
+        $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
 
         if ($this->files->exists($path = $this->getPath($name))) {
             $this->logFileExist($name);
@@ -63,6 +63,8 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
         $this->setStubFile("model.{$type}");
         $this->makeDirectory($path);
         $this->files->put($path, $this->buildClass($name));
+
+        $this->logFileCreated($name);
 
         if ($this->option('migration')) {
             $this->makeMigration(name: $filename, module: $module);
@@ -75,8 +77,6 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
         if ($this->option('policy')) {
             $this->makePolicy(name: $filename, module: $module);
         }
-
-        $this->logFileCreated($name);
 
         return true;
     }

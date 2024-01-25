@@ -47,7 +47,7 @@ class ModuleMakeListenerCommand extends ModuleMakerCommand
 
         if ($event = $this->option('event')) {
             $type = 'event.';
-            $event = $this->qualifyClass('Modules\\'.$module.'\\'.'Events'.'\\'.$event);
+            $event = $this->qualifyClass($module.'\\'.'Events'.'\\'.$event);
         }
 
         if ($this->option('queued')) {

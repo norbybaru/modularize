@@ -54,7 +54,7 @@ class ModuleMakeControllerCommand extends ModuleMakerCommand
             $type = '';
         }
 
-        $name = $this->qualifyClass('Modules\\'.$module.'\\'.$folder.'\\'.$filename);
+        $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
 
         if ($this->files->exists($path = $this->getPath($name))) {
             $this->logFileExist($name);
