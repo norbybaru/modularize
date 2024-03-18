@@ -20,6 +20,7 @@ use NorbyBaru\Modularize\Console\Commands\ModuleMakeProviderCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeRequestCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeResourceCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeTestCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleMakeViewCommand;
 
 class ModularizeServiceProvider extends ServiceProvider
 {
@@ -206,7 +207,7 @@ class ModularizeServiceProvider extends ServiceProvider
 
     private function autoloadTranslations(string $moduleRootPath, string $module): void
     {
-        $path = "{$moduleRootPath}/{$module}/Translations";
+        $path = "{$moduleRootPath}/{$module}/Lang";
 
         if ($this->files->isDirectory(directory: $path)) {
             $this->loadTranslationsFrom(
@@ -246,6 +247,7 @@ class ModularizeServiceProvider extends ServiceProvider
             ModuleMakeResourceCommand::class,
             ModuleMakeRequestCommand::class,
             ModuleMakeTestCommand::class,
+            ModuleMakeViewCommand::class,
         ]);
     }
 }

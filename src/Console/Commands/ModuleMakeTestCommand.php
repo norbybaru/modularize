@@ -16,14 +16,15 @@ class ModuleMakeTestCommand extends ModuleMakerCommand
                             {name : The name of the test}
                             {--module= : Name of module migration should belong to}
                             {--u|unit : Create a unit test}
-                            {--p|pest : Create a Pest test}';
+                            {--p|pest : Create a Pest test}
+                            {--view : Create a view test}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Generate resource for a module';
+    protected $description = 'Generate test resource for a module';
 
     /**
      * The type of class being generated.
@@ -41,9 +42,24 @@ class ModuleMakeTestCommand extends ModuleMakerCommand
         $testType = 'Feature';
         $prefix = 'test';
         $type = '';
+
         if ($this->option('unit')) {
             $type = 'unit.';
             $testType = 'Unit';
+        }
+
+        if ($this->option('view')) {
+            $filename = collect(explode('/', $filename))
+                ->map(fn ($name) => ucwords($name))
+                ->join('/');
+
+            $filename = "View/{$filename}Test";
+            $type = 'view.';
+            $testType = 'Feature';
+
+            if ($this->option('pest')) {
+                $prefix = 'pest';
+            }
         }
 
         $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$testType.'\\'.$filename);

@@ -14,6 +14,8 @@ abstract class ModuleMakerCommand extends GeneratorCommand
      */
     protected $currentStub = __DIR__.'/templates/';
 
+    protected ?string $module = null;
+
     /**
      * Get the stub file for the generator.
      *
@@ -26,11 +28,11 @@ abstract class ModuleMakerCommand extends GeneratorCommand
 
     public function getModuleInput(): string
     {
-        if (! $module = $this->option('module')) {
-            $module = $this->ask('What is the name of the module?');
+        if (! $this->module = $this->option('module')) {
+            $this->module = $this->ask('What is the name of the module?');
         }
 
-        return $module;
+        return $this->module;
     }
 
     /**
@@ -46,6 +48,7 @@ abstract class ModuleMakerCommand extends GeneratorCommand
         $stub = $this->files->get($this->getStub());
 
         return $this->replaceName($stub, $this->getNameInput())
+            ->replaceModuleName($stub, $this->module)
             ->replaceNamespace($stub, $name)
             ->replaceClass($stub, $name);
     }
@@ -119,11 +122,38 @@ abstract class ModuleMakerCommand extends GeneratorCommand
     {
         $title = $name;
 
-        $stub = str_replace(search: 'SampleTitle', replace: strtolower($name), subject: $stub);
-        $stub = str_replace(search: 'SampleViewTitle', replace: strtolower(Str::snake($title, '-')), subject: $stub);
-        $stub = str_replace(search: 'SampleUCtitle', replace: ucfirst(Str::studly($name)), subject: $stub);
+        $stub = str_replace(
+            search: [
+                'SampleTitle',
+                'SampleViewTitle',
+                'SampleUCtitle',
+                '{{viewFile}}',
+            ],
+            replace: [
+                strtolower($name),
+                strtolower(Str::snake($title, '-')),
+                ucfirst(Str::studly($name)),
+                strtolower(Str::snake(str_replace(search: '/', replace: '.', subject: $title), '-')),
+            ],
+            subject: $stub
+        );
 
         $stub = $this->removePrefixFromRoutes($stub);
+
+        return $this;
+    }
+
+    protected function replaceModuleName(&$stub, $name)
+    {
+        $stub = str_replace(
+            search: [
+                '{{ moduleName }}',
+                '{{moduleName}}',
+                'moduleName',
+            ],
+            replace: strtolower($name),
+            subject: $stub
+        );
 
         return $this;
     }
@@ -317,11 +347,11 @@ abstract class ModuleMakerCommand extends GeneratorCommand
      * @param  string  $name
      * @return string
      */
-    protected function getPath($name)
+    protected function getPath($name, string $fileExtension = 'php')
     {
         $name = Str::replaceFirst($this->rootNamespace(), '', $name);
 
-        return $this->getModuleRootPath().'/'.str_replace('\\', '/', $name).'.php';
+        return $this->getModuleRootPath().'/'.str_replace('\\', '/', $name).".{$fileExtension}";
     }
 
     protected function getModuleRootPath(): string
