@@ -1,4 +1,6 @@
-<?php namespace SampleNamespace;
+<?php 
+
+namespace SampleNamespace;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -6,10 +8,8 @@ class SampleClass extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return false;
     }
@@ -17,9 +17,9 @@ class SampleClass extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             //

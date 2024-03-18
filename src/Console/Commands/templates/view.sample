@@ -1,2 +1,6 @@
-<?php
-    echo trans('SampleViewTitle::example.welcome');
+<div>
+    <!-- To Render translation, create a Lang/{locale}/messages.php file inside module directory -->
+    <!-- Replace {module} with module name  -->
+    
+    {{-- {{ __('{module}::messages.welcome') }} --}}
+</div>

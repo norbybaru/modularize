@@ -1,18 +1,19 @@
-<?php 
+<?php
 
-namespace SampleNamespace;
+namespace {{ namespace }};
 
-use SampleRootNamespaceHttp\Controllers\Controller;
-use Illuminate\Http\Request;
+use {{ namespacedModel }};
+use {{ rootNamespace }}Http\Controllers\Controller;
+use {{ namespacedRequests }}
 
-class SampleClass extends Controller
+class {{ class }} extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //return view("moduleName::index");
+        //
     }
 
     /**
@@ -20,13 +21,13 @@ class SampleClass extends Controller
      */
     public function create()
     {
-        // return view("moduleName::store");
+        //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store({{ storeRequest }} $request)
     {
         //
     }
@@ -34,23 +35,23 @@ class SampleClass extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show({{ model }} ${{ modelVariable }})
     {
-         // return view("moduleName::show");
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id)
+    public function edit({{ model }} ${{ modelVariable }})
     {
-        // return view("moduleName::edit");
+        //
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update({{ updateRequest }} $request, {{ model }} ${{ modelVariable }})
     {
         //
     }
@@ -58,7 +59,7 @@ class SampleClass extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy({{ model }} ${{ modelVariable }})
     {
         //
     }

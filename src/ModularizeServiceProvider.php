@@ -1,20 +1,27 @@
-<?php namespace NorbyBaru\Modularize;
+<?php
 
+namespace NorbyBaru\Modularize;
+
+use Illuminate\Contracts\Foundation\CachesRoutes;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use NorbyBaru\Modularize\Console\Commands\ModuleCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleMakeControllerCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleMakeEventCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleMakeJobCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleMakeListenerCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleMakeMiddlewareCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleMakeMigrationCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleMakeModelCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleMakeNotificationCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleMakePolicyCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleMakeProviderCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleMakeRequestCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleMakeResourceCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleMakeTestCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleMakeViewCommand;
 
-/**
- * Class ModularizeServiceProvider
- *
- * Bootstrap your app with modular classes
- *
- * @author Norby Baruani <norbybaru@gmail.com>
- * @package Norbybaru\Modularize
- * @version 1.2.2
- * @since 1.0.0
- */
 class ModularizeServiceProvider extends ServiceProvider
 {
     /** @var Filesystem */
@@ -27,62 +34,46 @@ class ModularizeServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->publishConfig();
 
-        if (is_dir(app_path().'/Modules/')) {
-            $modules = config("modules.enable")
-                ?: array_map(
-                    'class_basename',
-                    $this->files->directories(app_path().'/Modules/')
-                );
+        $moduleRootPath = base_path(config('modularize.root_path'));
+        //$moduleRootPath  = app_path('/Modules');
 
-            foreach ($modules as $key => $module) {
-                if (!$this->files->exists(app_path() . '/Modules/' . $module . '/Controllers')) {
-                    unset($modules[$key]);
+        //dd($moduleRootPath, app_path());
+        if (is_dir($moduleRootPath)) {
 
-                    $directories = array_map(
-                        'class_basename',
-                        $this->files->directories(app_path().'/Modules/' . $module)
-                    );
-
-                    foreach ($directories as $directory) {
-                        array_push($modules, $module . '/' . $directory);
-                    }
-                }
+            if (! config('modularize.enable')) {
+                return;
             }
 
+            $modules = array_map(
+                'class_basename',
+                $this->files->directories($moduleRootPath)
+            );
+
+            // foreach ($modules as $key => $module) {
+            //     if (! $this->files->exists("{$moduleRootPath}/{$module}/Controllers")) {
+            //         unset($modules[$key]);
+
+            //         $directories = array_map(
+            //             'class_basename',
+            //             $this->files->directories($moduleRootPath.'/'.$module)
+            //         );
+
+            //         foreach ($directories as $directory) {
+            //             array_push($modules, $module.'/'.$directory);
+            //         }
+            //     }
+            // }
+
             foreach ($modules as $module) {
-                // Allow routes to be cached
-                if (!$this->app->routesAreCached()) {
-                    $route_files = [
-                        app_path() . '/Modules/' . $module . '/routes.php',
-                        app_path() . '/Modules/' . $module . '/routes/web.php',
-                        app_path() . '/Modules/' . $module . '/routes/api.php',
-                    ];
-
-                    foreach ($route_files as $route_file) {
-                        if ($this->files->exists($route_file)) {
-                            include $route_file;
-                        }
-                    }
-                }
-
-                $helper = app_path() . '/Modules/' . $module . '/helper.php';
-                $views  = app_path() . '/Modules/' . $module . '/Views';
-                $trans  = app_path() . '/Modules/' . $module . '/Translations';
-
-                if ($this->files->exists($helper)) {
-                    include_once $helper;
-                }
-
-                //Load views
-                if ($this->files->isDirectory($views)) {
-                    $this->loadViewsFrom($views, strtolower(str_replace('.-', '.', Str::snake(str_replace('/', '.', $module), '-'))));
-                }
-
-                //Load translations
-                if ($this->files->isDirectory($trans)) {
-                    $this->loadTranslationsFrom($trans, strtolower(str_replace('.-', '.', Str::snake(str_replace('/', '.', $module), '-'))));
-                }
+                $this->autoloadServiceProvider($moduleRootPath, $module);
+                $this->autoloadConfig($moduleRootPath, $module);
+                $this->autoloadMigration($moduleRootPath, $module);
+                $this->autoloadRoutes($moduleRootPath, $module);
+                $this->autoloadHelper($moduleRootPath, $module);
+                $this->autoloadViews($moduleRootPath, $module);
+                $this->autoloadTranslations($moduleRootPath, $module);
             }
         }
     }
@@ -95,20 +86,168 @@ class ModularizeServiceProvider extends ServiceProvider
     public function register()
     {
         $this->files = new Filesystem;
-        $this->registerMakeCommand();
+
+        $this->mergeConfigFrom($this->configPath(), 'modularize');
+
+        if ($this->app->runningInConsole()) {
+            $this->registerMakeCommand();
+        }
     }
 
     /**
-     * Register module" console command.
+     * Return config file.
      *
+     * @return string
+     */
+    protected function configPath()
+    {
+        return __DIR__.'/../config/modularize.php';
+    }
+
+    /**
+     * Publish config file.
+     */
+    protected function publishConfig()
+    {
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                $this->configPath() => config_path('modularize.php'),
+            ], 'modularize-config');
+        }
+    }
+
+    private function getModuleNamespace(string $name): string
+    {
+        return Str::of($name)
+            ->replace(search: '/', replace: '.')
+            ->snake('-')
+            ->replace(search: '.-', replace: '.')
+            ->lower();
+    }
+
+    /**
+     * Load module migration files
+     */
+    private function autoloadMigration(string $moduleRootPath, string $module)
+    {
+        $this->loadMigrationsFrom("{$moduleRootPath}/{$module}/Database/migrations");
+    }
+
+    /**
+     * Load module config.php file
+     */
+    private function autoloadConfig(string $moduleRootPath, string $module)
+    {
+        $config = "{$moduleRootPath}/{$module}/config.php";
+
+        if ($this->files->exists($config)) {
+            $this->mergeConfigFrom($config, Str::slug($module));
+        }
+    }
+
+    /**
+     * Load and register module service provider
+     */
+    private function autoloadServiceProvider(string $moduleRootPath, string $module)
+    {
+        $provider = "{$moduleRootPath}/{$module}/Providers/{$module}ServiceProvider.php";
+
+        if ($this->files->exists($provider)) {
+            $this->app->register($provider);
+        }
+    }
+
+    private function autoloadHelper(string $moduleRootPath, string $module): void
+    {
+        $path = "{$moduleRootPath}/$module/helper.php";
+
+        if ($this->files->exists($path)) {
+            include_once $helper;
+        }
+    }
+
+    private function autoloadRoutes(string $moduleRootPath, string $module): void
+    {
+        if (! config('modularize.autoload_routes')) {
+            return;
+        }
+
+        $path = "{$moduleRootPath}/{$module}";
+        if (! ($this->app instanceof CachesRoutes && $this->app->routesAreCached())) {
+            $routeFiles = [
+                $path.'/routes.php',
+                $path.'/Routes/',
+            ];
+
+            foreach ($routeFiles as $path) {
+                if ($this->files->isDirectory(directory: $path)) {
+                    foreach ($this->files->files(directory: $path) as $file) {
+                        include $file->getPathname();
+                    }
+                } else {
+                    if ($this->files->exists(path: $path)) {
+                        include $path;
+                    }
+                }
+            }
+        }
+    }
+
+    private function autoloadViews(string $moduleRootPath, string $module): void
+    {
+        $path = "{$moduleRootPath}/{$module}/Views";
+
+        if ($this->files->isDirectory(directory: $path)) {
+            $this->loadViewsFrom(
+                path: $path,
+                namespace: $this->getModuleNamespace(name: $module),
+            );
+        }
+    }
+
+    private function autoloadTranslations(string $moduleRootPath, string $module): void
+    {
+        $path = "{$moduleRootPath}/{$module}/Lang";
+
+        if ($this->files->isDirectory(directory: $path)) {
+            $this->loadTranslationsFrom(
+                path: $path,
+                namespace: $this->getModuleNamespace(name: $module),
+            );
+        }
+    }
+
+    // protected function loadSeeders($seed_list)
+    // {
+    //     $this->callAfterResolving(DatabaseSeeder::class, function ($seeder) use ($seed_list) {
+    //         foreach ((array) $seed_list as $path) {
+    //             $seeder->call($seed_list);
+    //             // here goes the code that will print out in console that the migration was succesful
+    //         }
+    //     });
+    // }
+
+    /**
+     * Register module" console command.
      */
     protected function registerMakeCommand()
     {
-        $this->commands('modules.make');
-
-        $bind_method = method_exists($this->app, 'bindShared') ? 'bindShared' : 'singleton';
-        $this->app->{$bind_method}('modules.make', function () {
-            return new ModuleCommand($this->files);
-        });
+        $this->commands([
+            ModuleCommand::class,
+            ModuleMakeControllerCommand::class,
+            ModuleMakeEventCommand::class,
+            ModuleMakeJobCommand::class,
+            ModuleMakeListenerCommand::class,
+            ModuleMakeModelCommand::class,
+            ModuleMakeMiddlewareCommand::class,
+            ModuleMakeMigrationCommand::class,
+            ModuleMakeNotificationCommand::class,
+            ModuleMakeProviderCommand::class,
+            ModuleMakePolicyCommand::class,
+            ModuleMakeResourceCommand::class,
+            ModuleMakeRequestCommand::class,
+            ModuleMakeTestCommand::class,
+            ModuleMakeViewCommand::class,
+        ]);
     }
 }

@@ -1,22 +1,11 @@
-<?php namespace SampleNamespace;
+<?php
 
+namespace {{ namespace }};
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SampleClass extends Model
+class {{ class }} extends Model
 {
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-    ];
-
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-    ];
+    use HasFactory;
 }

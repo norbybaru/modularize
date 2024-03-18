@@ -11,11 +11,10 @@ Run the following command from your projects root
 ```php
 composer require norbybaru/modularize
 ```
-
-For Laravel versions lower than 5.5, this step is important after running above script.
-- Open your `config/app.php` file and add custom service provider:
-```php
-NorbyBaru\Modularize\ModularizeServiceProvider::class
+## Config
+Publish configuration
+```bash
+php artisan vendor:publish --provider="NorbyBaru\Modularize\ModularizeServiceProvider" --tag="modularize-config"
 ```
 
 ## Usage
