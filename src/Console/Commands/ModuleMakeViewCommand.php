@@ -56,7 +56,7 @@ class ModuleMakeViewCommand extends ModuleMakerCommand
             $this->call(
                 ModuleMakeTestCommand::class,
                 [
-                    'name' => ($filename),
+                    'name' => $filename,
                     '--module' => $module,
                     '--pest' => true,
                     '--view' => true,

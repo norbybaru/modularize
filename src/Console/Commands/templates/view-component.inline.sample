@@ -21,6 +21,6 @@ class {{ class }} extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('{{moduleName}}::components.{{viewFile}}');
+        return {{view}};
     }
 }

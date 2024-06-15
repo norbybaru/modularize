@@ -4,9 +4,11 @@ namespace NorbyBaru\Modularize;
 
 use Illuminate\Contracts\Foundation\CachesRoutes;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use NorbyBaru\Modularize\Console\Commands\ModuleCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleMakeComponentCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeControllerCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeEventCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeJobCommand;
@@ -74,8 +76,10 @@ class ModularizeServiceProvider extends ServiceProvider
                 $this->autoloadHelper($moduleRootPath, $module);
                 $this->autoloadViews($moduleRootPath, $module);
                 $this->autoloadTranslations($moduleRootPath, $module);
+                $this->autoloadViewComponents($module);
             }
         }
+
     }
 
     /**
@@ -205,6 +209,14 @@ class ModularizeServiceProvider extends ServiceProvider
         }
     }
 
+    private function autoloadViewComponents(string $module): void
+    {
+        Blade::componentNamespace(
+            "Modules\\{$module}\\Components",
+            $this->getModuleNamespace(name: $module)
+        );
+    }
+
     private function autoloadTranslations(string $moduleRootPath, string $module): void
     {
         $path = "{$moduleRootPath}/{$module}/Lang";
@@ -234,6 +246,7 @@ class ModularizeServiceProvider extends ServiceProvider
     {
         $this->commands([
             ModuleCommand::class,
+            ModuleMakeComponentCommand::class,
             ModuleMakeControllerCommand::class,
             ModuleMakeEventCommand::class,
             ModuleMakeJobCommand::class,

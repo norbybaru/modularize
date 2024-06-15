@@ -333,12 +333,16 @@ abstract class ModuleMakerCommand extends GeneratorCommand
 
     protected function logFileCreated(string $path)
     {
-        $this->components->info(sprintf('%s [%s] created successfully.', $this->type, $path));
+        if (! $this->hasOption('quiet') || ! $this->option('quiet')) {
+            $this->components->info(sprintf('%s [%s] created successfully.', $this->type, $path));
+        }
     }
 
     protected function logFileExist(string $path)
     {
-        $this->components->error(sprintf('%s [%s] already exist.', $this->type, $path));
+        if (! $this->hasOption('quiet') || ! $this->option('quiet')) {
+            $this->components->error(sprintf('%s [%s] already exist.', $this->type, $path));
+        }
     }
 
     /**
