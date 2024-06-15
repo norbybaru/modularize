@@ -7,7 +7,6 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
-use NorbyBaru\Modularize\Console\Commands\ModuleCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeComponentCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeControllerCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeEventCommand;
@@ -166,7 +165,7 @@ class ModularizeServiceProvider extends ServiceProvider
         $path = "{$moduleRootPath}/$module/helper.php";
 
         if ($this->files->exists($path)) {
-            include_once $helper;
+            include_once $path;
         }
     }
 
@@ -245,7 +244,6 @@ class ModularizeServiceProvider extends ServiceProvider
     protected function registerMakeCommand()
     {
         $this->commands([
-            ModuleCommand::class,
             ModuleMakeComponentCommand::class,
             ModuleMakeControllerCommand::class,
             ModuleMakeEventCommand::class,

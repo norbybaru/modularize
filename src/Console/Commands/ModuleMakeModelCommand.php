@@ -81,10 +81,10 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
         return true;
     }
 
-    private function makeAll()
-    {
-        //TODO: makeAll() implementation
-    }
+    // private function makeAll()
+    // {
+    //     //TODO: makeAll() implementation
+    // }
 
     private function makeController(string $name, string $module): void
     {
@@ -135,15 +135,15 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
         );
     }
 
-    private function makeFactory()
-    {
-        //TODO: makeFactory() implementation
-    }
+    // private function makeFactory()
+    // {
+    //     //TODO: makeFactory() implementation
+    // }
 
-    private function makeSeed()
-    {
-        //TODO: makeSeed() implementation
-    }
+    // private function makeSeed()
+    // {
+    //     //TODO: makeSeed() implementation
+    // }
 
     protected function getFolderPath(): string
     {

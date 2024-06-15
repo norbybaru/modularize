@@ -4,7 +4,6 @@ namespace NorbyBaru\Modularize\Console\Commands;
 
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Str;
-use Symfony\Component\Console\Input\InputOption;
 
 class ModuleMakeComponentCommand extends ModuleMakerCommand
 {
@@ -19,7 +18,8 @@ class ModuleMakeComponentCommand extends ModuleMakerCommand
                         {--inline : Create a component that renders an inline view}
                         {--view: Create an anonymous component with only a view}
                         {--test : Generate an accompanying PHPUnit test for the Component}
-                        {--pest : Generate an accompanying Pest test for the Component}';
+                        {--pest : Generate an accompanying Pest test for the Component}
+                        {--force|f : Create the class even if the component already exists}';
 
     /**
      * The console command description.
@@ -34,20 +34,6 @@ class ModuleMakeComponentCommand extends ModuleMakerCommand
      * @var string
      */
     protected $type = 'Component';
-
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    protected function getOptions()
-    {
-        return [
-            ['force', 'f', InputOption::VALUE_NONE, 'Create the class even if the component already exists'],
-            ['inline', null, InputOption::VALUE_NONE, 'Create a component that renders an inline view'],
-            ['view', null, InputOption::VALUE_NONE, 'Create an anonymous component with only a view'],
-        ];
-    }
 
     public function handle()
     {
