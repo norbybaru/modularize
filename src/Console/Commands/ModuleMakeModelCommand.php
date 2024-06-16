@@ -2,7 +2,6 @@
 
 namespace NorbyBaru\Modularize\Console\Commands;
 
-use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputArgument;
 
@@ -78,8 +77,6 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
         if ($this->option('policy')) {
             $this->makePolicy(name: $filename, module: $module);
         }
-
-        return true;
     }
 
     // private function makeAll()
