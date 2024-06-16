@@ -38,9 +38,7 @@ class ModularizeServiceProvider extends ServiceProvider
         $this->publishConfig();
 
         $moduleRootPath = base_path(config('modularize.root_path'));
-        //$moduleRootPath  = app_path('/Modules');
 
-        //dd($moduleRootPath, app_path());
         if (is_dir($moduleRootPath)) {
 
             if (! config('modularize.enable')) {
@@ -51,21 +49,6 @@ class ModularizeServiceProvider extends ServiceProvider
                 'class_basename',
                 $this->files->directories($moduleRootPath)
             );
-
-            // foreach ($modules as $key => $module) {
-            //     if (! $this->files->exists("{$moduleRootPath}/{$module}/Controllers")) {
-            //         unset($modules[$key]);
-
-            //         $directories = array_map(
-            //             'class_basename',
-            //             $this->files->directories($moduleRootPath.'/'.$module)
-            //         );
-
-            //         foreach ($directories as $directory) {
-            //             array_push($modules, $module.'/'.$directory);
-            //         }
-            //     }
-            // }
 
             foreach ($modules as $module) {
                 $this->autoloadServiceProvider($moduleRootPath, $module);
