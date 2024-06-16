@@ -34,7 +34,7 @@ class ModuleMakeMigrationCommand extends ModuleMakerCommand
      */
     protected $currentStub = __DIR__.'/templates/';
 
-    protected string $folder = 'Database\\migration';
+    protected string $folder = 'Database\\migrations';
 
     public function handle()
     {

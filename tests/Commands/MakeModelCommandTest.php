@@ -34,7 +34,7 @@ class MakeModelCommandTest extends MakeCommandTestCase
             ->assertExitCode(exitCode: 0);
 
         $this->assertDirectoryExists(
-            directory: $this->getModulePath($module).'/Database/migration'
+            directory: $this->getModulePath($module).'/Database/migrations'
         );
         $this->assertFileExists(filename: $this->getModulePath($module).'/Models/Video.php');
         
@@ -73,7 +73,7 @@ class MakeModelCommandTest extends MakeCommandTestCase
             ->assertExitCode(exitCode: 0);
 
         $this->assertDirectoryExists(
-            directory: $this->getModulePath($module).'/Database/migration'
+            directory: $this->getModulePath($module).'/Database/migrations'
         );
 
         $this->assertFileExists(
