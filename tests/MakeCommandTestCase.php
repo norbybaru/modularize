@@ -2,9 +2,17 @@
 
 namespace NorbyBaru\Modularize\Tests;
 
+use Illuminate\Support\Carbon;
+
 abstract class MakeCommandTestCase extends TestCase
 {
     public string $moduleName = 'Blog';
+
+    public function setup(): void
+    {
+        Carbon::setTestNow(testNow: Carbon::now());
+        parent::setUp();
+    }
 
     public function teardown(): void
     {
