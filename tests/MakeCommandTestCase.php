@@ -8,9 +8,12 @@ abstract class MakeCommandTestCase extends TestCase
 {
     public string $moduleName = 'Blog';
 
+    public Carbon $now;
+
     public function setup(): void
     {
-        Carbon::setTestNow(testNow: Carbon::now());
+        $this->now = Carbon::now();
+        Carbon::setTestNow(testNow: $this->now);
         parent::setUp();
     }
 
