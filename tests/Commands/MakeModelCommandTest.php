@@ -33,10 +33,11 @@ class MakeModelCommandTest extends MakeCommandTestCase
         )
             ->assertExitCode(exitCode: 0);
 
-        $this->assertFileExists(filename: $this->getModulePath($module).'/Models/Video.php');
         $this->assertDirectoryExists(
-            directory: $this->getModulePath($module).'/Database/migration/'
+            directory: $this->getModulePath($module).'/Database/migration'
         );
+        $this->assertFileExists(filename: $this->getModulePath($module).'/Models/Video.php');
+        
         // TODO: Fix timestamp issue in test
         // $this->assertFileExists(filename: $this->getModulePath().'/Database/migration/'.$datetime.'_create_posts_table.php');
     }
@@ -71,12 +72,14 @@ class MakeModelCommandTest extends MakeCommandTestCase
         )
             ->assertExitCode(exitCode: 0);
 
+        $this->assertDirectoryExists(
+            directory: $this->getModulePath($module).'/Database/migration'
+        );
+
         $this->assertFileExists(
             filename: $this->getModulePath($module).'/Models/Listing.php'
         );
-        $this->assertDirectoryExists(
-            directory: $this->getModulePath($module).'/Database/migration/'
-        );
+        
         // TODO: Fix timestamp issue in test
         // $this->assertFileExists(
         //     filename: $this->getModulePath().'/Database/migration/'.$datetime.'_create_posts_table.php'
