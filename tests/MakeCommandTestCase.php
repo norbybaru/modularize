@@ -32,6 +32,6 @@ abstract class MakeCommandTestCase extends TestCase
 
     public function cleanUp(): void
     {
-        $this->app['files']->deleteDirectory($this->getModulePath(module: $this->moduleName));
+        $this->app['files']->deleteDirectory(base_path(config('modularize.root_path')));
     }
 }

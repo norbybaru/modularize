@@ -22,19 +22,20 @@ class MakeModelCommandTest extends MakeCommandTestCase
 
     public function test_it_creates_a_model_with_migration()
     {
+        $module = 'Content';
         $this->artisan(
             command: 'module:make:model',
             parameters: [
-                'name' => 'Post',
-                '--module' => $this->moduleName,
+                'name' => 'Video',
+                '--module' => $module,
                 '--migration' => true,
             ]
         )
             ->assertExitCode(exitCode: 0);
 
-        $this->assertFileExists(filename: $this->getModulePath().'/Models/Post.php');
+        $this->assertFileExists(filename: $this->getModulePath($module).'/Models/Video.php');
         $this->assertDirectoryExists(
-            directory: $this->getModulePath().'/Database/migration'
+            directory: $this->getModulePath($module).'/Database/migration/'
         );
         // TODO: Fix timestamp issue in test
         // $this->assertFileExists(filename: $this->getModulePath().'/Database/migration/'.$datetime.'_create_posts_table.php');
@@ -58,11 +59,12 @@ class MakeModelCommandTest extends MakeCommandTestCase
 
     public function test_it_creates_a_model_with_migration_and_factory()
     {
+        $module = 'Search';
         $this->artisan(
             command: 'module:make:model',
             parameters: [
-                'name' => 'Post',
-                '--module' => $this->moduleName,
+                'name' => 'Listing',
+                '--module' => $module,
                 '--migration' => true,
                 //'--factory' => true
             ]
@@ -70,10 +72,10 @@ class MakeModelCommandTest extends MakeCommandTestCase
             ->assertExitCode(exitCode: 0);
 
         $this->assertFileExists(
-            filename: $this->getModulePath().'/Models/Post.php'
+            filename: $this->getModulePath($module).'/Models/Listing.php'
         );
         $this->assertDirectoryExists(
-            directory: $this->getModulePath().'/Database/migration'
+            directory: $this->getModulePath($module).'/Database/migration/'
         );
         // TODO: Fix timestamp issue in test
         // $this->assertFileExists(
