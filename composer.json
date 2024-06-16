@@ -50,6 +50,6 @@
         "laravel/pint": "^1.10",
         "nunomaduro/larastan": "^2.0",
         "orchestra/testbench": "^8.5|^9.0",
-        "phpunit/phpunit": "^10.13|^11.0"
+        "phpunit/phpunit": "^9.5|^10.13|^11.0"
     }
 }
