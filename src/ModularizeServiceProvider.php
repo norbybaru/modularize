@@ -167,7 +167,7 @@ class ModularizeServiceProvider extends ServiceProvider
 
             foreach ($routeFiles as $path) {
                 if ($this->files->isDirectory(directory: $path)) {
-                    foreach ($this->files->files(directory: $path) as $file) {
+                    foreach ($this->files->allFiles(directory: $path) as $file) {
                         include $file->getPathname();
                     }
                 } else {

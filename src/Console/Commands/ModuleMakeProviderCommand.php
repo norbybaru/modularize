@@ -55,6 +55,6 @@ class ModuleMakeProviderCommand extends ModuleMakerCommand
 
     protected function getFolderPath(): string
     {
-        return 'Provider';
+        return 'Providers';
     }
 }
