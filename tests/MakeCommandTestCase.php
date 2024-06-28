@@ -2,6 +2,7 @@
 
 namespace NorbyBaru\Modularize\Tests;
 
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Carbon;
 
 abstract class MakeCommandTestCase extends TestCase
@@ -10,11 +11,16 @@ abstract class MakeCommandTestCase extends TestCase
 
     public Carbon $now;
 
+    protected Filesystem $files;
+
     public function setup(): void
     {
+        parent::setUp();
+
+        $this->files = new Filesystem;
         $this->now = Carbon::now();
         Carbon::setTestNow(testNow: $this->now);
-        parent::setUp();
+        $this->cleanUp();
     }
 
     public function teardown(): void
@@ -32,6 +38,6 @@ abstract class MakeCommandTestCase extends TestCase
 
     public function cleanUp(): void
     {
-        $this->app['files']->deleteDirectory(base_path(config('modularize.root_path')));
+        $this->files->deleteDirectory(base_path(config('modularize.root_path')));
     }
 }

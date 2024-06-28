@@ -2,12 +2,15 @@
 
 namespace NorbyBaru\Modularize;
 
+use Illuminate\Console\Command;
 use Illuminate\Contracts\Foundation\CachesRoutes;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeComponentCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleMakeConsoleCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeControllerCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeEventCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeJobCommand;
@@ -22,11 +25,17 @@ use NorbyBaru\Modularize\Console\Commands\ModuleMakeRequestCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeResourceCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeTestCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeViewCommand;
+use ReflectionClass;
+use Symfony\Component\Finder\Finder;
 
 class ModularizeServiceProvider extends ServiceProvider
 {
     /** @var Filesystem */
     protected $files;
+
+    protected string $moduleRootPath;
+
+    protected string $rootNamespace = 'Modules\\';
 
     /**
      * Bootstrap the application services.
@@ -37,27 +46,25 @@ class ModularizeServiceProvider extends ServiceProvider
     {
         $this->publishConfig();
 
-        $moduleRootPath = base_path(config('modularize.root_path'));
-
-        if (is_dir($moduleRootPath)) {
-
+        if (is_dir($this->moduleRootPath = base_path(config('modularize.root_path')))) {
             if (! config('modularize.enable')) {
                 return;
             }
 
             $modules = array_map(
                 'class_basename',
-                $this->files->directories($moduleRootPath)
+                $this->files->directories($this->moduleRootPath)
             );
 
             foreach ($modules as $module) {
-                $this->autoloadServiceProvider($moduleRootPath, $module);
-                $this->autoloadConfig($moduleRootPath, $module);
-                $this->autoloadMigration($moduleRootPath, $module);
-                $this->autoloadRoutes($moduleRootPath, $module);
-                $this->autoloadHelper($moduleRootPath, $module);
-                $this->autoloadViews($moduleRootPath, $module);
-                $this->autoloadTranslations($moduleRootPath, $module);
+                $this->autoloadServiceProvider($this->moduleRootPath, $module);
+                $this->autoloadConfig($this->moduleRootPath, $module);
+                $this->autoloadConsoleCommands($this->moduleRootPath, $module);
+                $this->autoloadMigration($this->moduleRootPath, $module);
+                $this->autoloadRoutes($this->moduleRootPath, $module);
+                $this->autoloadHelper($this->moduleRootPath, $module);
+                $this->autoloadViews($this->moduleRootPath, $module);
+                $this->autoloadTranslations($this->moduleRootPath, $module);
                 $this->autoloadViewComponents($module);
             }
         }
@@ -120,6 +127,45 @@ class ModularizeServiceProvider extends ServiceProvider
     }
 
     /**
+     * Load module console commands
+     */
+    private function autoloadConsoleCommands(string $moduleRootPath, string $module): void
+    {
+        if (! $this->app->runningInConsole()) {
+            return;
+        }
+
+        $path = "{$moduleRootPath}/{$module}/Console";
+
+        $paths = array_unique(Arr::wrap($path));
+
+        $paths = array_filter($paths, function ($path) {
+            return is_dir($path);
+        });
+
+        if (empty($paths)) {
+            return;
+        }
+
+        $namespace = $this->rootNamespace;
+
+        foreach ((new Finder)->in($paths)->files() as $command) {
+            $command = $namespace.str_replace(
+                ['/', '.php'],
+                ['\\', ''],
+                Str::after($command->getRealPath(), realpath($this->moduleRootPath).DIRECTORY_SEPARATOR)
+            );
+
+            if (
+                is_subclass_of($command, Command::class)
+                && ! (new ReflectionClass($command))->isAbstract()
+            ) {
+                $this->commands($command);
+            }
+        }
+    }
+
+    /**
      * Load module config.php file
      */
     private function autoloadConfig(string $moduleRootPath, string $module)
@@ -162,7 +208,8 @@ class ModularizeServiceProvider extends ServiceProvider
         if (! ($this->app instanceof CachesRoutes && $this->app->routesAreCached())) {
             $routeFiles = [
                 $path.'/routes.php',
-                $path.'/Routes/',
+                $path.'/Routes/web.php',
+                $path.'/Routes/api.php',
             ];
 
             foreach ($routeFiles as $path) {
@@ -228,6 +275,7 @@ class ModularizeServiceProvider extends ServiceProvider
     {
         $this->commands([
             ModuleMakeComponentCommand::class,
+            ModuleMakeConsoleCommand::class,
             ModuleMakeControllerCommand::class,
             ModuleMakeEventCommand::class,
             ModuleMakeJobCommand::class,

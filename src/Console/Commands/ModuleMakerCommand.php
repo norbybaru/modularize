@@ -26,6 +26,11 @@ abstract class ModuleMakerCommand extends GeneratorCommand
         return $this->currentStub;
     }
 
+    private function getTemplatePath(string $file): string
+    {
+        return __DIR__."/templates/{$file}sample";
+    }
+
     public function getModuleInput(): string
     {
         if (! $this->module = $this->option('module')) {
@@ -128,12 +133,14 @@ abstract class ModuleMakerCommand extends GeneratorCommand
                 'SampleViewTitle',
                 'SampleUCtitle',
                 '{{viewFile}}',
+                '{{command}}',
             ],
             replace: [
                 strtolower($name),
                 strtolower(Str::snake($title, '-')),
                 ucfirst(Str::studly($name)),
                 strtolower(Str::snake(str_replace(search: '/', replace: '.', subject: $title), '-')),
+                strtolower(str_replace(search: '/-', replace: ':', subject: Str::snake($title, '-'))),
             ],
             subject: $stub
         );
@@ -302,9 +309,9 @@ abstract class ModuleMakerCommand extends GeneratorCommand
             ->snake();
     }
 
-    protected function getFilePath(string $name): ?string
+    protected function getFilePath(string $name, bool $force = false): ?string
     {
-        if ($this->files->exists($path = $this->getPath($name))) {
+        if ($this->files->exists($path = $this->getPath($name)) && ! $force) {
             $this->logFileExist($name);
 
             return null;
@@ -328,13 +335,13 @@ abstract class ModuleMakerCommand extends GeneratorCommand
 
     protected function setStubFile(string $file): void
     {
-        $this->currentStub = $this->currentStub.$file.'sample';
+        $this->currentStub = $this->getTemplatePath($file);
     }
 
-    protected function logFileCreated(string $path)
+    protected function logFileCreated(string $path, ?string $type = null)
     {
         if (! $this->hasOption('quiet') || ! $this->option('quiet')) {
-            $this->components->info(sprintf('%s [%s] created successfully.', $this->type, $path));
+            $this->components->info(sprintf('%s [%s] created successfully.', $type ?? $this->type, $path));
         }
     }
 
