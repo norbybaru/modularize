@@ -382,7 +382,7 @@ abstract class ModuleMakerCommand extends GeneratorCommand
      */
     protected function rootNamespace()
     {
-        return 'Modules\\';
+        return config('modularize.root_path').'\\';
     }
 
     abstract protected function getFolderPath(): string;
