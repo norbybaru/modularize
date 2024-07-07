@@ -22,20 +22,19 @@ class MakeModelCommandTest extends MakeCommandTestCase
 
     public function test_it_creates_a_model_with_migration()
     {
-        $module = 'Content';
         $this->artisan(
             command: 'module:make:model',
             parameters: [
                 'name' => 'Video',
-                '--module' => $module,
+                '--module' => $this->moduleName,
                 '--migration' => true,
             ]
         )
             ->assertExitCode(exitCode: 0);
 
-        $this->assertFileExists(filename: $this->getModulePath($module).'/Models/Video.php');
+        $this->assertFileExists(filename: $this->getModulePath().'/Models/Video.php');
 
-        $this->assertMigrationFile(module: $module, migrationFilename: 'create_videos_table.php');
+        $this->assertMigrationFile(module: $this->moduleName, migrationFilename: 'create_videos_table.php');
     }
 
     public function test_it_creates_a_model_with_factory()
