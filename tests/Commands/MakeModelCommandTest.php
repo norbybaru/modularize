@@ -33,9 +33,9 @@ class MakeModelCommandTest extends MakeCommandTestCase
         )
             ->assertExitCode(exitCode: 0);
 
-        $this->assertMigrationFile(module: $module, migrationFilename: 'create_videos_table.php');
-
         $this->assertFileExists(filename: $this->getModulePath($module).'/Models/Video.php');
+
+        $this->assertMigrationFile(module: $module, migrationFilename: 'create_videos_table.php');
     }
 
     public function test_it_creates_a_model_with_factory()
