@@ -67,8 +67,6 @@ class ModuleMakeControllerCommand extends ModuleMakerCommand
         $this->files->put($path, $this->buildClass($name));
 
         $this->logFileCreated($name);
-
-        return true;
     }
 
     protected function getFolderPath(): string
