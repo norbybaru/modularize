@@ -59,7 +59,7 @@ class ModuleMakeMigrationCommand extends ModuleMakerCommand
 
         if ($create) {
             $arguments['--create'] = $this->getPluralName($create);
-        } else {
+        } elseif ($update) {
             $arguments['--table'] = $this->getPluralName($update);
         }
 

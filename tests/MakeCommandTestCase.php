@@ -43,8 +43,7 @@ abstract class MakeCommandTestCase extends TestCase
 
     protected function assertMigrationFile(string $module, string $migrationFilename): void
     {
-        $migrations = $this->files->allFiles(directory: $this->getModulePath($module));
-        dd($migrations);
+        $migrations = $this->files->allFiles(directory: $this->getModulePath($module).'/Database/migrations');
         $this->assertNotEmpty(actual: $migrations);
         $this->assertEquals(
             expected: 1,
