@@ -182,10 +182,21 @@ class ModularizeServiceProvider extends ServiceProvider
      */
     private function autoloadServiceProvider(string $moduleRootPath, string $module)
     {
-        $provider = "{$moduleRootPath}/{$module}/Providers/{$module}ServiceProvider.php";
+        $provider = "{$module}/Providers/{$module}ServiceProvider.php";
+        $file = "{$moduleRootPath}/$provider";
+        if ($this->files->exists($file)) {
+            $providerNamespace = $this->rootNamespace.str_replace(
+                ['/', '.php'],
+                ['\\', ''],
+                $provider
+            );
 
-        if ($this->files->exists($provider)) {
-            $this->app->register($provider);
+            if (
+                is_subclass_of($providerNamespace, ServiceProvider::class)
+                && ! (new ReflectionClass($providerNamespace))->isAbstract()
+            ) {
+                $this->app->register($providerNamespace);
+            }
         }
     }
 
