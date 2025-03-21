@@ -60,14 +60,12 @@ class ModuleMakeFactoryCommand extends ModuleMakerCommand
             $this->files->put($path, $this->buildModel($stub, $model));
             $this->logFileCreated($name);
 
-            return Command::SUCCESS;
+            return;
         }
 
         $this->files->put($path, $stub);
 
         $this->logFileCreated($name);
-
-        return Command::SUCCESS;
     }
 
     protected function getFolderPath(): string
