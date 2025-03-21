@@ -32,7 +32,7 @@
     "prefer-stable": true,
     "scripts": {
         "analyse": "vendor/bin/phpstan analyse",
-        "fmt": "./vendor/bin/pint -v",
+        "pint": "./vendor/bin/pint -v",
         "post-autoload-dump": [
             "@php vendor/bin/testbench package:discover --ansi"
         ],
