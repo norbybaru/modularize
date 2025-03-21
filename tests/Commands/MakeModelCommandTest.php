@@ -85,7 +85,7 @@ class MakeModelCommandTest extends MakeCommandTestCase
                 '--module' => $this->moduleName,
                 '--migration' => true,
                 '--factory' => true,
-                //'--test' => true
+                // '--test' => true
             ])
             ->assertExitCode(exitCode: 0);
 

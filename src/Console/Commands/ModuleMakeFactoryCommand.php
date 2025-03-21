@@ -60,7 +60,7 @@ class ModuleMakeFactoryCommand extends ModuleMakerCommand
             $this->files->put($path, $this->buildModel($stub, $model));
             $this->logFileCreated($name);
 
-            return;
+            return null;
         }
 
         $this->files->put($path, $stub);

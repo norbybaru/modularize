@@ -13,7 +13,7 @@ abstract class MakeCommandTestCase extends TestCase
 
     protected Filesystem $files;
 
-    public function setup(): void
+    protected function setup(): void
     {
         parent::setUp();
 
@@ -23,7 +23,7 @@ abstract class MakeCommandTestCase extends TestCase
         $this->cleanUp();
     }
 
-    public function teardown(): void
+    protected function teardown(): void
     {
         $this->cleanUp();
         parent::tearDown();
