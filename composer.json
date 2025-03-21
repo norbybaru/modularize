@@ -1,10 +1,9 @@
 {
     "name": "norbybaru/modularize",
-    "description": "Generate modular structure files for laravel",
+    "description": "Modularize Laravel application using a modular pattern",
     "homepage": "https://github.com/norbybaru/modularize",
     "keywords": ["laravel", "modular", "modules", "module", "structure", "modular", "laravel-modular", "modularize"],
     "license": "MIT",
-    "version": "2.0",
     "authors": [
         {
             "name": "Norby Baruani",
