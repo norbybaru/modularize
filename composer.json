@@ -1,14 +1,9 @@
 {
     "name": "norbybaru/modularize",
-    "description": "Generate modular structure files for laravel",
+    "description": "Modularize Laravel application using a modular pattern",
     "homepage": "https://github.com/norbybaru/modularize",
     "keywords": ["laravel", "modular", "modules", "module", "structure", "modular", "laravel-modular", "modularize"],
-    "require": {
-        "php": ">=5.6.4",
-        "illuminate/support": "^5.6 || ^6.0 || ^7.0"
-    },
     "license": "MIT",
-    "version": "1.2.2",
     "authors": [
         {
             "name": "Norby Baruani",
@@ -20,6 +15,11 @@
             "NorbyBaru\\Modularize\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "NorbyBaru\\Modularize\\Tests\\": "tests/"
+        }
+    },
     "extra": {
         "laravel": {
             "providers": [
@@ -27,5 +27,28 @@
             ]
         }
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "analyse": "vendor/bin/phpstan analyse",
+        "pint": "./vendor/bin/pint -v",
+        "post-autoload-dump": [
+            "@php vendor/bin/testbench package:discover --ansi"
+        ],
+        "test": "phpunit"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "require": {
+        "php": "^8.1",
+        "illuminate/console": "^10.13|^11.0",
+        "illuminate/support": "^10.13|^11.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.10",
+        "nunomaduro/larastan": "^2.0",
+        "orchestra/testbench": "^8.5|^9.0",
+        "phpunit/phpunit": "^9.5|^10.13|^11.0"
+    }
 }
