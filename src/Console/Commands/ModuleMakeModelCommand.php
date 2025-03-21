@@ -77,6 +77,10 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
         if ($this->option('policy')) {
             $this->makePolicy(name: $filename, module: $module);
         }
+
+        if ($this->option('factory')) {
+            $this->makeFactory(name: $filename, module: $module);
+        }
     }
 
     // private function makeAll()
@@ -133,10 +137,17 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
         );
     }
 
-    // private function makeFactory()
-    // {
-    //     //TODO: makeFactory() implementation
-    // }
+    private function makeFactory(string $name, string $module)
+    {
+        $this->call(
+            command: 'module:make:factory',
+            arguments: [
+                'name' => $name,
+                '--module' => $module,
+                '--model' => $name,
+            ]
+        );
+    }
 
     // private function makeSeed()
     // {

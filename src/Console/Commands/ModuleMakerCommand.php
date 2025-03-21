@@ -377,12 +377,28 @@ abstract class ModuleMakerCommand extends GeneratorCommand
 
     /**
      * Get the root namespace for the class.
-     *
-     * @return string
      */
-    protected function rootNamespace()
+    protected function rootNamespace(): string
     {
         return config('modularize.root_path').'\\';
+    }
+
+    protected function appendSuffix(string $filename, ?string $suffix = null): string
+    {
+        $suffix = $suffix ?? $this->getSuffix();
+        if (! str_contains($filename, $suffix)) {
+            $filename .= $suffix;
+        }
+
+        return $filename;
+    }
+
+    /**
+     * Filename suffix
+     */
+    protected function getSuffix(): string
+    {
+        return $this->type;
     }
 
     abstract protected function getFolderPath(): string;

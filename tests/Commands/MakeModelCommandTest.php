@@ -44,13 +44,13 @@ class MakeModelCommandTest extends MakeCommandTestCase
             parameters: [
                 'name' => 'Post',
                 '--module' => $this->moduleName,
-                //'--factory' => true
+                '--factory' => true,
             ]
         )
             ->assertExitCode(exitCode: 0);
 
         $this->assertFileExists(filename: $this->getModulePath().'/Models/Post.php');
-        //$this->assertFileExists($this->getModulePath($this->moduleName).'/Database/Factories/PostFactory.php');
+        $this->assertFactoryFile(module: $this->moduleName, filename: 'PostFactory');
     }
 
     public function test_it_creates_a_model_with_migration_and_factory()
@@ -62,7 +62,7 @@ class MakeModelCommandTest extends MakeCommandTestCase
                 'name' => 'Listing',
                 '--module' => $module,
                 '--migration' => true,
-                //'--factory' => true
+                '--factory' => true,
             ]
         )
             ->assertExitCode(exitCode: 0);
@@ -73,8 +73,7 @@ class MakeModelCommandTest extends MakeCommandTestCase
             filename: $this->getModulePath($module).'/Models/Listing.php'
         );
 
-        // TODO: Fix timestamp issue in test
-        //$this->assertFileExists($this->getModulePath($this->moduleName).'/Database/factories/PostFactory.php');
+        $this->assertFactoryFile(module: $module, filename: 'ListingFactory');
     }
 
     public function test_it_creates_a_model_with_migration_and_factory_and_test()

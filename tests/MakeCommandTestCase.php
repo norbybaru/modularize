@@ -58,6 +58,13 @@ abstract class MakeCommandTestCase extends TestCase
         );
     }
 
+    protected function assertFactoryFile(string $module, string $filename): void
+    {
+        $this->assertFileExists(
+            $this->getModulePath($module)."/Database/Factories/{$filename}.php"
+        );
+    }
+
     protected function getGeneratedClassMethods(string $subjectFile): array
     {
         // Define the regex pattern to match the entire function signature, excluding the opening {
