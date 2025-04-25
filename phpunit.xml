@@ -12,9 +12,14 @@
     >
     <testsuites>
         <testsuite name="Test Suite">
-        <directory suffix="Test.php">./tests</directory>
+            <directory suffix="Test.php">./tests</directory>
         </testsuite>
     </testsuites>
+    <source ignoreIndirectDeprecations="true" restrictNotices="true" restrictWarnings="true">
+        <include>
+            <directory suffix=".php">./src</directory>
+        </include>
+    </source>
     <php>
         <env name="APP_ENV" value="testing" force="true"/>
         <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF"/>
