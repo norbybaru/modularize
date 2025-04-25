@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - master
 
 jobs:
   build:
@@ -50,4 +51,10 @@ jobs:
           composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction
 
       - name: Run PHPUnit tests
-        run: vendor/bin/phpunit --testdox
+        run: vendor/bin/phpunit --testdox --log-junit junit.xml
+      
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
