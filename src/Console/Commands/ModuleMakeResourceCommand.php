@@ -11,7 +11,7 @@ class ModuleMakeResourceCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $signature = 'module:make:resource 
+    protected $signature = 'module:make:resource
                             {name : The name of the resource}
                             {--module= : Name of module migration should belong to}
                             {--collection : Create a resource collection}';
@@ -30,7 +30,7 @@ class ModuleMakeResourceCommand extends ModuleMakerCommand
      */
     protected $type = 'Resource';
 
-    public function handle()
+    public function handle(): bool|null
     {
         $module = $this->getModuleInput();
         $filename = Str::studly($this->getNameInput());

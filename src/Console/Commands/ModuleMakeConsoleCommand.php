@@ -30,7 +30,7 @@ class ModuleMakeConsoleCommand extends ModuleMakerCommand
      */
     protected $type = 'Console';
 
-    public function handle()
+    public function handle(): bool|null
     {
         $module = $this->getModuleInput();
         $filename = Str::studly($this->getNameInput());
@@ -43,9 +43,11 @@ class ModuleMakeConsoleCommand extends ModuleMakerCommand
         }
 
         $this->generateFile($path, $name);
+
+        return true;
     }
 
-    protected function logFileCreated(string $path, ?string $type = null)
+    protected function logFileCreated(string $path, ?string $type = null): void
     {
         parent::logFileCreated($path, 'Console command');
     }

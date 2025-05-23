@@ -12,7 +12,7 @@ class ModuleMakeTestCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $signature = 'module:make:test 
+    protected $signature = 'module:make:test
                             {name : The name of the test}
                             {--module= : Name of module migration should belong to}
                             {--u|unit : Create a unit test}
@@ -33,7 +33,7 @@ class ModuleMakeTestCommand extends ModuleMakerCommand
      */
     protected $type = 'Test';
 
-    public function handle()
+    public function handle(): bool|null
     {
         $module = $this->getModuleInput();
         $filename = Str::studly($this->getNameInput());
@@ -82,6 +82,8 @@ class ModuleMakeTestCommand extends ModuleMakerCommand
         $this->logFileCreated($name);
 
         $this->updatePhpUnitXmlFile();
+
+        return true;
     }
 
     protected function getFolderPath(): string
@@ -92,7 +94,7 @@ class ModuleMakeTestCommand extends ModuleMakerCommand
     /**
      * Update phpunit.xml file with Module test directories
      */
-    protected function updatePhpUnitXmlFile()
+    protected function updatePhpUnitXmlFile(): void
     {
         $path = base_path('phpunit.xml.dist');
 

@@ -12,7 +12,7 @@ class ModuleMakeControllerCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $signature = 'module:make:controller 
+    protected $signature = 'module:make:controller
                             {name : The name of the controller}
                             {--module= : Name of module controller should belong to}
                             {--api : Exclude the create and edit methods from the controller}
@@ -34,7 +34,7 @@ class ModuleMakeControllerCommand extends ModuleMakerCommand
      */
     protected $type = 'Controller';
 
-    public function handle()
+    public function handle(): bool|null
     {
         $module = $this->getModuleInput();
         $filename = Str::studly($this->getNameInput());
@@ -67,6 +67,8 @@ class ModuleMakeControllerCommand extends ModuleMakerCommand
         $this->files->put($path, $this->buildClass($name));
 
         $this->logFileCreated($name);
+
+        return true;
     }
 
     protected function getFolderPath(): string

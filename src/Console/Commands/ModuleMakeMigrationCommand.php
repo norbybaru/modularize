@@ -13,7 +13,7 @@ class ModuleMakeMigrationCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $signature = 'module:make:migration 
+    protected $signature = 'module:make:migration
                             {name : The name of the migration}
                             {--module= : Name of module migration should belong to}
                             {--create= : Name of the table to be created}
@@ -36,7 +36,7 @@ class ModuleMakeMigrationCommand extends ModuleMakerCommand
 
     protected string $folder = 'Database\\migrations';
 
-    public function handle()
+    public function handle(): bool|null
     {
         if (! $module = $this->option('module')) {
             $module = $this->ask('What is the name of the module?');
@@ -68,6 +68,7 @@ class ModuleMakeMigrationCommand extends ModuleMakerCommand
             $arguments
         );
 
+        return true;
     }
 
     protected function getFolderPath(): string
@@ -81,7 +82,7 @@ class ModuleMakeMigrationCommand extends ModuleMakerCommand
      * @param  string  $name
      * @return string
      */
-    protected function classPath($name)
+    protected function classPath($name): string
     {
         return str_replace('\\', '/', $name);
     }
