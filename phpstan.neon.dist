@@ -1,5 +1,5 @@
 includes:
-    - ./vendor/nunomaduro/larastan/extension.neon
+    - ./vendor/larastan/larastan/extension.neon
 
 parameters:
 
@@ -12,5 +12,3 @@ parameters:
 
     tmpDir: build/phpstan
     checkModelProperties: true
-    checkMissingIterableValueType: true
-    treatPhpDocTypesAsCertain: false
