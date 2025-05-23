@@ -19,7 +19,7 @@ return [
     'autoload_routes' => true,
 
     /**
-     * 
+     * Setting value to false will prevent autloading of module service provider. Eg. ModuleNameServiceProvider
      */
     'autoload_service_provider' => true,
 ];
