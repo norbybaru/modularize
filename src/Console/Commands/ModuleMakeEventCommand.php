@@ -43,7 +43,7 @@ class ModuleMakeEventCommand extends ModuleMakerCommand
 
         $this->generateFile($path, $name);
 
-        return true;
+        return null;
     }
 
     protected function getFolderPath(): string

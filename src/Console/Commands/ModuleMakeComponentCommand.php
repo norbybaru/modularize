@@ -73,7 +73,7 @@ class ModuleMakeComponentCommand extends ModuleMakerCommand
 
         $this->logFileCreated($name);
 
-        return true;
+        return null;
     }
 
     protected function buildClass($name): string

@@ -44,7 +44,7 @@ class ModuleMakeConsoleCommand extends ModuleMakerCommand
 
         $this->generateFile($path, $name);
 
-        return true;
+        return null;
     }
 
     protected function logFileCreated(string $path, ?string $type = null): void

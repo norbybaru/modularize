@@ -68,7 +68,7 @@ class ModuleMakeMigrationCommand extends ModuleMakerCommand
             $arguments
         );
 
-        return true;
+        return null;
     }
 
     protected function getFolderPath(): string

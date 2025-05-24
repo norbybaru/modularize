@@ -11,7 +11,7 @@ class ModuleMakePolicyCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $signature = 'module:make:policy 
+    protected $signature = 'module:make:policy
                             {name : The name of the policy}
                             {--module= : Name of module policy should belong to}
                             {--model= : The model that the policy applies to}
@@ -31,7 +31,7 @@ class ModuleMakePolicyCommand extends ModuleMakerCommand
      */
     protected $type = 'Policy';
 
-    public function handle()
+    public function handle(): bool|null
     {
         $module = $this->getModuleInput();
         $filename = Str::studly($this->getNameInput());
@@ -61,14 +61,14 @@ class ModuleMakePolicyCommand extends ModuleMakerCommand
             $this->files->put($path, $this->buildModel($stub, $model));
             $this->logFileCreated($name);
 
-            return true;
+            return null;
         }
 
         $this->files->put($path, $stub);
 
         $this->logFileCreated($name);
 
-        return true;
+        return null;
     }
 
     protected function getFolderPath(): string

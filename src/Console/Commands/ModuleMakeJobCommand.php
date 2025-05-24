@@ -50,7 +50,7 @@ class ModuleMakeJobCommand extends ModuleMakerCommand
 
         $this->generateFile($path, $name, $type);
 
-        return true;
+        return null;
     }
 
     protected function getFolderPath(): string

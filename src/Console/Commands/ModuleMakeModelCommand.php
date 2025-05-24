@@ -82,7 +82,7 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
             $this->makeFactory(name: $filename, module: $module);
         }
 
-        return true;
+        return null;
     }
 
     private function makeController(string $name, string $module): void

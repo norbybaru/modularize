@@ -83,7 +83,7 @@ class ModuleMakeTestCommand extends ModuleMakerCommand
 
         $this->updatePhpUnitXmlFile();
 
-        return true;
+        return null;
     }
 
     protected function getFolderPath(): string

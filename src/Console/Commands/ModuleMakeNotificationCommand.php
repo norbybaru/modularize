@@ -11,7 +11,7 @@ class ModuleMakeNotificationCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $signature = 'module:make:notification 
+    protected $signature = 'module:make:notification
                             {name : The name of the notification}
                             {--module= : Name of module migration should belong to}
                             {--model= : The model that the policy applies to}
@@ -31,7 +31,7 @@ class ModuleMakeNotificationCommand extends ModuleMakerCommand
      */
     protected $type = 'Notification';
 
-    public function handle()
+    public function handle(): bool|null
     {
         $module = $this->getModuleInput();
         $filename = Str::studly($this->getNameInput());
@@ -52,7 +52,7 @@ class ModuleMakeNotificationCommand extends ModuleMakerCommand
 
         $this->logFileCreated($name);
 
-        return true;
+        return null;
     }
 
     protected function getFolderPath(): string
