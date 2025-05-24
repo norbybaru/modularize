@@ -1,9 +1,9 @@
 # Modularize
 
-The package encourage implementation of modular app.
-You can easily generate modules with this package for your Laravel app.
+The package encourage implementation of modular pattern for your Laravel project.
+You can easily start your modular journey with this simple package and generate only files you need.
 
-This package support Laravel 5.3 +
+A module is like a Laravel package, it has some views, controllers or models.
 
 ## Installation
 
@@ -11,73 +11,39 @@ Run the following command from your projects root
 ```php
 composer require norbybaru/modularize
 ```
-## Config
-Publish configuration
-```bash
-php artisan vendor:publish --provider="NorbyBaru\Modularize\ModularizeServiceProvider" --tag="modularize-config"
+## Configuration
+Publish the package configuration using the following command:
+```php
+php artisan vendor:publish --provider="NorbyBaru\Modularize\ModularizeServiceProvider"
 ```
 
-## Usage
+### Autoloading
+The default namespace is set as Modules this will apply the namespace for all classes the module will use when it's being created and later when generation additional classes.
 
-Open your terminal and run command:
-```
-php artisan module:generate -h 
+For autoloading modules, add the following to your composer.json and execute composer dump-autoload:
+
+```php
+{
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/",
+      "Modules\\": "modules/"
+    }
+  }
+}
 ```
 
-You will see output with all different options to use.
-Simple example will be to generate a **`user`** module directory, run command:
-```php
-php artisan module:generate user   
+## Basic Usage
+
+### Create module
+Open your terminal and run command to list all possible commands:
 ```
-This will generate files with following structures:
-```php
-laravel/
-    app/
-    └── Modules/
-        └── User/
-            ├── Controllers/
-            │   └── UserController.php
-            ├── Models/
-            │   └── User.php
-            ├── Requests/
-            │   └── UserRequest.php
-            ├── Views/
-            │   └── index.blade.php
-            ├── Translations/
-            │   └── en/
-            │       └── example.php
-            ├── routes
-            │   ├── api.php
-            │   └── web.php
-            └── Helper.php
+php artisan module:make:
 ```
-The package allow you to group modules as well with command:
-```php
-php artisan module:generate user --group=admin
-```
-This will output:
-```php
-laravel/
-    app/
-    └── Modules/
-        └── Admin/
-            └── User/
-                ├── Controllers/
-                │   └── UserController.php
-                ├── Models/
-                │   └── User.php
-                ├── Requests/
-                │   └── UserRequest.php
-                ├── Views/
-                │   └── index.blade.php
-                ├── Translations/
-                │   └── en/
-                │       └── example.php
-                ├── routes
-                │   ├── api.php
-                │   └── web.php
-                └── Helper.php
-```
+
+## Advance Usage
+
+
 
 Credits to:
 - ["Modular Structure in Laravel 5" tutorial](http://ziyahanalbeniz.blogspot.com.tr/2015/03/modular-structure-in-laravel-5.html)

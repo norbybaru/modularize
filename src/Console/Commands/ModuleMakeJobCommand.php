@@ -11,7 +11,7 @@ class ModuleMakeJobCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $signature = 'module:make:job 
+    protected $signature = 'module:make:job
                             {name : The name of the job}
                             {--module= : Name of module job should belong to}
                             {--sync : Indicates that job should be synchronous}';
@@ -30,7 +30,7 @@ class ModuleMakeJobCommand extends ModuleMakerCommand
      */
     protected $type = 'Job';
 
-    public function handle()
+    public function handle(): ?bool
     {
         $module = $this->getModuleInput();
         $filename = Str::studly($this->getNameInput());
@@ -50,7 +50,7 @@ class ModuleMakeJobCommand extends ModuleMakerCommand
 
         $this->generateFile($path, $name, $type);
 
-        return true;
+        return null;
     }
 
     protected function getFolderPath(): string

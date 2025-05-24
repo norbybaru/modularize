@@ -12,7 +12,7 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $signature = 'module:make:model 
+    protected $signature = 'module:make:model
                         {name : The name of the model}
                         {--module= : Name of module controller should belong to}
                         {--a|all : Generate a migration, seeder, factory, policy, resource controller, and form request classes for the model}
@@ -40,7 +40,7 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
      */
     protected $type = 'Model';
 
-    public function handle()
+    public function handle(): ?bool
     {
         $module = $this->getModuleInput();
         $filename = Str::studly($this->getNameInput());
@@ -81,12 +81,9 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
         if ($this->option('factory')) {
             $this->makeFactory(name: $filename, module: $module);
         }
-    }
 
-    // private function makeAll()
-    // {
-    //     //TODO: makeAll() implementation
-    // }
+        return null;
+    }
 
     private function makeController(string $name, string $module): void
     {
@@ -125,7 +122,7 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
         );
     }
 
-    private function makePolicy(string $name, string $module)
+    private function makePolicy(string $name, string $module): void
     {
         $this->call(
             command: 'module:make:policy',
@@ -137,7 +134,7 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
         );
     }
 
-    private function makeFactory(string $name, string $module)
+    private function makeFactory(string $name, string $module): void
     {
         $this->call(
             command: 'module:make:factory',
@@ -148,11 +145,6 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
             ]
         );
     }
-
-    // private function makeSeed()
-    // {
-    //     //TODO: makeSeed() implementation
-    // }
 
     protected function getFolderPath(): string
     {

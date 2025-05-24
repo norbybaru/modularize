@@ -44,11 +44,10 @@ abstract class ModuleMakerCommand extends GeneratorCommand
      * Build the class with the given name.
      *
      * @param  string  $name
-     * @return string
      *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    protected function buildClass($name)
+    protected function buildClass($name): string
     {
         $stub = $this->files->get($this->getStub());
 
@@ -123,7 +122,7 @@ abstract class ModuleMakerCommand extends GeneratorCommand
      * @param  string  $name
      * @return $this
      */
-    protected function replaceName(&$stub, $name)
+    protected function replaceName(&$stub, $name): self
     {
         $title = $name;
 

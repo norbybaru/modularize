@@ -11,7 +11,7 @@ class ModuleMakeRequestCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $signature = 'module:make:request 
+    protected $signature = 'module:make:request
                             {name : The name of the request}
                             {--module= : Name of module migration should belong to}';
 
@@ -29,7 +29,7 @@ class ModuleMakeRequestCommand extends ModuleMakerCommand
      */
     protected $type = 'Request';
 
-    public function handle()
+    public function handle(): ?bool
     {
         $module = $this->getModuleInput();
         $filename = Str::studly($this->getNameInput());
@@ -50,7 +50,7 @@ class ModuleMakeRequestCommand extends ModuleMakerCommand
 
         $this->logFileCreated($name);
 
-        return true;
+        return null;
     }
 
     protected function getFolderPath(): string

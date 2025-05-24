@@ -11,7 +11,7 @@ class ModuleMakeMiddlewareCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $signature = 'module:make:middleware 
+    protected $signature = 'module:make:middleware
                             {name : The name of the middleware}
                             {--module= : Name of module middleware should belong to}';
 
@@ -29,7 +29,7 @@ class ModuleMakeMiddlewareCommand extends ModuleMakerCommand
      */
     protected $type = 'Middleware';
 
-    public function handle()
+    public function handle(): ?bool
     {
         $module = $this->getModuleInput();
         $filename = Str::studly($this->getNameInput());
@@ -53,7 +53,7 @@ class ModuleMakeMiddlewareCommand extends ModuleMakerCommand
 
         $this->logFileCreated($name);
 
-        return true;
+        return null;
     }
 
     protected function getFolderPath(): string

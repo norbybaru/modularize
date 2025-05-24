@@ -11,7 +11,7 @@ class ModuleMakeEventCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $signature = 'module:make:event 
+    protected $signature = 'module:make:event
                             {name : The name of the event}
                             {--module= : Name of module event should belong to}';
 
@@ -29,7 +29,7 @@ class ModuleMakeEventCommand extends ModuleMakerCommand
      */
     protected $type = 'Event';
 
-    public function handle()
+    public function handle(): ?bool
     {
         $module = $this->getModuleInput();
         $filename = Str::studly($this->getNameInput());
@@ -43,7 +43,7 @@ class ModuleMakeEventCommand extends ModuleMakerCommand
 
         $this->generateFile($path, $name);
 
-        return true;
+        return null;
     }
 
     protected function getFolderPath(): string

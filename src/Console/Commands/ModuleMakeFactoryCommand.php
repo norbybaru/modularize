@@ -2,8 +2,6 @@
 
 namespace NorbyBaru\Modularize\Console\Commands;
 
-use Illuminate\Console\Command;
-
 class ModuleMakeFactoryCommand extends ModuleMakerCommand
 {
     /**
@@ -11,7 +9,7 @@ class ModuleMakeFactoryCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $signature = 'module:make:factory 
+    protected $signature = 'module:make:factory
                 {name : The name of the factory}
                 {--module= : Name of module policy should belong to}
                 {--model= : The name of the model for the factory}';
@@ -30,7 +28,7 @@ class ModuleMakeFactoryCommand extends ModuleMakerCommand
      */
     protected $type = 'Factory';
 
-    public function handle()
+    public function handle(): ?bool
     {
         $module = $this->getModuleInput();
         $filename = $this->getNameInput();
@@ -66,6 +64,8 @@ class ModuleMakeFactoryCommand extends ModuleMakerCommand
         $this->files->put($path, $stub);
 
         $this->logFileCreated($name);
+
+        return null;
     }
 
     protected function getFolderPath(): string

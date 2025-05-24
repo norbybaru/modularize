@@ -11,7 +11,7 @@ class ModuleMakeListenerCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $signature = 'module:make:listener 
+    protected $signature = 'module:make:listener
                             {name : The name of the listener}
                             {--module= : Name of module event should belong to}
                             {--event= : The event class being listened for}
@@ -62,12 +62,12 @@ class ModuleMakeListenerCommand extends ModuleMakerCommand
             $this->files->put($path, $this->buildModel($stub, $event));
             $this->logFileCreated($name);
 
-            return true;
+            return null;
         }
 
         $this->generateFile($path, $name, $type);
 
-        return true;
+        return null;
     }
 
     protected function getFolderPath(): string

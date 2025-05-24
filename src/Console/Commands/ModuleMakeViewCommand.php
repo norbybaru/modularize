@@ -9,7 +9,7 @@ class ModuleMakeViewCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $signature = 'module:make:view 
+    protected $signature = 'module:make:view
                             {name : The name of the view}
                             {--module= : Name of module migration should belong to}
                             {--test : Generate an accompanying PHPUnit test for the View}
@@ -29,7 +29,7 @@ class ModuleMakeViewCommand extends ModuleMakerCommand
      */
     protected $type = 'view';
 
-    public function handle()
+    public function handle(): ?bool
     {
         $module = $this->getModuleInput();
         $filename = $this->getNameInput();
@@ -77,7 +77,7 @@ class ModuleMakeViewCommand extends ModuleMakerCommand
             $type = 'test.';
         }
 
-        return true;
+        return null;
     }
 
     protected function getFolderPath(): string

@@ -12,5 +12,3 @@ parameters:
 
     tmpDir: build/phpstan
     checkModelProperties: true
-    checkMissingIterableValueType: true
-    treatPhpDocTypesAsCertain: false
