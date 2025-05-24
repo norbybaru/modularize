@@ -28,7 +28,7 @@ class ModuleMakeFactoryCommand extends ModuleMakerCommand
      */
     protected $type = 'Factory';
 
-    public function handle(): bool|null
+    public function handle(): ?bool
     {
         $module = $this->getModuleInput();
         $filename = $this->getNameInput();

@@ -30,7 +30,7 @@ class ModuleMakeResourceCommand extends ModuleMakerCommand
      */
     protected $type = 'Resource';
 
-    public function handle(): bool|null
+    public function handle(): ?bool
     {
         $module = $this->getModuleInput();
         $filename = Str::studly($this->getNameInput());

@@ -29,7 +29,7 @@ class ModuleMakeEventCommand extends ModuleMakerCommand
      */
     protected $type = 'Event';
 
-    public function handle(): bool|null
+    public function handle(): ?bool
     {
         $module = $this->getModuleInput();
         $filename = Str::studly($this->getNameInput());

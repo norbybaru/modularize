@@ -29,7 +29,7 @@ class ModuleMakeViewCommand extends ModuleMakerCommand
      */
     protected $type = 'view';
 
-    public function handle(): bool|null
+    public function handle(): ?bool
     {
         $module = $this->getModuleInput();
         $filename = $this->getNameInput();

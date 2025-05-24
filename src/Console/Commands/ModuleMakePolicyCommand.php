@@ -31,7 +31,7 @@ class ModuleMakePolicyCommand extends ModuleMakerCommand
      */
     protected $type = 'Policy';
 
-    public function handle(): bool|null
+    public function handle(): ?bool
     {
         $module = $this->getModuleInput();
         $filename = Str::studly($this->getNameInput());

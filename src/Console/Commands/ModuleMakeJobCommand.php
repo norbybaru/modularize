@@ -30,7 +30,7 @@ class ModuleMakeJobCommand extends ModuleMakerCommand
      */
     protected $type = 'Job';
 
-    public function handle(): bool|null
+    public function handle(): ?bool
     {
         $module = $this->getModuleInput();
         $filename = Str::studly($this->getNameInput());

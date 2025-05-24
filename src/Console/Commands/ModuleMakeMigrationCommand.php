@@ -36,7 +36,7 @@ class ModuleMakeMigrationCommand extends ModuleMakerCommand
 
     protected string $folder = 'Database\\migrations';
 
-    public function handle(): bool|null
+    public function handle(): ?bool
     {
         if (! $module = $this->option('module')) {
             $module = $this->ask('What is the name of the module?');
@@ -80,7 +80,6 @@ class ModuleMakeMigrationCommand extends ModuleMakerCommand
      * Get the destination class path.
      *
      * @param  string  $name
-     * @return string
      */
     protected function classPath($name): string
     {

@@ -29,7 +29,7 @@ class ModuleMakeMiddlewareCommand extends ModuleMakerCommand
      */
     protected $type = 'Middleware';
 
-    public function handle(): bool|null
+    public function handle(): ?bool
     {
         $module = $this->getModuleInput();
         $filename = Str::studly($this->getNameInput());

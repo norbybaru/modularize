@@ -30,7 +30,7 @@ class ModuleMakeConsoleCommand extends ModuleMakerCommand
      */
     protected $type = 'Console';
 
-    public function handle(): bool|null
+    public function handle(): ?bool
     {
         $module = $this->getModuleInput();
         $filename = Str::studly($this->getNameInput());

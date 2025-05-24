@@ -31,7 +31,7 @@ class ModuleMakeNotificationCommand extends ModuleMakerCommand
      */
     protected $type = 'Notification';
 
-    public function handle(): bool|null
+    public function handle(): ?bool
     {
         $module = $this->getModuleInput();
         $filename = Str::studly($this->getNameInput());

@@ -35,7 +35,7 @@ class ModuleMakeComponentCommand extends ModuleMakerCommand
      */
     protected $type = 'Component';
 
-    public function handle(): bool|null
+    public function handle(): ?bool
     {
         $module = $this->getModuleInput();
         $filename = Str::studly($this->getNameInput());

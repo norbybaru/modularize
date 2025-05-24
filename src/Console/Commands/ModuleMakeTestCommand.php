@@ -33,7 +33,7 @@ class ModuleMakeTestCommand extends ModuleMakerCommand
      */
     protected $type = 'Test';
 
-    public function handle(): bool|null
+    public function handle(): ?bool
     {
         $module = $this->getModuleInput();
         $filename = Str::studly($this->getNameInput());
