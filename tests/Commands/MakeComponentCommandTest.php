@@ -66,4 +66,3 @@ class MakeComponentCommandTest extends MakeCommandTestCase
         $this->assertFileExists(filename: $this->getModulePath().'/Components/UserCard.php');
     }
 }
-
