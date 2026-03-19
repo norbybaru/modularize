@@ -50,7 +50,7 @@ class ModuleMakeProviderCommand extends ModuleMakerCommand
 
         $this->logFileCreated($name);
 
-        return true;
+        return null;
     }
 
     protected function getFolderPath(): string
