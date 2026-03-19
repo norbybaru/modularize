@@ -7,6 +7,7 @@ use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 abstract class TestCase extends OrchestraTestCase
 {
+    public static $latestResponse;
     public function getModulePath(string $module): string
     {
         return base_path(config('modularize.root_path')."/$module");
