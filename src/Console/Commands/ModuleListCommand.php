@@ -4,7 +4,6 @@ namespace NorbyBaru\Modularize\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Str;
 use Symfony\Component\Finder\Finder;
 
 class ModuleListCommand extends Command

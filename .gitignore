@@ -4,3 +4,6 @@ vendor/
 composer.lock
 *.cache
 .phpactor.json
+
+# Auto Claude data directory
+.auto-claude/
