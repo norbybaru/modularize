@@ -14,7 +14,8 @@ class ModuleMakeResourceCommand extends ModuleMakerCommand
     protected $signature = 'module:make:resource
                             {name : The name of the resource}
                             {--module= : Name of module migration should belong to}
-                            {--collection : Create a resource collection}';
+                            {--collection : Create a resource collection}
+                            {--force : Create the class even if the component already exists}';
 
     /**
      * The console command description.
@@ -38,23 +39,18 @@ class ModuleMakeResourceCommand extends ModuleMakerCommand
 
         $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
 
-        if ($this->files->exists($path = $this->getPath($name))) {
-            $this->logFileExist($name);
-
-            return true;
-        }
-
         $type = '';
         if ($this->option('collection')) {
             $type = 'collection.';
         }
 
         $this->setStubFile("resource.{$type}");
-        $this->makeDirectory($path);
 
-        $this->files->put($path, $this->buildClass($name));
+        if (! $path = $this->getFilePath(name: $name, force: $this->option('force'))) {
+            return true;
+        }
 
-        $this->logFileCreated($name);
+        $this->generateFile($path, $name);
 
         return null;
     }
