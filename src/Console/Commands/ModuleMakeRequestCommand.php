@@ -13,7 +13,8 @@ class ModuleMakeRequestCommand extends ModuleMakerCommand
      */
     protected $signature = 'module:make:request
                             {name : The name of the request}
-                            {--module= : Name of module migration should belong to}';
+                            {--module= : Name of module migration should belong to}
+                            {--force : Create the class even if the component already exists}';
 
     /**
      * The console command description.
@@ -37,18 +38,11 @@ class ModuleMakeRequestCommand extends ModuleMakerCommand
 
         $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
 
-        if ($this->files->exists($path = $this->getPath($name))) {
-            $this->logFileExist($name);
-
+        if (! $path = $this->getFilePath(name: $name, force: $this->option('force'))) {
             return true;
         }
 
-        $this->setStubFile('request.');
-        $this->makeDirectory($path);
-
-        $this->files->put($path, $this->buildClass($name));
-
-        $this->logFileCreated($name);
+        $this->generateFile($path, $name, '');
 
         return null;
     }
