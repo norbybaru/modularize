@@ -66,6 +66,16 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
 
         $this->logFileCreated($name);
 
+        // Handle --all flag by setting all related options
+        if ($this->option('all')) {
+            $this->input->setOption('migration', true);
+            $this->input->setOption('factory', true);
+            $this->input->setOption('seed', true);
+            $this->input->setOption('policy', true);
+            $this->input->setOption('controller', true);
+            $this->input->setOption('resource', true);
+        }
+
         if ($this->option('migration')) {
             $this->makeMigration(name: $filename, module: $module);
         }
@@ -80,6 +90,10 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
 
         if ($this->option('factory')) {
             $this->makeFactory(name: $filename, module: $module);
+        }
+
+        if ($this->option('seed')) {
+            $this->makeSeeder(name: $filename, module: $module);
         }
 
         return null;
@@ -142,6 +156,17 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
                 'name' => $name,
                 '--module' => $module,
                 '--model' => $name,
+            ]
+        );
+    }
+
+    private function makeSeeder(string $name, string $module): void
+    {
+        $this->call(
+            command: 'module:make:seeder',
+            arguments: [
+                'name' => $name,
+                '--module' => $module,
             ]
         );
     }
