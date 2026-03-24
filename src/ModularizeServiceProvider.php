@@ -9,6 +9,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use NorbyBaru\Modularize\Console\Commands\ModuleListCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeComponentCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeConsoleCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeControllerCommand;
@@ -293,6 +294,7 @@ class ModularizeServiceProvider extends ServiceProvider
             ModuleMakeEventCommand::class,
             ModuleMakeFactoryCommand::class,
             ModuleMakeJobCommand::class,
+            ModuleListCommand::class,
             ModuleMakeListenerCommand::class,
             ModuleMakeMailCommand::class,
             ModuleMakeModelCommand::class,
