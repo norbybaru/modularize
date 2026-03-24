@@ -4,6 +4,7 @@ namespace NorbyBaru\Modularize\Tests;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Carbon;
+use Symfony\Component\Finder\SplFileInfo;
 
 abstract class MakeCommandTestCase extends TestCase
 {
@@ -50,7 +51,7 @@ abstract class MakeCommandTestCase extends TestCase
             actual: count($migrations)
         );
 
-        /** @var \Symfony\Component\Finder\SplFileInfo */
+        /** @var SplFileInfo */
         $migrationFile = $migrations[0];
         $this->assertStringContainsString(
             needle: $migrationFilename,
