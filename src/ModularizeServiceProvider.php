@@ -15,6 +15,7 @@ use NorbyBaru\Modularize\Console\Commands\ModuleMakeControllerCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeEventCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeFactoryCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeJobCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleListCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeListenerCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeMailCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeMiddlewareCommand;
@@ -293,6 +294,7 @@ class ModularizeServiceProvider extends ServiceProvider
             ModuleMakeEventCommand::class,
             ModuleMakeFactoryCommand::class,
             ModuleMakeJobCommand::class,
+            ModuleListCommand::class,
             ModuleMakeListenerCommand::class,
             ModuleMakeMailCommand::class,
             ModuleMakeModelCommand::class,
