@@ -3,6 +3,7 @@
 namespace NorbyBaru\Modularize\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Str;
 
 abstract class ModuleMakerCommand extends GeneratorCommand
@@ -45,7 +46,7 @@ abstract class ModuleMakerCommand extends GeneratorCommand
      *
      * @param  string  $name
      *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @throws FileNotFoundException
      */
     protected function buildClass($name): string
     {

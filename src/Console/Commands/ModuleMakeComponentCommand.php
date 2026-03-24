@@ -16,10 +16,10 @@ class ModuleMakeComponentCommand extends ModuleMakerCommand
                         {name : The name of the component}
                         {--module= : Name of module controller should belong to}
                         {--inline : Create a component that renders an inline view}
-                        {--view: Create an anonymous component with only a view}
+                        {--view : Create an anonymous component with only a view}
                         {--test : Generate an accompanying PHPUnit test for the Component}
                         {--pest : Generate an accompanying Pest test for the Component}
-                        {--force|f : Create the class even if the component already exists}';
+                        {--force : Create the class even if the component already exists}';
 
     /**
      * The console command description.
@@ -42,10 +42,8 @@ class ModuleMakeComponentCommand extends ModuleMakerCommand
         $folder = $this->getFolderPath();
 
         $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
-        $path = $this->getPath($name);
-        if ($this->files->exists($path) && ! $this->option('force')) {
-            $this->logFileExist($name);
 
+        if (! $path = $this->getFilePath(name: $name, force: $this->option('force'))) {
             return true;
         }
 
