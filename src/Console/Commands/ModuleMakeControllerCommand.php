@@ -3,7 +3,6 @@
 namespace NorbyBaru\Modularize\Console\Commands;
 
 use Illuminate\Support\Str;
-use Symfony\Component\Console\Input\InputArgument;
 
 class ModuleMakeControllerCommand extends ModuleMakerCommand
 {
@@ -18,7 +17,8 @@ class ModuleMakeControllerCommand extends ModuleMakerCommand
                             {--api : Exclude the create and edit methods from the controller}
                             {--i|invokable : Generate a single method, invokable controller class}
                             {--r|resource : Generate a resource controller class}
-                            {--m|model= : Generate a resource controller for the given model}';
+                            {--m|model= : Generate a resource controller for the given model}
+                            {--force : Create the class even if the component already exists}';
 
     /**
      * The console command description.
@@ -56,17 +56,12 @@ class ModuleMakeControllerCommand extends ModuleMakerCommand
 
         $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
 
-        if ($this->files->exists($path = $this->getPath($name))) {
-            $this->logFileExist($name);
-
+        if (! $path = $this->getFilePath(name: $name, force: $this->option('force'))) {
             return true;
         }
 
         $this->setStubFile("controller.{$type}");
-        $this->makeDirectory($path);
-        $this->files->put($path, $this->buildClass($name));
-
-        $this->logFileCreated($name);
+        $this->generateFile($path, $name);
 
         return null;
     }
@@ -79,17 +74,5 @@ class ModuleMakeControllerCommand extends ModuleMakerCommand
     protected function setStubFile(string $file): void
     {
         $this->currentStub = $this->currentStub.$file.'sample';
-    }
-
-    /**
-     * Get the console command arguments.
-     *
-     * @return array
-     */
-    protected function getArguments()
-    {
-        return [
-            ['name', InputArgument::REQUIRED, 'The name of the controller'],
-        ];
     }
 }
