@@ -24,6 +24,7 @@ use NorbyBaru\Modularize\Console\Commands\ModuleMakePolicyCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeProviderCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeRequestCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeResourceCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleMakeSeederCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeTestCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeViewCommand;
 use ReflectionClass;
@@ -301,6 +302,7 @@ class ModularizeServiceProvider extends ServiceProvider
             ModuleMakePolicyCommand::class,
             ModuleMakeResourceCommand::class,
             ModuleMakeRequestCommand::class,
+            ModuleMakeSeederCommand::class,
             ModuleMakeTestCommand::class,
             ModuleMakeViewCommand::class,
         ]);
