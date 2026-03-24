@@ -17,7 +17,8 @@ class ModuleMakeTestCommand extends ModuleMakerCommand
                             {--module= : Name of module migration should belong to}
                             {--u|unit : Create a unit test}
                             {--p|pest : Create a Pest test}
-                            {--view : Create a view test}';
+                            {--view : Create a view test}
+                            {--force : Create the class even if the component already exists}';
 
     /**
      * The console command description.
@@ -64,9 +65,7 @@ class ModuleMakeTestCommand extends ModuleMakerCommand
 
         $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$testType.'\\'.$filename);
 
-        if ($this->files->exists($path = $this->getPath($name))) {
-            $this->logFileExist($name);
-
+        if (! $path = $this->getFilePath(name: $name, force: $this->option('force'))) {
             return true;
         }
 

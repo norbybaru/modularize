@@ -15,7 +15,8 @@ class ModuleMakeListenerCommand extends ModuleMakerCommand
                             {name : The name of the listener}
                             {--module= : Name of module event should belong to}
                             {--event= : The event class being listened for}
-                            {--queued : Indicates the event listener should be queued }';
+                            {--queued : Indicates the event listener should be queued }
+                            {--force : Create the class even if the component already exists}';
 
     /**
      * The console command description.
@@ -39,7 +40,7 @@ class ModuleMakeListenerCommand extends ModuleMakerCommand
 
         $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
 
-        if (! $path = $this->getFilePath($name)) {
+        if (! $path = $this->getFilePath(name: $name, force: $this->option('force'))) {
             return true;
         }
 

@@ -13,7 +13,8 @@ class ModuleMakeEventCommand extends ModuleMakerCommand
      */
     protected $signature = 'module:make:event
                             {name : The name of the event}
-                            {--module= : Name of module event should belong to}';
+                            {--module= : Name of module event should belong to}
+                            {--force : Create the class even if the component already exists}';
 
     /**
      * The console command description.
@@ -37,7 +38,7 @@ class ModuleMakeEventCommand extends ModuleMakerCommand
 
         $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
 
-        if (! $path = $this->getFilePath($name)) {
+        if (! $path = $this->getFilePath(name: $name, force: $this->option('force'))) {
             return true;
         }
 
