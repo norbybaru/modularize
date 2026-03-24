@@ -124,4 +124,55 @@ class MakeModelCommandTest extends MakeCommandTestCase
         $this->assertFactoryFile(module: $this->moduleName, filename: 'ArticleFactory');
         $this->assertSeederFile(module: $this->moduleName, filename: 'ArticleSeeder');
     }
+
+    public function test_it_should_fail_to_create_model_on_duplicate_filename()
+    {
+        $this->artisan(
+            command: 'module:make:model',
+            parameters: [
+                'name' => 'Post',
+                '--module' => $this->moduleName,
+            ]
+        )->assertSuccessful();
+
+        $this->assertFileExists(filename: $this->getModulePath().'/Models/Post.php');
+
+        $this->artisan(
+            command: 'module:make:model',
+            parameters: [
+                'name' => 'Post',
+                '--module' => $this->moduleName,
+            ]
+        )->assertFailed();
+
+        $this->assertFileExists(filename: $this->getModulePath().'/Models/Post.php');
+    }
+
+    public function test_it_displays_improved_error_message_when_file_already_exists()
+    {
+        // Create the model first time - should succeed
+        $this->artisan(
+            command: 'module:make:model',
+            parameters: [
+                'name' => 'User',
+                '--module' => $this->moduleName,
+            ]
+        )->assertSuccessful();
+
+        $filePath = $this->getModulePath().'/Models/User.php';
+        $this->assertFileExists(filename: $filePath);
+
+        // Try to create the same model again - should fail with improved error message
+        // The error message format is: "Model [<full-path>] already exists." (see ModuleMakerCommand::logFileExist)
+        $this->artisan(
+            command: 'module:make:model',
+            parameters: [
+                'name' => 'User',
+                '--module' => $this->moduleName,
+            ]
+        )
+            ->expectsOutputToContain('already exists')  // Verify correct grammar (not "already exist")
+            ->expectsOutputToContain('--force')         // Verify --force suggestion is shown
+            ->assertFailed();
+    }
 }
