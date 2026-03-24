@@ -15,7 +15,8 @@ class ModuleMakeNotificationCommand extends ModuleMakerCommand
                             {name : The name of the notification}
                             {--module= : Name of module migration should belong to}
                             {--model= : The model that the policy applies to}
-                            {--guard= : The guard that the policy relies on}';
+                            {--guard= : The guard that the policy relies on}
+                            {--force : Create the class even if the component already exists}';
 
     /**
      * The console command description.
@@ -39,18 +40,11 @@ class ModuleMakeNotificationCommand extends ModuleMakerCommand
 
         $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
 
-        if ($this->files->exists($path = $this->getPath($name))) {
-            $this->logFileExist($name);
-
+        if (! $path = $this->getFilePath(name: $name, force: $this->option('force'))) {
             return true;
         }
 
-        $this->setStubFile('notification.');
-        $this->makeDirectory($path);
-
-        $this->files->put($path, $this->buildClass($name));
-
-        $this->logFileCreated($name);
+        $this->generateFile($path, $name);
 
         return null;
     }
