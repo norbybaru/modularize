@@ -22,7 +22,7 @@ class ModuleMakePolicyCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $description = 'Generate policy for module';
+    protected $description = 'Generate policy for a module';
 
     /**
      * The type of class being generated.

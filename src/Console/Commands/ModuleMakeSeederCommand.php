@@ -19,7 +19,7 @@ class ModuleMakeSeederCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $description = 'Generate seeder for module';
+    protected $description = 'Generate seeder for a module';
 
     /**
      * The type of class being generated.
