@@ -20,7 +20,7 @@ class ModuleMakeEventCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $description = 'Generate event for module';
+    protected $description = 'Generate event for a module';
 
     /**
      * The type of class being generated.

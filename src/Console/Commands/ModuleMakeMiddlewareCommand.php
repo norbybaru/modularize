@@ -20,7 +20,7 @@ class ModuleMakeMiddlewareCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $description = 'Generate middleware for module';
+    protected $description = 'Generate middleware for a module';
 
     /**
      * The type of class being generated.
