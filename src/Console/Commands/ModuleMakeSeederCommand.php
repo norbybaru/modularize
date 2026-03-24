@@ -43,7 +43,7 @@ class ModuleMakeSeederCommand extends ModuleMakerCommand
             return true;
         }
 
-        $this->setStubFile('seeder');
+        $this->setStubFile('seeder.');
         $this->makeDirectory($path);
 
         $stub = $this->buildClass($name);
