@@ -333,6 +333,26 @@ abstract class ModuleMakerCommand extends GeneratorCommand
         $this->logFileCreated($filename);
     }
 
+    protected function generateFileWithModel(string $path, string $filename, ?string $model, string $stubType = ''): void
+    {
+        $stubPrefix = strtolower($this->type);
+        $this->setStubFile("{$stubPrefix}.{$stubType}");
+        $this->makeDirectory($path);
+
+        $stub = $this->buildClass($filename);
+
+        if ($model) {
+            $this->files->put($path, $this->buildModel($stub, $model));
+            $this->logFileCreated($filename);
+
+            return;
+        }
+
+        $this->files->put($path, $stub);
+
+        $this->logFileCreated($filename);
+    }
+
     protected function setStubFile(string $file): void
     {
         $this->currentStub = $this->getTemplatePath($file);
