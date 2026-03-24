@@ -90,4 +90,38 @@ class MakeModelCommandTest extends MakeCommandTestCase
             ->assertExitCode(exitCode: 0);
 
     }
+
+    public function test_it_creates_a_model_with_seeder()
+    {
+        $this->artisan(
+            command: 'module:make:model',
+            parameters: [
+                'name' => 'Post',
+                '--module' => $this->moduleName,
+                '--seed' => true,
+            ]
+        )
+            ->assertSuccessful();
+
+        $this->assertFileExists(filename: $this->getModulePath().'/Models/Post.php');
+        $this->assertSeederFile(module: $this->moduleName, filename: 'PostSeeder');
+    }
+
+    public function test_it_creates_a_model_with_all_option()
+    {
+        $this->artisan(
+            command: 'module:make:model',
+            parameters: [
+                'name' => 'Article',
+                '--module' => $this->moduleName,
+                '--all' => true,
+            ]
+        )
+            ->assertSuccessful();
+
+        $this->assertFileExists(filename: $this->getModulePath().'/Models/Article.php');
+        $this->assertMigrationFile(module: $this->moduleName, migrationFilename: 'create_articles_table.php');
+        $this->assertFactoryFile(module: $this->moduleName, filename: 'ArticleFactory');
+        $this->assertSeederFile(module: $this->moduleName, filename: 'ArticleSeeder');
+    }
 }

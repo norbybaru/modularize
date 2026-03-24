@@ -11,7 +11,8 @@ class ModuleMakeSeederCommand extends ModuleMakerCommand
      */
     protected $signature = 'module:make:seeder
                 {name : The name of the seeder}
-                {--module= : Name of module seeder should belong to}';
+                {--module= : Name of module seeder should belong to}
+                {--model= : The name of the model for the seeder}';
 
     /**
      * The console command description.
@@ -33,6 +34,11 @@ class ModuleMakeSeederCommand extends ModuleMakerCommand
         $filename = $this->getNameInput();
         $folder = $this->getFolderPath();
 
+        $type = '';
+        if ($model = $this->option('model')) {
+            $model = $this->qualifyClass($module.'\\'.'Models'.'\\'.$model);
+        }
+
         $filename = $this->appendSuffix(filename: $filename);
 
         $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
@@ -43,10 +49,17 @@ class ModuleMakeSeederCommand extends ModuleMakerCommand
             return true;
         }
 
-        $this->setStubFile('seeder.');
+        $this->setStubFile("seeder.{$type}");
         $this->makeDirectory($path);
 
         $stub = $this->buildClass($name);
+
+        if ($model) {
+            $this->files->put($path, $this->buildModel($stub, $model));
+            $this->logFileCreated($name);
+
+            return null;
+        }
 
         $this->files->put($path, $stub);
 
