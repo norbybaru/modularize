@@ -19,7 +19,7 @@ class ModuleMakeFactoryCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $description = 'Generate model factory for module';
+    protected $description = 'Generate factory for a module';
 
     /**
      * The type of class being generated.
