@@ -20,7 +20,7 @@ class ModuleMakeViewCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $description = 'Generate view resource for a module';
+    protected $description = 'Generate view for a module';
 
     /**
      * The type of class being generated.
