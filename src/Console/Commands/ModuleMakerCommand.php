@@ -312,7 +312,7 @@ abstract class ModuleMakerCommand extends GeneratorCommand
     protected function getFilePath(string $name, bool $force = false): ?string
     {
         if ($this->files->exists($path = $this->getPath($name)) && ! $force) {
-            $this->logFileExist($name);
+            $this->logFileExist($path);
 
             return null;
         }
@@ -348,7 +348,8 @@ abstract class ModuleMakerCommand extends GeneratorCommand
     protected function logFileExist(string $path)
     {
         if (! $this->hasOption('quiet') || ! $this->option('quiet')) {
-            $this->components->error(sprintf('%s [%s] already exist.', $this->type, $path));
+            $this->components->error(sprintf('%s [%s] already exists.', $this->type, $path));
+            $this->components->info('Use the --force option to overwrite the existing file.');
         }
     }
 
