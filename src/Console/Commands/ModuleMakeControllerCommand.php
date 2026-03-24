@@ -60,8 +60,7 @@ class ModuleMakeControllerCommand extends ModuleMakerCommand
             return true;
         }
 
-        $this->setStubFile("controller.{$type}");
-        $this->generateFile($path, $name);
+        $this->generateFile($path, $name, $type);
 
         return null;
     }
@@ -69,10 +68,5 @@ class ModuleMakeControllerCommand extends ModuleMakerCommand
     protected function getFolderPath(): string
     {
         return 'Controllers';
-    }
-
-    protected function setStubFile(string $file): void
-    {
-        $this->currentStub = $this->currentStub.$file.'sample';
     }
 }
