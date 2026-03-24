@@ -18,6 +18,7 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
                         {--a|all : Generate a migration, seeder, factory, policy, resource controller, and form request classes for the model}
                         {--c|controller : Create a new controller for the model}
                         {--f|factory : Create a new factory for the model}
+                        {--force : Create the class even if the component already exists}
                         {--m|migration : Create a new migration file for the model}
                         {--p|pivot : Indicates if the generated model should be a custom intermediate table model}
                         {--policy :  Create a new policy for the model}
@@ -54,9 +55,7 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
 
         $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
 
-        if ($this->files->exists($path = $this->getPath($name))) {
-            $this->logFileExist($name);
-
+        if (! $path = $this->getFilePath(name: $name, force: $this->option('force'))) {
             return true;
         }
 

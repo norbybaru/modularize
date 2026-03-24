@@ -14,7 +14,8 @@ class ModuleMakeJobCommand extends ModuleMakerCommand
     protected $signature = 'module:make:job
                             {name : The name of the job}
                             {--module= : Name of module job should belong to}
-                            {--sync : Indicates that job should be synchronous}';
+                            {--sync : Indicates that job should be synchronous}
+                            {--force : Create the class even if the component already exists}';
 
     /**
      * The console command description.
@@ -38,7 +39,7 @@ class ModuleMakeJobCommand extends ModuleMakerCommand
 
         $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
 
-        if (! $path = $this->getFilePath($name)) {
+        if (! $path = $this->getFilePath(name: $name, force: $this->option('force'))) {
             return true;
         }
 

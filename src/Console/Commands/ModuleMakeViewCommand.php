@@ -13,7 +13,8 @@ class ModuleMakeViewCommand extends ModuleMakerCommand
                             {name : The name of the view}
                             {--module= : Name of module migration should belong to}
                             {--test : Generate an accompanying PHPUnit test for the View}
-                            {--pest : Generate an accompanying Pest test for the View}';
+                            {--pest : Generate an accompanying Pest test for the View}
+                            {--force : Create the class even if the component already exists}';
 
     /**
      * The console command description.
@@ -37,8 +38,8 @@ class ModuleMakeViewCommand extends ModuleMakerCommand
 
         $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
 
-        if ($this->files->exists($path = $this->getPath($name, 'blade.php'))) {
-            $this->logFileExist($name);
+        if ($this->files->exists($path = $this->getPath($name, 'blade.php')) && ! $this->option('force')) {
+            $this->logFileExist($path);
 
             return true;
         }
