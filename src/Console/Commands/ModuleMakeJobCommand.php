@@ -21,7 +21,7 @@ class ModuleMakeJobCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $description = 'Generate job for module';
+    protected $description = 'Generate job for a module';
 
     /**
      * The type of class being generated.

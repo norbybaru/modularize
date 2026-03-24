@@ -22,7 +22,7 @@ class ModuleMakeListenerCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $description = 'Generate listener for module';
+    protected $description = 'Generate listener for a module';
 
     /**
      * The type of class being generated.

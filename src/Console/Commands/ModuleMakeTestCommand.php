@@ -24,7 +24,7 @@ class ModuleMakeTestCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $description = 'Generate test resource for a module';
+    protected $description = 'Generate test for a module';
 
     /**
      * The type of class being generated.

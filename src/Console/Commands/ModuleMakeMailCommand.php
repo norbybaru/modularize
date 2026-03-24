@@ -21,7 +21,7 @@ class ModuleMakeMailCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $description = 'Generate mail class for module';
+    protected $description = 'Generate mail for a module';
 
     /**
      * The type of class being generated.

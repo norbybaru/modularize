@@ -20,7 +20,7 @@ class ModuleMakeProviderCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $description = 'Generate provider for module';
+    protected $description = 'Generate provider for a module';
 
     /**
      * The type of class being generated.
