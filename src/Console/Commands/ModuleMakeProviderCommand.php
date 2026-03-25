@@ -11,9 +11,10 @@ class ModuleMakeProviderCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $signature = 'module:make:provider 
+    protected $signature = 'module:make:provider
                             {name : The name of the provider}
-                            {--module= : Name of module migration should belong to}';
+                            {--module= : Name of module migration should belong to}
+                            {--force : Create the class even if the component already exists}';
 
     /**
      * The console command description.
@@ -27,9 +28,9 @@ class ModuleMakeProviderCommand extends ModuleMakerCommand
      *
      * @var string
      */
-    protected $type = 'Providers';
+    protected $type = 'Provider';
 
-    public function handle()
+    public function handle(): ?bool
     {
         $module = $this->getModuleInput();
         $filename = Str::studly($this->getNameInput());
@@ -37,18 +38,11 @@ class ModuleMakeProviderCommand extends ModuleMakerCommand
 
         $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
 
-        if ($this->files->exists($path = $this->getPath($name))) {
-            $this->logFileExist($name);
-
+        if (! $path = $this->getFilePath(name: $name, force: $this->option('force'))) {
             return true;
         }
 
-        $this->setStubFile('provider.');
-        $this->makeDirectory($path);
-
-        $this->files->put($path, $this->buildClass($name));
-
-        $this->logFileCreated($name);
+        $this->generateFile($path, $name, '');
 
         return null;
     }
