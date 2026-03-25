@@ -43,8 +43,6 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
 
     /**
      * Track generated files for summary output.
-     *
-     * @var array
      */
     protected array $generatedFiles = [];
 
@@ -191,10 +189,6 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
 
     /**
      * Override logFileCreated to track files for summary output.
-     *
-     * @param  string  $path
-     * @param  string|null  $type
-     * @return void
      */
     protected function logFileCreated(string $path, ?string $type = null): void
     {
@@ -204,10 +198,6 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
 
     /**
      * Track a generated file for summary output.
-     *
-     * @param  string  $type
-     * @param  string  $path
-     * @return void
      */
     protected function trackGeneratedFile(string $type, string $path): void
     {
@@ -219,8 +209,6 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
 
     /**
      * Display summary table of generated files.
-     *
-     * @return void
      */
     protected function displaySummaryTable(): void
     {
