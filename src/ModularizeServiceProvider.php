@@ -315,7 +315,6 @@ class ModularizeServiceProvider extends ServiceProvider
     /**
      * Load all modules from the cached manifest.
      *
-     * @param  array  $manifest
      * @return void
      */
     protected function loadModulesFromManifest(array $manifest)

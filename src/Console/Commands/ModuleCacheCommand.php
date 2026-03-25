@@ -4,6 +4,7 @@ namespace NorbyBaru\Modularize\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use ReflectionClass;
 use Symfony\Component\Finder\Finder;
@@ -129,7 +130,7 @@ class ModuleCacheCommand extends Command
                 );
 
                 if (
-                    is_subclass_of($providerNamespace, \Illuminate\Support\ServiceProvider::class)
+                    is_subclass_of($providerNamespace, ServiceProvider::class)
                     && ! (new ReflectionClass($providerNamespace))->isAbstract()
                 ) {
                     $manifest['service_providers'][$module] = $providerNamespace;
