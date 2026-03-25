@@ -53,11 +53,7 @@ class ModuleMakePolicyCommand extends ModuleMakerCommand
         }
 
         if ($model) {
-            $this->setStubFile("policy.{$type}");
-            $this->makeDirectory($path);
-            $stub = $this->buildClass($name);
-            $this->files->put($path, $this->buildModel($stub, $model));
-            $this->logFileCreated($name);
+            $this->generateFileWithModel($path, $name, $type, $model);
 
             return null;
         }
@@ -65,6 +61,15 @@ class ModuleMakePolicyCommand extends ModuleMakerCommand
         $this->generateFile($path, $name, $type);
 
         return null;
+    }
+
+    protected function generateFileWithModel(string $path, string $name, string $type, string $model): void
+    {
+        $this->setStubFile("policy.{$type}");
+        $this->makeDirectory($path);
+        $stub = $this->buildClass($name);
+        $this->files->put($path, $this->buildModel($stub, $model));
+        $this->logFileCreated($name);
     }
 
     protected function getFolderPath(): string
