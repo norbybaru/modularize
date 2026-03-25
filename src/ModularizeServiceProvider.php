@@ -113,6 +113,167 @@ class ModularizeServiceProvider extends ServiceProvider
         }
     }
 
+    /**
+     * Get the path to the cached modules file.
+     *
+     * @return string
+     */
+    protected function getCachedModulesPath()
+    {
+        return base_path(config('modularize.cache_path', 'bootstrap/cache/modularize.php'));
+    }
+
+    /**
+     * Determine if the module discovery results are cached.
+     *
+     * @return bool
+     */
+    protected function modulesAreCached()
+    {
+        return config('modularize.cache_enabled', false) && $this->files->exists($this->getCachedModulesPath());
+    }
+
+    /**
+     * Build the module discovery manifest array.
+     *
+     * This method scans the filesystem to discover all modules and their associated
+     * resources (service providers, configs, routes, etc.). The result can be cached
+     * to avoid repeated filesystem scans on every request.
+     *
+     * @return array
+     */
+    protected function buildModuleManifest()
+    {
+        $manifest = [
+            'modules' => [],
+            'service_providers' => [],
+            'configs' => [],
+            'console_commands' => [],
+            'routes' => [],
+            'helpers' => [],
+            'views' => [],
+            'translations' => [],
+            'view_components' => [],
+        ];
+
+        if (! is_dir($moduleRootPath = base_path(config('modularize.root_path')))) {
+            return $manifest;
+        }
+
+        $modules = array_map(
+            'class_basename',
+            $this->files->directories($moduleRootPath)
+        );
+
+        $manifest['modules'] = $modules;
+
+        foreach ($modules as $module) {
+            // Check for service provider
+            $provider = "{$module}/Providers/{$module}ServiceProvider.php";
+            $providerFile = "{$moduleRootPath}/$provider";
+            if ($this->files->exists($providerFile)) {
+                $providerNamespace = $this->rootNamespace.str_replace(
+                    ['/', '.php'],
+                    ['\\', ''],
+                    $provider
+                );
+
+                if (
+                    is_subclass_of($providerNamespace, ServiceProvider::class)
+                    && ! (new ReflectionClass($providerNamespace))->isAbstract()
+                ) {
+                    $manifest['service_providers'][$module] = $providerNamespace;
+                }
+            }
+
+            // Check for config file
+            $configFile = "{$moduleRootPath}/{$module}/config.php";
+            if ($this->files->exists($configFile)) {
+                $manifest['configs'][$module] = Str::slug($module);
+            }
+
+            // Check for console commands
+            $consolePath = "{$moduleRootPath}/{$module}/Console";
+            if (is_dir($consolePath)) {
+                $commands = [];
+                foreach ((new Finder)->in($consolePath)->files() as $command) {
+                    $commandClass = $this->rootNamespace.str_replace(
+                        ['/', '.php'],
+                        ['\\', ''],
+                        Str::after($command->getRealPath(), realpath($moduleRootPath).DIRECTORY_SEPARATOR)
+                    );
+
+                    if (
+                        is_subclass_of($commandClass, Command::class)
+                        && ! (new ReflectionClass($commandClass))->isAbstract()
+                    ) {
+                        $commands[] = $commandClass;
+                    }
+                }
+
+                if (! empty($commands)) {
+                    $manifest['console_commands'][$module] = $commands;
+                }
+            }
+
+            // Check for routes
+            if (config('modularize.autoload_routes')) {
+                $routeFiles = [
+                    "{$moduleRootPath}/{$module}/routes.php",
+                    "{$moduleRootPath}/{$module}/Routes/web.php",
+                    "{$moduleRootPath}/{$module}/Routes/api.php",
+                ];
+
+                $existingRoutes = [];
+                foreach ($routeFiles as $routeFile) {
+                    if ($this->files->isDirectory($routeFile)) {
+                        foreach ($this->files->allFiles($routeFile) as $file) {
+                            $existingRoutes[] = $file->getPathname();
+                        }
+                    } elseif ($this->files->exists($routeFile)) {
+                        $existingRoutes[] = $routeFile;
+                    }
+                }
+
+                if (! empty($existingRoutes)) {
+                    $manifest['routes'][$module] = $existingRoutes;
+                }
+            }
+
+            // Check for helper file
+            $helperFile = "{$moduleRootPath}/{$module}/helper.php";
+            if ($this->files->exists($helperFile)) {
+                $manifest['helpers'][$module] = $helperFile;
+            }
+
+            // Check for views directory
+            $viewsPath = "{$moduleRootPath}/{$module}/Views";
+            if ($this->files->isDirectory($viewsPath)) {
+                $manifest['views'][$module] = [
+                    'path' => $viewsPath,
+                    'namespace' => $this->getModuleNamespace($module),
+                ];
+            }
+
+            // Check for translations directory
+            $translationsPath = "{$moduleRootPath}/{$module}/Lang";
+            if ($this->files->isDirectory($translationsPath)) {
+                $manifest['translations'][$module] = [
+                    'path' => $translationsPath,
+                    'namespace' => $this->getModuleNamespace($module),
+                ];
+            }
+
+            // Store view component namespace
+            $manifest['view_components'][$module] = [
+                'namespace' => "Modules\\{$module}\\Components",
+                'alias' => $this->getModuleNamespace($module),
+            ];
+        }
+
+        return $manifest;
+    }
+
     private function getModuleNamespace(string $name): string
     {
         return Str::of($name)
