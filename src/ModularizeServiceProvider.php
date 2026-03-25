@@ -9,6 +9,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use NorbyBaru\Modularize\Console\Commands\ModuleCacheCommand;
+use NorbyBaru\Modularize\Console\Commands\ModuleClearCacheCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleListCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeComponentCommand;
 use NorbyBaru\Modularize\Console\Commands\ModuleMakeConsoleCommand;
@@ -450,6 +452,8 @@ class ModularizeServiceProvider extends ServiceProvider
     protected function registerMakeCommand()
     {
         $this->commands([
+            ModuleCacheCommand::class,
+            ModuleClearCacheCommand::class,
             ModuleMakeComponentCommand::class,
             ModuleMakeConsoleCommand::class,
             ModuleMakeControllerCommand::class,
