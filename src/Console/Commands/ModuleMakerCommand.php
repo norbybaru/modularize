@@ -5,6 +5,7 @@ namespace NorbyBaru\Modularize\Console\Commands;
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Str;
+
 use function Laravel\Prompts\suggest;
 
 abstract class ModuleMakerCommand extends GeneratorCommand
@@ -410,8 +411,6 @@ abstract class ModuleMakerCommand extends GeneratorCommand
 
     /**
      * Get all available modules in the project.
-     *
-     * @return array
      */
     protected function getAvailableModules(): array
     {

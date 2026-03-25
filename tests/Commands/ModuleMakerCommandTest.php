@@ -66,8 +66,6 @@ class ModuleMakerCommandTest extends MakeCommandTestCase
      * Call a protected method on an object using reflection.
      *
      * @param  object  $object
-     * @param  string  $methodName
-     * @param  array  $parameters
      * @return mixed
      */
     protected function callProtectedMethod($object, string $methodName, array $parameters = [])
