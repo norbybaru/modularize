@@ -12,7 +12,8 @@ class ModuleMakeSeederCommand extends ModuleMakerCommand
     protected $signature = 'module:make:seeder
                 {name : The name of the seeder}
                 {--module= : Name of module seeder should belong to}
-                {--model= : The name of the model for the seeder}';
+                {--model= : The name of the model for the seeder}
+                {--force : Create the class even if the component already exists}';
 
     /**
      * The console command description.
@@ -34,36 +35,32 @@ class ModuleMakeSeederCommand extends ModuleMakerCommand
         $filename = $this->getNameInput();
         $folder = $this->getFolderPath();
 
-        $type = '';
-        if ($model = $this->option('model')) {
-            $model = $this->qualifyClass($module.'\\'.'Models'.'\\'.$model);
-        }
-
         $filename = $this->appendSuffix(filename: $filename);
 
         $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
 
-        if ($this->files->exists($path = $this->getPath($name))) {
-            $this->logFileExist($name);
-
+        if (! $path = $this->getFilePath(name: $name, force: $this->option('force'))) {
             return true;
         }
 
-        $this->setStubFile("seeder.{$type}");
-        $this->makeDirectory($path);
+        $type = '';
 
-        $stub = $this->buildClass($name);
+        if ($model = $this->option('model')) {
+            $model = $this->qualifyClass($module.'\\'.'Models'.'\\'.$model);
+        }
 
         if ($model) {
+            $this->setStubFile("seeder.{$type}");
+            $this->makeDirectory($path);
+
+            $stub = $this->buildClass($name);
             $this->files->put($path, $this->buildModel($stub, $model));
             $this->logFileCreated($name);
 
             return null;
         }
 
-        $this->files->put($path, $stub);
-
-        $this->logFileCreated($name);
+        $this->generateFile($path, $name, $type);
 
         return null;
     }
