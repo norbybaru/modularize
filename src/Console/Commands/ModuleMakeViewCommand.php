@@ -38,7 +38,9 @@ class ModuleMakeViewCommand extends ModuleMakerCommand
 
         $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
 
-        if ($this->files->exists($path = $this->getPath($name, 'blade.php')) && ! $this->option('force')) {
+        // Custom extension handling for blade.php
+        $path = $this->getPath($name, 'blade.php');
+        if ($this->files->exists($path) && ! $this->option('force')) {
             $this->logFileExist($path);
 
             return true;
@@ -46,13 +48,8 @@ class ModuleMakeViewCommand extends ModuleMakerCommand
 
         $type = '';
 
-        $this->setStubFile("view.{$type}");
-        $this->makeDirectory($path);
-        $this->files->put($path, $this->buildClass($name));
+        $this->generateFile($path, $name, $type);
 
-        $this->logFileCreated($name);
-
-        $folder = 'Tests/Feature';
         if ($this->option('pest')) {
             $this->call(
                 ModuleMakeTestCommand::class,
@@ -63,7 +60,6 @@ class ModuleMakeViewCommand extends ModuleMakerCommand
                     '--view' => true,
                 ]
             );
-            $type = 'pest.';
         }
 
         if ($this->option('test')) {
@@ -75,7 +71,6 @@ class ModuleMakeViewCommand extends ModuleMakerCommand
                     '--view' => true,
                 ]
             );
-            $type = 'test.';
         }
 
         return null;
