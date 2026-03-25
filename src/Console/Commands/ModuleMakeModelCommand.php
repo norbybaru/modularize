@@ -3,7 +3,6 @@
 namespace NorbyBaru\Modularize\Console\Commands;
 
 use Illuminate\Support\Str;
-use Symfony\Component\Console\Input\InputArgument;
 
 class ModuleMakeModelCommand extends ModuleMakerCommand
 {
@@ -59,11 +58,7 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
             return true;
         }
 
-        $this->setStubFile("model.{$type}");
-        $this->makeDirectory($path);
-        $this->files->put($path, $this->buildClass($name));
-
-        $this->logFileCreated($name);
+        $this->generateFile($path, $name, $type);
 
         // Handle --all flag by setting all related options
         if ($this->option('all')) {
@@ -173,22 +168,5 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
     protected function getFolderPath(): string
     {
         return 'Models';
-    }
-
-    protected function setStubFile(string $file): void
-    {
-        $this->currentStub = $this->currentStub.$file.'sample';
-    }
-
-    /**
-     * Get the console command arguments.
-     *
-     * @return array
-     */
-    protected function getArguments()
-    {
-        return [
-            ['name', InputArgument::REQUIRED, 'The name of the model'],
-        ];
     }
 }
