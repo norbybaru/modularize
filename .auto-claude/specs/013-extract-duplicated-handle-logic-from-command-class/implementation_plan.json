@@ -1,0 +1,530 @@
+{
+  "feature": "Extract duplicated handle() logic from command classes",
+  "workflow_type": "refactor",
+  "workflow_rationale": "This is a classic refactoring task following the Add New → Migrate → Remove Old pattern. We're consolidating duplicated handle() logic across 14+ command classes into reusable base class methods. The base class already has helper methods (getFilePath, generateFile), but many commands still inline the logic. We'll enhance the base helpers and migrate all commands to use them consistently.",
+  "phases": [
+    {
+      "id": "phase-1-enhance-base",
+      "name": "Enhance Base Class Helpers",
+      "type": "implementation",
+      "description": "Add new helper methods to ModuleMakerCommand to support model-based stub generation and custom stub building",
+      "depends_on": [],
+      "parallel_safe": true,
+      "subtasks": [
+        {
+          "id": "subtask-1-1",
+          "description": "Add generateFileWithModel() helper method to base class",
+          "service": "package",
+          "files_to_modify": [
+            "src/Console/Commands/ModuleMakerCommand.php"
+          ],
+          "files_to_create": [],
+          "patterns_from": [
+            "src/Console/Commands/ModuleMakePolicyCommand.php"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "vendor/bin/phpstan analyse src/Console/Commands/ModuleMakerCommand.php --level=5",
+            "expected": "No errors"
+          },
+          "status": "completed",
+          "notes": "Add a helper method that accepts a model parameter and uses buildModel() for stub generation. This will be used by Policy, Seeder, Factory, and Listener commands."
+        },
+        {
+          "id": "subtask-1-2",
+          "description": "Add generateFileWithCustomStub() helper method to base class",
+          "service": "package",
+          "files_to_modify": [
+            "src/Console/Commands/ModuleMakerCommand.php"
+          ],
+          "files_to_create": [],
+          "patterns_from": [
+            "src/Console/Commands/ModuleMakeComponentCommand.php"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "vendor/bin/phpstan analyse src/Console/Commands/ModuleMakerCommand.php --level=5",
+            "expected": "No errors"
+          },
+          "status": "completed",
+          "notes": "Add a helper method that accepts a custom stub builder callback for commands that need to customize stub content (like Component's buildClass override)."
+        }
+      ]
+    },
+    {
+      "id": "phase-2-refactor-simple",
+      "name": "Refactor Simple Commands",
+      "type": "implementation",
+      "description": "Refactor simple commands that duplicate handle() logic but can directly use existing generateFile() helper",
+      "depends_on": [
+        "phase-1-enhance-base"
+      ],
+      "parallel_safe": true,
+      "subtasks": [
+        {
+          "id": "subtask-2-1",
+          "description": "Refactor ModuleMakeRequestCommand to use helper methods",
+          "service": "package",
+          "files_to_modify": [
+            "src/Console/Commands/ModuleMakeRequestCommand.php"
+          ],
+          "files_to_create": [],
+          "patterns_from": [
+            "src/Console/Commands/ModuleMakeJobCommand.php"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "vendor/bin/phpunit tests/Commands/MakeRequestCommandTest.php",
+            "expected": "All tests pass"
+          },
+          "status": "completed",
+          "notes": "Replace inline logic (files->exists, setStubFile, makeDirectory, files->put, logFileCreated) with getFilePath() and generateFile() calls."
+        },
+        {
+          "id": "subtask-2-2",
+          "description": "Refactor ModuleMakeMiddlewareCommand to use helper methods",
+          "service": "package",
+          "files_to_modify": [
+            "src/Console/Commands/ModuleMakeMiddlewareCommand.php"
+          ],
+          "files_to_create": [],
+          "patterns_from": [
+            "src/Console/Commands/ModuleMakeJobCommand.php"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "vendor/bin/phpunit tests/Commands/MakeMiddlewareCommandTest.php",
+            "expected": "All tests pass"
+          },
+          "status": "completed"
+        },
+        {
+          "id": "subtask-2-3",
+          "description": "Refactor ModuleMakeNotificationCommand to use helper methods",
+          "service": "package",
+          "files_to_modify": [
+            "src/Console/Commands/ModuleMakeNotificationCommand.php"
+          ],
+          "files_to_create": [],
+          "patterns_from": [
+            "src/Console/Commands/ModuleMakeJobCommand.php"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "vendor/bin/phpunit tests/Commands/MakeNotificationCommandTest.php",
+            "expected": "All tests pass"
+          },
+          "status": "completed"
+        },
+        {
+          "id": "subtask-2-4",
+          "description": "Refactor ModuleMakeProviderCommand to use helper methods",
+          "service": "package",
+          "files_to_modify": [
+            "src/Console/Commands/ModuleMakeProviderCommand.php"
+          ],
+          "files_to_create": [],
+          "patterns_from": [
+            "src/Console/Commands/ModuleMakeJobCommand.php"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "vendor/bin/phpunit tests/Commands/MakeProviderCommandTest.php",
+            "expected": "All tests pass"
+          },
+          "status": "completed"
+        },
+        {
+          "id": "subtask-2-5",
+          "description": "Refactor ModuleMakeMailCommand to use helper methods",
+          "service": "package",
+          "files_to_modify": [
+            "src/Console/Commands/ModuleMakeMailCommand.php"
+          ],
+          "files_to_create": [],
+          "patterns_from": [
+            "src/Console/Commands/ModuleMakeJobCommand.php"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "vendor/bin/phpunit tests/Commands/MakeMailCommandTest.php",
+            "expected": "All tests pass"
+          },
+          "status": "completed"
+        },
+        {
+          "id": "subtask-2-6",
+          "description": "Refactor ModuleMakeResourceCommand to use helper methods",
+          "service": "package",
+          "files_to_modify": [
+            "src/Console/Commands/ModuleMakeResourceCommand.php"
+          ],
+          "files_to_create": [],
+          "patterns_from": [
+            "src/Console/Commands/ModuleMakeJobCommand.php"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "vendor/bin/phpunit tests/Commands/MakeResourceCommandTest.php",
+            "expected": "All tests pass"
+          },
+          "status": "completed"
+        },
+        {
+          "id": "subtask-2-7",
+          "description": "Refactor ModuleMakeViewCommand to use helper methods",
+          "service": "package",
+          "files_to_modify": [
+            "src/Console/Commands/ModuleMakeViewCommand.php"
+          ],
+          "files_to_create": [],
+          "patterns_from": [
+            "src/Console/Commands/ModuleMakeJobCommand.php"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "vendor/bin/phpunit tests/Commands/MakeViewCommandTest.php",
+            "expected": "All tests pass"
+          },
+          "status": "completed",
+          "notes": "Special case: uses blade.php extension instead of .php. Need to ensure helper methods support custom extensions."
+        }
+      ]
+    },
+    {
+      "id": "phase-3-refactor-model-commands",
+      "name": "Refactor Model-Option Commands",
+      "type": "implementation",
+      "description": "Refactor commands that have --model option and use buildModel() for stub generation",
+      "depends_on": [
+        "phase-1-enhance-base"
+      ],
+      "parallel_safe": true,
+      "subtasks": [
+        {
+          "id": "subtask-3-1",
+          "description": "Refactor ModuleMakePolicyCommand to use generateFileWithModel() helper",
+          "service": "package",
+          "files_to_modify": [
+            "src/Console/Commands/ModuleMakePolicyCommand.php"
+          ],
+          "files_to_create": [],
+          "patterns_from": [
+            "src/Console/Commands/ModuleMakerCommand.php"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "vendor/bin/phpunit tests/Commands/MakePolicyCommandTest.php",
+            "expected": "All tests pass"
+          },
+          "status": "completed",
+          "notes": "Has conditional logic: if model option is set, use buildModel(); otherwise use buildClass()"
+        },
+        {
+          "id": "subtask-3-2",
+          "description": "Refactor ModuleMakeSeederCommand to use generateFileWithModel() helper",
+          "service": "package",
+          "files_to_modify": [
+            "src/Console/Commands/ModuleMakeSeederCommand.php"
+          ],
+          "files_to_create": [],
+          "patterns_from": [
+            "src/Console/Commands/ModuleMakerCommand.php"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "vendor/bin/phpunit tests/Commands/MakeSeederCommandTest.php",
+            "expected": "All tests pass"
+          },
+          "status": "completed"
+        },
+        {
+          "id": "subtask-3-3",
+          "description": "Refactor ModuleMakeFactoryCommand to use generateFileWithModel() helper",
+          "service": "package",
+          "files_to_modify": [
+            "src/Console/Commands/ModuleMakeFactoryCommand.php"
+          ],
+          "files_to_create": [],
+          "patterns_from": [
+            "src/Console/Commands/ModuleMakerCommand.php"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "vendor/bin/phpunit tests/Commands/MakeFactoryCommandTest.php",
+            "expected": "All tests pass"
+          },
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "id": "phase-4-refactor-complex",
+      "name": "Refactor Complex Commands",
+      "type": "implementation",
+      "description": "Refactor commands with complex logic that partially use helper methods or have special requirements",
+      "depends_on": [
+        "phase-1-enhance-base"
+      ],
+      "parallel_safe": true,
+      "subtasks": [
+        {
+          "id": "subtask-4-1",
+          "description": "Refactor ModuleMakeModelCommand to consistently use helper methods",
+          "service": "package",
+          "files_to_modify": [
+            "src/Console/Commands/ModuleMakeModelCommand.php"
+          ],
+          "files_to_create": [],
+          "patterns_from": [
+            "src/Console/Commands/ModuleMakeJobCommand.php"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "vendor/bin/phpunit tests/Commands/MakeModelCommandTest.php",
+            "expected": "All tests pass"
+          },
+          "status": "completed",
+          "notes": "Currently uses getFilePath() but then manually does setStubFile, makeDirectory, files->put. Should use generateFile() instead."
+        },
+        {
+          "id": "subtask-4-2",
+          "description": "Refactor ModuleMakeTestCommand to consistently use helper methods",
+          "service": "package",
+          "files_to_modify": [
+            "src/Console/Commands/ModuleMakeTestCommand.php"
+          ],
+          "files_to_create": [],
+          "patterns_from": [
+            "src/Console/Commands/ModuleMakeJobCommand.php"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "vendor/bin/phpunit tests/Commands/MakeTestCommandTest.php",
+            "expected": "All tests pass"
+          },
+          "status": "completed",
+          "notes": "Uses generateFileWithCustomStub() instead of generateFile() because test command uses different prefixes ('test.' vs 'pest.') which cannot be handled by generateFile()'s automatic strtolower($this->type) prepending"
+        },
+        {
+          "id": "subtask-4-3",
+          "description": "Refactor ModuleMakeComponentCommand to use helper methods",
+          "service": "package",
+          "files_to_modify": [
+            "src/Console/Commands/ModuleMakeComponentCommand.php"
+          ],
+          "files_to_create": [],
+          "patterns_from": [
+            "src/Console/Commands/ModuleMakeJobCommand.php"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "vendor/bin/phpunit tests/Commands/MakeComponentCommandTest.php",
+            "expected": "All tests pass"
+          },
+          "status": "completed",
+          "notes": "Uses generateFileWithCustomStub() instead of generateFile() because component uses custom stub prefix 'view-component.' instead of strtolower($this->type) which would be 'component.'. Maintains special view creation logic for non-inline components."
+        },
+        {
+          "id": "subtask-4-4",
+          "description": "Refactor ModuleMakeListenerCommand to consistently use helper methods",
+          "service": "package",
+          "files_to_modify": [
+            "src/Console/Commands/ModuleMakeListenerCommand.php"
+          ],
+          "files_to_create": [],
+          "patterns_from": [
+            "src/Console/Commands/ModuleMakeJobCommand.php"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "vendor/bin/phpunit tests/Commands/MakeListenerCommandTest.php",
+            "expected": "All tests pass"
+          },
+          "status": "completed",
+          "notes": "Successfully refactored ModuleMakeListenerCommand to use generateFileWithModel() helper method consistently. Added ?bool return type, removed manual file generation code, and simplified the code structure to match the established pattern. All tests pass.",
+          "updated_at": "2026-03-25T08:05:24.519871+00:00"
+        }
+      ]
+    },
+    {
+      "id": "phase-5-verification",
+      "name": "Full Test Suite and Cleanup",
+      "type": "integration",
+      "description": "Run full test suite, static analysis, and code formatting to verify all changes work correctly",
+      "depends_on": [
+        "phase-2-refactor-simple",
+        "phase-3-refactor-model-commands",
+        "phase-4-refactor-complex"
+      ],
+      "parallel_safe": false,
+      "subtasks": [
+        {
+          "id": "subtask-5-1",
+          "description": "Run full PHPUnit test suite",
+          "service": "package",
+          "files_to_modify": [],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "vendor/bin/phpunit",
+            "expected": "All tests pass"
+          },
+          "status": "completed",
+          "notes": "All 64 tests passed with 188 assertions. Full test suite is green.",
+          "updated_at": "2026-03-25T08:07:00.000000+00:00"
+        },
+        {
+          "id": "subtask-5-2",
+          "description": "Run PHPStan static analysis",
+          "service": "package",
+          "files_to_modify": [],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "vendor/bin/phpstan analyse",
+            "expected": "No errors"
+          },
+          "status": "completed",
+          "notes": "PHPStan analysis completed successfully with no errors. Used --debug flag to bypass TCP server sandbox restrictions. All 24 PHP files analyzed at level 5 with zero errors, confirming type safety and code quality standards are maintained.",
+          "updated_at": "2026-03-25T08:08:54.459033+00:00"
+        },
+        {
+          "id": "subtask-5-3",
+          "description": "Run Laravel Pint code formatting",
+          "service": "package",
+          "files_to_modify": [],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "vendor/bin/pint --test",
+            "expected": "All files formatted correctly"
+          },
+          "status": "completed",
+          "notes": "Laravel Pint verification passed. All files are properly formatted. No formatting changes were needed as code was already compliant with Laravel Pint standards.",
+          "updated_at": "2026-03-25T08:12:00.000000+00:00"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total_phases": 5,
+    "total_subtasks": 20,
+    "services_involved": [
+      "package"
+    ],
+    "commands_to_refactor": 14,
+    "pattern": "Consolidate duplicated handle() logic into base class helper methods",
+    "parallelism": {
+      "max_parallel_phases": 3,
+      "parallel_groups": [
+        {
+          "phases": [
+            "phase-2-refactor-simple",
+            "phase-3-refactor-model-commands",
+            "phase-4-refactor-complex"
+          ],
+          "reason": "All three phases depend only on phase-1 and modify different command files, so they can run in parallel"
+        }
+      ],
+      "recommended_workers": 3,
+      "speedup_estimate": "2x faster than sequential (phases 2-4 run in parallel)"
+    },
+    "startup_command": "This is a planning session - no startup command needed. Coder agents will implement the subtasks."
+  },
+  "verification_strategy": {
+    "risk_level": "medium",
+    "skip_validation": false,
+    "test_creation_phase": "no_new_tests_needed",
+    "test_types_required": [
+      "unit"
+    ],
+    "security_scanning_required": false,
+    "staging_deployment_required": false,
+    "acceptance_criteria": [
+      "All 14+ command classes use base class helper methods instead of inline logic",
+      "All existing PHPUnit tests pass without modification",
+      "PHPStan static analysis passes at level 5",
+      "Code formatted with Laravel Pint",
+      "No behavior changes - commands work exactly as before"
+    ],
+    "verification_steps": [
+      {
+        "name": "Unit Tests",
+        "command": "vendor/bin/phpunit",
+        "expected_outcome": "All tests pass",
+        "type": "test",
+        "required": true,
+        "blocking": true
+      },
+      {
+        "name": "Static Analysis",
+        "command": "vendor/bin/phpstan analyse --level=5",
+        "expected_outcome": "No errors",
+        "type": "test",
+        "required": true,
+        "blocking": true
+      },
+      {
+        "name": "Code Formatting",
+        "command": "vendor/bin/pint --test",
+        "expected_outcome": "All files properly formatted",
+        "type": "test",
+        "required": true,
+        "blocking": true
+      }
+    ],
+    "reasoning": "Medium risk refactoring - changes 14+ files but behavior should remain identical. Existing test suite provides good coverage. No new tests needed since we're not adding features, just consolidating code."
+  },
+  "qa_acceptance": {
+    "unit_tests": {
+      "required": true,
+      "commands": [
+        "vendor/bin/phpunit"
+      ],
+      "minimum_coverage": null
+    },
+    "integration_tests": {
+      "required": false,
+      "commands": [],
+      "services_to_test": []
+    },
+    "e2e_tests": {
+      "required": false,
+      "commands": [],
+      "flows": []
+    },
+    "browser_verification": {
+      "required": false,
+      "pages": []
+    },
+    "database_verification": {
+      "required": false,
+      "checks": []
+    },
+    "static_analysis": {
+      "required": true,
+      "commands": [
+        "vendor/bin/phpstan analyse --level=5"
+      ],
+      "expected": "No errors"
+    },
+    "code_formatting": {
+      "required": true,
+      "commands": [
+        "vendor/bin/pint --test"
+      ],
+      "expected": "All files formatted"
+    }
+  },
+  "qa_signoff": null,
+  "status": "in_progress",
+  "planStatus": "in_progress",
+  "xstateState": "coding",
+  "executionPhase": "coding",
+  "updated_at": "2026-03-25T08:09:15.232Z",
+  "last_updated": "2026-03-25T08:08:54.459047+00:00"
+}
