@@ -38,21 +38,12 @@ class ModuleMakeViewCommand extends ModuleMakerCommand
 
         $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
 
-        if ($this->files->exists($path = $this->getPath($name, 'blade.php')) && ! $this->option('force')) {
-            $this->logFileExist($path);
-
+        if (! $path = $this->getFilePath(name: $name, force: $this->option('force'))) {
             return true;
         }
 
-        $type = '';
+        $this->generateFile($path, $name);
 
-        $this->setStubFile("view.{$type}");
-        $this->makeDirectory($path);
-        $this->files->put($path, $this->buildClass($name));
-
-        $this->logFileCreated($name);
-
-        $folder = 'Tests/Feature';
         if ($this->option('pest')) {
             $this->call(
                 ModuleMakeTestCommand::class,
@@ -63,7 +54,6 @@ class ModuleMakeViewCommand extends ModuleMakerCommand
                     '--view' => true,
                 ]
             );
-            $type = 'pest.';
         }
 
         if ($this->option('test')) {
@@ -75,10 +65,14 @@ class ModuleMakeViewCommand extends ModuleMakerCommand
                     '--view' => true,
                 ]
             );
-            $type = 'test.';
         }
 
         return null;
+    }
+
+    protected function getPath($name, string $fileExtension = 'blade.php')
+    {
+        return parent::getPath($name, $fileExtension);
     }
 
     protected function getFolderPath(): string
