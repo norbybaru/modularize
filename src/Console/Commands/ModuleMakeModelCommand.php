@@ -59,11 +59,7 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
             return true;
         }
 
-        $this->setStubFile("model.{$type}");
-        $this->makeDirectory($path);
-        $this->files->put($path, $this->buildClass($name));
-
-        $this->logFileCreated($name);
+        $this->generateFile($path, $name, $type);
 
         // Handle --all flag by setting all related options
         if ($this->option('all')) {
@@ -173,11 +169,6 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
     protected function getFolderPath(): string
     {
         return 'Models';
-    }
-
-    protected function setStubFile(string $file): void
-    {
-        $this->currentStub = $this->currentStub.$file.'sample';
     }
 
     /**
