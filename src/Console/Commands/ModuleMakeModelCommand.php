@@ -102,6 +102,8 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
             $this->makeSeeder(name: $filename, module: $module);
         }
 
+        $this->displaySummaryTable();
+
         return null;
     }
 
