@@ -38,18 +38,13 @@ class ModuleMakeMailCommand extends ModuleMakerCommand
 
         $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
 
-        if ($this->files->exists($path = $this->getPath($name))) {
-            $this->logFileExist($name);
-
+        if (! $path = $this->getFilePath(name: $name, force: false)) {
             return true;
         }
 
-        $this->setStubFile('mail.');
-        $this->makeDirectory($path);
+        $type = '';
 
-        $this->files->put($path, $this->buildClass($name));
-
-        $this->logFileCreated($name);
+        $this->generateFile($path, $name, $type);
 
         return null;
     }
