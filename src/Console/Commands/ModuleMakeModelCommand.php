@@ -188,6 +188,19 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
     }
 
     /**
+     * Override logFileCreated to track files for summary output.
+     *
+     * @param  string  $path
+     * @param  string|null  $type
+     * @return void
+     */
+    protected function logFileCreated(string $path, ?string $type = null): void
+    {
+        $this->trackGeneratedFile($type ?? $this->type, $path);
+        parent::logFileCreated($path, $type);
+    }
+
+    /**
      * Track a generated file for summary output.
      *
      * @param  string  $type
