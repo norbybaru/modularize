@@ -5,6 +5,7 @@ namespace NorbyBaru\Modularize\Console\Commands;
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Str;
+use function Laravel\Prompts\suggest;
 
 abstract class ModuleMakerCommand extends GeneratorCommand
 {
@@ -35,7 +36,12 @@ abstract class ModuleMakerCommand extends GeneratorCommand
     public function getModuleInput(): string
     {
         if (! $this->module = $this->option('module')) {
-            $this->module = $this->ask('What is the name of the module?');
+            $this->module = suggest(
+                label: 'What is the name of the module?',
+                options: $this->getAvailableModules(),
+                placeholder: 'Start typing to search...',
+                required: true
+            );
         }
 
         return $this->module;
