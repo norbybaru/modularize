@@ -402,5 +402,26 @@ abstract class ModuleMakerCommand extends GeneratorCommand
         return $this->type;
     }
 
+    /**
+     * Get all available modules in the project.
+     *
+     * @return array
+     */
+    protected function getAvailableModules(): array
+    {
+        $moduleRootPath = $this->getModuleRootPath();
+
+        if (! is_dir($moduleRootPath)) {
+            return [];
+        }
+
+        $moduleDirectories = array_map(
+            'class_basename',
+            $this->files->directories($moduleRootPath)
+        );
+
+        return $moduleDirectories;
+    }
+
     abstract protected function getFolderPath(): string;
 }
