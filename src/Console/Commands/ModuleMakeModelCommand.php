@@ -41,6 +41,13 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
      */
     protected $type = 'Model';
 
+    /**
+     * Track generated files for summary output.
+     *
+     * @var array
+     */
+    protected array $generatedFiles = [];
+
     public function handle(): ?bool
     {
         $module = $this->getModuleInput();
@@ -178,6 +185,21 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
     protected function setStubFile(string $file): void
     {
         $this->currentStub = $this->currentStub.$file.'sample';
+    }
+
+    /**
+     * Track a generated file for summary output.
+     *
+     * @param  string  $type
+     * @param  string  $path
+     * @return void
+     */
+    protected function trackGeneratedFile(string $type, string $path): void
+    {
+        $this->generatedFiles[] = [
+            'type' => $type,
+            'path' => $path,
+        ];
     }
 
     /**
