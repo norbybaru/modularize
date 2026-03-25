@@ -216,6 +216,32 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
     }
 
     /**
+     * Display summary table of generated files.
+     *
+     * @return void
+     */
+    protected function displaySummaryTable(): void
+    {
+        if (empty($this->generatedFiles)) {
+            return;
+        }
+
+        $this->newLine();
+        $this->components->twoColumnDetail('<fg=gray>Generated Files</>', '<fg=gray>Details</>');
+        $this->newLine();
+
+        foreach ($this->generatedFiles as $file) {
+            $this->components->twoColumnDetail(
+                '<fg=green>'.$file['type'].'</>',
+                $file['path']
+            );
+        }
+
+        $this->newLine();
+        $this->components->info('Total files generated: '.count($this->generatedFiles));
+    }
+
+    /**
      * Get the console command arguments.
      *
      * @return array
