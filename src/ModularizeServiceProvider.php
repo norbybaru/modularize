@@ -52,11 +52,22 @@ class ModularizeServiceProvider extends ServiceProvider
     {
         $this->publishConfig();
 
-        if (is_dir($this->moduleRootPath = base_path(config('modularize.root_path')))) {
-            if (! config('modularize.enable')) {
-                return;
-            }
+        if (! config('modularize.enable')) {
+            return;
+        }
 
+        $this->moduleRootPath = base_path(config('modularize.root_path'));
+
+        if (! is_dir($this->moduleRootPath)) {
+            return;
+        }
+
+        // Check if modules are cached and load from cache if available
+        if ($this->modulesAreCached()) {
+            $manifest = $this->loadCachedModuleManifest();
+            $this->loadModulesFromManifest($manifest);
+        } else {
+            // Fall back to filesystem scanning
             $modules = array_map(
                 'class_basename',
                 $this->files->directories($this->moduleRootPath)
@@ -74,7 +85,6 @@ class ModularizeServiceProvider extends ServiceProvider
                 $this->autoloadViewComponents($module);
             }
         }
-
     }
 
     /**
@@ -274,6 +284,105 @@ class ModularizeServiceProvider extends ServiceProvider
         }
 
         return $manifest;
+    }
+
+    /**
+     * Load the cached module manifest.
+     *
+     * @return array
+     */
+    protected function loadCachedModuleManifest()
+    {
+        $cachePath = $this->getCachedModulesPath();
+
+        if (! $this->files->exists($cachePath)) {
+            return [
+                'modules' => [],
+                'service_providers' => [],
+                'configs' => [],
+                'console_commands' => [],
+                'routes' => [],
+                'helpers' => [],
+                'views' => [],
+                'translations' => [],
+                'view_components' => [],
+            ];
+        }
+
+        return require $cachePath;
+    }
+
+    /**
+     * Load all modules from the cached manifest.
+     *
+     * @param  array  $manifest
+     * @return void
+     */
+    protected function loadModulesFromManifest(array $manifest)
+    {
+        // Load service providers
+        foreach ($manifest['service_providers'] ?? [] as $providerClass) {
+            $this->app->register($providerClass);
+        }
+
+        // Load configs
+        foreach ($manifest['configs'] ?? [] as $module => $configKey) {
+            $configFile = "{$this->moduleRootPath}/{$module}/config.php";
+            if ($this->files->exists($configFile)) {
+                $this->mergeConfigFrom($configFile, $configKey);
+            }
+        }
+
+        // Load console commands
+        if ($this->app->runningInConsole()) {
+            foreach ($manifest['console_commands'] ?? [] as $commands) {
+                foreach ($commands as $commandClass) {
+                    $this->commands($commandClass);
+                }
+            }
+        }
+
+        // Load migrations
+        foreach ($manifest['modules'] ?? [] as $module) {
+            $this->loadMigrationsFrom("{$this->moduleRootPath}/{$module}/Database/migrations");
+        }
+
+        // Load routes
+        if (config('modularize.autoload_routes') && ! ($this->app instanceof CachesRoutes && $this->app->routesAreCached())) {
+            foreach ($manifest['routes'] ?? [] as $routeFiles) {
+                foreach ($routeFiles as $routeFile) {
+                    if ($this->files->exists($routeFile)) {
+                        include $routeFile;
+                    }
+                }
+            }
+        }
+
+        // Load helpers
+        foreach ($manifest['helpers'] ?? [] as $helperFile) {
+            if ($this->files->exists($helperFile)) {
+                include_once $helperFile;
+            }
+        }
+
+        // Load views
+        foreach ($manifest['views'] ?? [] as $viewConfig) {
+            if ($this->files->isDirectory($viewConfig['path'])) {
+                $this->loadViewsFrom($viewConfig['path'], $viewConfig['namespace']);
+            }
+        }
+
+        // Load translations
+        foreach ($manifest['translations'] ?? [] as $translationConfig) {
+            if ($this->files->isDirectory($translationConfig['path'])) {
+                $this->loadTranslationsFrom($translationConfig['path'], $translationConfig['namespace']);
+            }
+        }
+
+        // Register view components
+        foreach ($manifest['view_components'] ?? [] as $componentConfig) {
+            Blade::componentNamespace($componentConfig['namespace'], $componentConfig['alias']);
+        }
     }
 
     private function getModuleNamespace(string $name): string
