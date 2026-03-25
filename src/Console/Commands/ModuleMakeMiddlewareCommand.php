@@ -13,7 +13,8 @@ class ModuleMakeMiddlewareCommand extends ModuleMakerCommand
      */
     protected $signature = 'module:make:middleware
                             {name : The name of the middleware}
-                            {--module= : Name of module middleware should belong to}';
+                            {--module= : Name of module middleware should belong to}
+                            {--force : Create the class even if the component already exists}';
 
     /**
      * The console command description.
@@ -37,21 +38,13 @@ class ModuleMakeMiddlewareCommand extends ModuleMakerCommand
 
         $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
 
-        if ($this->files->exists($path = $this->getPath($name))) {
-            $this->logFileExist($name);
-
+        if (! $path = $this->getFilePath(name: $name, force: $this->option('force'))) {
             return true;
         }
 
         $type = '';
-        $this->setStubFile("middleware.{$type}");
-        $this->makeDirectory($path);
 
-        $stub = $this->buildClass($name);
-
-        $this->files->put($path, $stub);
-
-        $this->logFileCreated($name);
+        $this->generateFile($path, $name, $type);
 
         return null;
     }

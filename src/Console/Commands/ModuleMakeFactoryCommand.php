@@ -12,7 +12,8 @@ class ModuleMakeFactoryCommand extends ModuleMakerCommand
     protected $signature = 'module:make:factory
                 {name : The name of the factory}
                 {--module= : Name of module policy should belong to}
-                {--model= : The name of the model for the factory}';
+                {--model= : The name of the model for the factory}
+                {--force : Create the class even if the component already exists}';
 
     /**
      * The console command description.
@@ -43,9 +44,7 @@ class ModuleMakeFactoryCommand extends ModuleMakerCommand
 
         $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
 
-        if ($this->files->exists($path = $this->getPath($name))) {
-            $this->logFileExist($name);
-
+        if (! $path = $this->getFilePath(name: $name, force: $this->option('force'))) {
             return true;
         }
 

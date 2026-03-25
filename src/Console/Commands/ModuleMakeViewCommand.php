@@ -38,21 +38,14 @@ class ModuleMakeViewCommand extends ModuleMakerCommand
 
         $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
 
-        if ($this->files->exists($path = $this->getPath($name, 'blade.php')) && ! $this->option('force')) {
-            $this->logFileExist($path);
-
+        if (! $path = $this->getFilePath(name: $name, force: $this->option('force'))) {
             return true;
         }
 
         $type = '';
 
-        $this->setStubFile("view.{$type}");
-        $this->makeDirectory($path);
-        $this->files->put($path, $this->buildClass($name));
+        $this->generateFile($path, $name, $type);
 
-        $this->logFileCreated($name);
-
-        $folder = 'Tests/Feature';
         if ($this->option('pest')) {
             $this->call(
                 ModuleMakeTestCommand::class,
@@ -63,7 +56,6 @@ class ModuleMakeViewCommand extends ModuleMakerCommand
                     '--view' => true,
                 ]
             );
-            $type = 'pest.';
         }
 
         if ($this->option('test')) {
@@ -75,7 +67,6 @@ class ModuleMakeViewCommand extends ModuleMakerCommand
                     '--view' => true,
                 ]
             );
-            $type = 'test.';
         }
 
         return null;
@@ -84,5 +75,16 @@ class ModuleMakeViewCommand extends ModuleMakerCommand
     protected function getFolderPath(): string
     {
         return 'Views';
+    }
+
+    protected function getFilePath(string $name, bool $force = false): ?string
+    {
+        if ($this->files->exists($path = $this->getPath($name, 'blade.php')) && ! $force) {
+            $this->logFileExist($path);
+
+            return null;
+        }
+
+        return $path;
     }
 }
