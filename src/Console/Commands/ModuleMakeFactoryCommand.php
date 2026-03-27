@@ -35,11 +35,6 @@ class ModuleMakeFactoryCommand extends ModuleMakerCommand
         $filename = $this->getNameInput();
         $folder = $this->getFolderPath();
 
-        $type = '';
-        if ($model = $this->option('model')) {
-            $model = $this->qualifyClass($module.'\\'.'Models'.'\\'.$model);
-        }
-
         $filename = $this->appendSuffix(filename: $filename);
 
         $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
@@ -48,21 +43,14 @@ class ModuleMakeFactoryCommand extends ModuleMakerCommand
             return true;
         }
 
-        $this->setStubFile("factory.{$type}");
-        $this->makeDirectory($path);
+        $type = '';
+        $model = null;
 
-        $stub = $this->buildClass($name);
-
-        if ($model) {
-            $this->files->put($path, $this->buildModel($stub, $model));
-            $this->logFileCreated($name);
-
-            return null;
+        if ($modelOption = $this->option('model')) {
+            $model = $this->qualifyClass($module.'\\'.'Models'.'\\'.$modelOption);
         }
 
-        $this->files->put($path, $stub);
-
-        $this->logFileCreated($name);
+        $this->generateFileWithModel($path, $name, $model, $type);
 
         return null;
     }

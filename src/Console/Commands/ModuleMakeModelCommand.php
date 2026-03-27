@@ -41,6 +41,11 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
      */
     protected $type = 'Model';
 
+    /**
+     * Track generated files for summary output.
+     */
+    protected array $generatedFiles = [];
+
     public function handle(): ?bool
     {
         $module = $this->getModuleInput();
@@ -59,11 +64,7 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
             return true;
         }
 
-        $this->setStubFile("model.{$type}");
-        $this->makeDirectory($path);
-        $this->files->put($path, $this->buildClass($name));
-
-        $this->logFileCreated($name);
+        $this->generateFile($path, $name, $type);
 
         // Handle --all flag by setting all related options
         if ($this->option('all')) {
@@ -94,6 +95,8 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
         if ($this->option('seed')) {
             $this->makeSeeder(name: $filename, module: $module);
         }
+
+        $this->displaySummaryTable();
 
         return null;
     }
@@ -175,9 +178,48 @@ class ModuleMakeModelCommand extends ModuleMakerCommand
         return 'Models';
     }
 
-    protected function setStubFile(string $file): void
+    /**
+     * Override logFileCreated to track files for summary output.
+     */
+    protected function logFileCreated(string $path, ?string $type = null): void
     {
-        $this->currentStub = $this->currentStub.$file.'sample';
+        $this->trackGeneratedFile($type ?? $this->type, $path);
+        parent::logFileCreated($path, $type);
+    }
+
+    /**
+     * Track a generated file for summary output.
+     */
+    protected function trackGeneratedFile(string $type, string $path): void
+    {
+        $this->generatedFiles[] = [
+            'type' => $type,
+            'path' => $path,
+        ];
+    }
+
+    /**
+     * Display summary table of generated files.
+     */
+    protected function displaySummaryTable(): void
+    {
+        if (empty($this->generatedFiles)) {
+            return;
+        }
+
+        $this->newLine();
+        $this->components->twoColumnDetail('<fg=gray>Generated Files</>', '<fg=gray>Details</>');
+        $this->newLine();
+
+        foreach ($this->generatedFiles as $file) {
+            $this->components->twoColumnDetail(
+                '<fg=green>'.$file['type'].'</>',
+                $file['path']
+            );
+        }
+
+        $this->newLine();
+        $this->components->info('Total files generated: '.count($this->generatedFiles));
     }
 
     /**

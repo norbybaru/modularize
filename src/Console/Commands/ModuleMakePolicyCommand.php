@@ -15,8 +15,7 @@ class ModuleMakePolicyCommand extends ModuleMakerCommand
                             {name : The name of the policy}
                             {--module= : Name of module policy should belong to}
                             {--model= : The model that the policy applies to}
-                            {--guard= : The guard that the policy relies on}
-                            {--force : Create the class even if the component already exists}';
+                            {--guard= : The guard that the policy relies on}';
 
     /**
      * The console command description.
@@ -40,36 +39,21 @@ class ModuleMakePolicyCommand extends ModuleMakerCommand
 
         $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
 
-        if (! $path = $this->getFilePath(name: $name, force: $this->option('force'))) {
+        if (! $path = $this->getFilePath(name: $name)) {
             return true;
         }
 
         $type = '';
         $model = null;
 
-        if ($model = $this->option('model')) {
+        if ($modelOption = $this->option('model')) {
             $type = 'model.';
-            $model = $this->qualifyClass($module.'\\'.'Models'.'\\'.$model);
+            $model = $this->qualifyClass($module.'\\'.'Models'.'\\'.$modelOption);
         }
 
-        if ($model) {
-            $this->generateFileWithModel($path, $name, $type, $model);
-
-            return null;
-        }
-
-        $this->generateFile($path, $name, $type);
+        $this->generateFileWithModel($path, $name, $model, $type);
 
         return null;
-    }
-
-    protected function generateFileWithModel(string $path, string $name, string $type, string $model): void
-    {
-        $this->setStubFile("policy.{$type}");
-        $this->makeDirectory($path);
-        $stub = $this->buildClass($name);
-        $this->files->put($path, $this->buildModel($stub, $model));
-        $this->logFileCreated($name);
     }
 
     protected function getFolderPath(): string
