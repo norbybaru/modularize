@@ -111,6 +111,136 @@ php artisan module:make:controller ProductController --module=Product --api --mo
 php artisan module:make:controller SendNotification --module=Notification --invokable --force
 ```
 
+### Generate Model
+
+Create a model for a module using the `module:make:model` command.
+
+#### Basic Model
+
+Generate a plain model:
+
+```bash
+php artisan module:make:model User --module=User
+```
+
+This creates a basic model class in `modules/User/Models/User.php`.
+
+#### Model Options
+
+##### Generate All Related Files (`--all` or `-a`)
+
+Generate a model with migration, seeder, factory, policy, and resource controller:
+
+```bash
+php artisan module:make:model Product --module=Product --all
+```
+
+This creates:
+- Model: `modules/Product/Models/Product.php`
+- Migration: `modules/Product/Database/Migrations/YYYY_MM_DD_HHMMSS_create_products_table.php`
+- Factory: `modules/Product/Database/Factories/ProductFactory.php`
+- Seeder: `modules/Product/Database/Seeders/ProductSeeder.php`
+- Policy: `modules/Product/Policies/ProductPolicy.php`
+- Resource Controller: `modules/Product/Controllers/ProductController.php`
+
+##### Migration (`--migration` or `-m`)
+
+Generate a model with a migration file:
+
+```bash
+php artisan module:make:model Post --module=Blog --migration
+```
+
+##### Factory (`--factory` or `-f`)
+
+Generate a model with a factory:
+
+```bash
+php artisan module:make:model Comment --module=Blog --factory
+```
+
+##### Seeder (`--seed` or `-s`)
+
+Generate a model with a seeder:
+
+```bash
+php artisan module:make:model Category --module=Blog --seed
+```
+
+##### Controller (`--controller` or `-c`)
+
+Generate a model with a controller:
+
+```bash
+php artisan module:make:model Order --module=Order --controller
+```
+
+##### Policy (`--policy`)
+
+Generate a model with a policy:
+
+```bash
+php artisan module:make:model Invoice --module=Billing --policy
+```
+
+##### Pivot Model (`--pivot` or `-p`)
+
+Generate a custom intermediate table model:
+
+```bash
+php artisan module:make:model RoleUser --module=User --pivot
+```
+
+##### API Controller (`--api`)
+
+When used with `--controller`, excludes `create` and `edit` methods:
+
+```bash
+php artisan module:make:model Product --module=Product --controller --api
+```
+
+##### Invokable Controller (`--invokable` or `-i`)
+
+When used with `--controller`, generates a single-action controller:
+
+```bash
+php artisan module:make:model Report --module=Reporting --controller --invokable
+```
+
+##### Resource Controller (`--resource` or `-r`)
+
+When used with `--controller`, generates a resource controller with all CRUD methods:
+
+```bash
+php artisan module:make:model Customer --module=Customer --controller --resource
+```
+
+##### Force Creation (`--force`)
+
+Overwrite existing model:
+
+```bash
+php artisan module:make:model User --module=User --force
+```
+
+#### Combined Options
+
+You can combine multiple options:
+
+```bash
+# Model with migration and factory
+php artisan module:make:model Product --module=Product --migration --factory
+
+# Model with API resource controller and policy
+php artisan module:make:model Order --module=Order --controller --api --resource --policy
+
+# Complete model setup with all files
+php artisan module:make:model Article --module=Blog --all
+
+# Pivot model with migration
+php artisan module:make:model PostTag --module=Blog --pivot --migration
+```
+
 Credits to:
 - ["Modular Structure in Laravel 5" tutorial](http://ziyahanalbeniz.blogspot.com.tr/2015/03/modular-structure-in-laravel-5.html)
 - ["Artem Schander - L5 Modular"](https://github.com/Artem-Schander/L5Modular)
