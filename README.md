@@ -43,7 +43,73 @@ php artisan module:make:
 
 ## Advance Usage
 
+### Generate Controller
 
+Create a controller for a module using the `module:make:controller` command.
+
+#### Basic Controller
+
+Generate a plain controller:
+
+```bash
+php artisan module:make:controller UserController --module=User
+```
+
+This creates a basic controller class in `modules/User/Controllers/UserController.php`.
+
+#### Controller Options
+
+##### API Controller (`--api`)
+
+Generate an API controller without `create` and `edit` methods:
+
+```bash
+php artisan module:make:controller ApiUserController --module=User --api
+```
+
+##### Invokable Controller (`--invokable` or `-i`)
+
+Generate a single-action controller with an `__invoke` method:
+
+```bash
+php artisan module:make:controller ProcessPayment --module=Payment --invokable
+```
+
+##### Resource Controller (`--resource` or `-r`)
+
+Generate a resource controller with all CRUD methods:
+
+```bash
+php artisan module:make:controller ProductController --module=Product --resource
+```
+
+##### Model-Based Resource Controller (`--model` or `-m`)
+
+Generate a resource controller with type-hinted model:
+
+```bash
+php artisan module:make:controller OrderController --module=Order --model=Order
+```
+
+##### Force Creation (`--force`)
+
+Overwrite existing controller:
+
+```bash
+php artisan module:make:controller UserController --module=User --force
+```
+
+#### Combined Options
+
+You can combine multiple options:
+
+```bash
+# API resource controller with model
+php artisan module:make:controller ProductController --module=Product --api --model=Product
+
+# Invokable controller (force overwrite)
+php artisan module:make:controller SendNotification --module=Notification --invokable --force
+```
 
 Credits to:
 - ["Modular Structure in Laravel 5" tutorial](http://ziyahanalbeniz.blogspot.com.tr/2015/03/modular-structure-in-laravel-5.html)
