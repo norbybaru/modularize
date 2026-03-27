@@ -6,6 +6,8 @@ use Illuminate\Console\GeneratorCommand;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Str;
 
+use function Laravel\Prompts\suggest;
+
 abstract class ModuleMakerCommand extends GeneratorCommand
 {
     /**
@@ -35,7 +37,12 @@ abstract class ModuleMakerCommand extends GeneratorCommand
     public function getModuleInput(): string
     {
         if (! $this->module = $this->option('module')) {
-            $this->module = $this->ask('What is the name of the module?');
+            $this->module = suggest(
+                label: 'What is the name of the module?',
+                options: $this->getAvailableModules(),
+                placeholder: 'Start typing to search...',
+                required: true
+            );
         }
 
         return $this->module;
@@ -333,6 +340,38 @@ abstract class ModuleMakerCommand extends GeneratorCommand
         $this->logFileCreated($filename);
     }
 
+    protected function generateFileWithCustomStub(string $path, string $filename, string $stubFile): void
+    {
+        $this->setStubFile($stubFile);
+        $this->makeDirectory($path);
+
+        $stub = $this->buildClass($filename);
+
+        $this->files->put($path, $stub);
+
+        $this->logFileCreated($filename);
+    }
+
+    protected function generateFileWithModel(string $path, string $filename, ?string $model, string $stubType = ''): void
+    {
+        $stubPrefix = strtolower($this->type);
+        $this->setStubFile("{$stubPrefix}.{$stubType}");
+        $this->makeDirectory($path);
+
+        $stub = $this->buildClass($filename);
+
+        if ($model) {
+            $this->files->put($path, $this->buildModel($stub, $model));
+            $this->logFileCreated($filename);
+
+            return;
+        }
+
+        $this->files->put($path, $stub);
+
+        $this->logFileCreated($filename);
+    }
+
     protected function setStubFile(string $file): void
     {
         $this->currentStub = $this->getTemplatePath($file);
@@ -400,6 +439,25 @@ abstract class ModuleMakerCommand extends GeneratorCommand
     protected function getSuffix(): string
     {
         return $this->type;
+    }
+
+    /**
+     * Get all available modules in the project.
+     */
+    protected function getAvailableModules(): array
+    {
+        $moduleRootPath = $this->getModuleRootPath();
+
+        if (! is_dir($moduleRootPath)) {
+            return [];
+        }
+
+        $moduleDirectories = array_map(
+            'class_basename',
+            $this->files->directories($moduleRootPath)
+        );
+
+        return $moduleDirectories;
     }
 
     abstract protected function getFolderPath(): string;

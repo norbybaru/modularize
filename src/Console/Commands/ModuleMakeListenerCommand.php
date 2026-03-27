@@ -32,7 +32,7 @@ class ModuleMakeListenerCommand extends ModuleMakerCommand
      */
     protected $type = 'Listener';
 
-    public function handle()
+    public function handle(): ?bool
     {
         $module = $this->getModuleInput();
         $filename = Str::studly($this->getNameInput());
@@ -45,6 +45,7 @@ class ModuleMakeListenerCommand extends ModuleMakerCommand
         }
 
         $type = '';
+        $event = null;
 
         if ($event = $this->option('event')) {
             $type = 'event.';
@@ -55,18 +56,7 @@ class ModuleMakeListenerCommand extends ModuleMakerCommand
             $type .= 'queued.';
         }
 
-        if ($event) {
-            $this->setStubFile(strtolower($this->type).".{$type}");
-            $this->makeDirectory($path);
-
-            $stub = $this->buildClass($name);
-            $this->files->put($path, $this->buildModel($stub, $event));
-            $this->logFileCreated($name);
-
-            return null;
-        }
-
-        $this->generateFile($path, $name, $type);
+        $this->generateFileWithModel($path, $name, $event, $type);
 
         return null;
     }

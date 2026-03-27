@@ -53,10 +53,7 @@ class ModuleMakeComponentCommand extends ModuleMakerCommand
             $type = 'inline.';
         }
 
-        $this->setStubFile("view-component.{$type}");
-        $this->makeDirectory($path);
-
-        $this->files->put($path, $this->buildClass($name));
+        $this->generateFileWithCustomStub($path, $name, "view-component.{$type}");
 
         if (! $this->option('inline')) {
             $this->call(
@@ -68,8 +65,6 @@ class ModuleMakeComponentCommand extends ModuleMakerCommand
                 ]
             );
         }
-
-        $this->logFileCreated($name);
 
         return null;
     }

@@ -12,7 +12,8 @@ class ModuleMakeFactoryCommand extends ModuleMakerCommand
     protected $signature = 'module:make:factory
                 {name : The name of the factory}
                 {--module= : Name of module policy should belong to}
-                {--model= : The name of the model for the factory}';
+                {--model= : The name of the model for the factory}
+                {--force : Create the class even if the component already exists}';
 
     /**
      * The console command description.
@@ -34,36 +35,22 @@ class ModuleMakeFactoryCommand extends ModuleMakerCommand
         $filename = $this->getNameInput();
         $folder = $this->getFolderPath();
 
-        $type = '';
-        if ($model = $this->option('model')) {
-            $model = $this->qualifyClass($module.'\\'.'Models'.'\\'.$model);
-        }
-
         $filename = $this->appendSuffix(filename: $filename);
 
         $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
 
-        if ($this->files->exists($path = $this->getPath($name))) {
-            $this->logFileExist($name);
-
+        if (! $path = $this->getFilePath(name: $name, force: $this->option('force'))) {
             return true;
         }
 
-        $this->setStubFile("factory.{$type}");
-        $this->makeDirectory($path);
+        $type = '';
+        $model = null;
 
-        $stub = $this->buildClass($name);
-
-        if ($model) {
-            $this->files->put($path, $this->buildModel($stub, $model));
-            $this->logFileCreated($name);
-
-            return null;
+        if ($modelOption = $this->option('model')) {
+            $model = $this->qualifyClass($module.'\\'.'Models'.'\\'.$modelOption);
         }
 
-        $this->files->put($path, $stub);
-
-        $this->logFileCreated($name);
+        $this->generateFileWithModel($path, $name, $model, $type);
 
         return null;
     }
