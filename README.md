@@ -41,6 +41,315 @@ Open your terminal and run command to list all possible commands:
 php artisan module:make:
 ```
 
+## Usage Examples
+
+This section demonstrates real-world scenarios for building complete features using the modularize package.
+
+### Example 1: Building a Complete Blog Module
+
+Create a fully-functional blog module with posts, categories, and comments:
+
+```bash
+# Step 1: Create the Blog module structure
+php artisan module:make Module Blog
+
+# Step 2: Generate Post model with all related files
+php artisan module:make:model Post --module=Blog --all
+# This creates: Model, Migration, Factory, Seeder, Policy, and Resource Controller
+
+# Step 3: Generate Category model with migration and factory
+php artisan module:make:model Category --module=Blog --migration --factory
+
+# Step 4: Generate Comment model with migration and policy
+php artisan module:make:model Comment --module=Blog --migration --policy
+
+# Step 5: Create pivot model for post-category relationship
+php artisan module:make:model PostCategory --module=Blog --pivot --migration
+
+# Step 6: Add request validation classes
+php artisan module:make:request StorePostRequest --module=Blog
+php artisan module:make:request UpdatePostRequest --module=Blog
+php artisan module:make:request StoreCommentRequest --module=Blog
+
+# Step 7: Create view components
+php artisan module:make:component PostCard --module=Blog --test
+php artisan module:make:component CommentList --module=Blog
+
+# Step 8: Add views for post management
+php artisan module:make:view posts.index --module=Blog
+php artisan module:make:view posts.show --module=Blog
+php artisan module:make:view posts.create --module=Blog
+
+# Step 9: Verify the module structure
+php artisan module:list
+```
+
+**Result:** A complete blog module with posts, categories, comments, validation, views, and components.
+
+### Example 2: Building a RESTful API with Resources
+
+Create a complete API module for product management:
+
+```bash
+# Step 1: Create API module
+php artisan module:make Module Api
+
+# Step 2: Generate Product model with API controller and related files
+php artisan module:make:model Product --module=Api --all --api
+# The --api flag ensures the controller has no create/edit methods (API-only)
+
+# Step 3: Create API resources for JSON transformation
+php artisan module:make:resource ProductResource --module=Api
+php artisan module:make:resource ProductCollection --module=Api --collection
+
+# Step 4: Add API request validation
+php artisan module:make:request StoreProductRequest --module=Api
+php artisan module:make:request UpdateProductRequest --module=Api
+
+# Step 5: Create middleware for API authentication
+php artisan module:make:middleware ValidateApiToken --module=Api
+
+# Step 6: Generate feature tests for API endpoints
+php artisan module:make:test ProductApiTest --module=Api --pest
+php artisan module:make:test ProductAuthTest --module=Api --pest
+
+# Step 7: Create event for product updates
+php artisan module:make:event ProductUpdated --module=Api
+
+# Step 8: Create listener for product update notifications
+php artisan module:make:listener SendProductUpdateNotification --module=Api --event=ProductUpdated --queued
+```
+
+**Result:** A production-ready RESTful API with models, controllers, resources, validation, authentication, and events.
+
+### Example 3: Creating a User Management System
+
+Build a complete user management module with authentication and authorization:
+
+```bash
+# Step 1: Create User module
+php artisan module:make Module User
+
+# Step 2: Generate User model with all files
+php artisan module:make:model User --module=User --all
+
+# Step 3: Generate Role and Permission models
+php artisan module:make:model Role --module=User --migration --factory --policy
+php artisan module:make:model Permission --module=User --migration --factory
+
+# Step 4: Create pivot models for relationships
+php artisan module:make:model RoleUser --module=User --pivot --migration
+php artisan module:make:model PermissionRole --module=User --pivot --migration
+
+# Step 5: Add middleware for role checking
+php artisan module:make:middleware CheckUserRole --module=User
+php artisan module:make:middleware CheckPermission --module=User
+
+# Step 6: Create request validation
+php artisan module:make:request CreateUserRequest --module=User
+php artisan module:make:request UpdateUserRequest --module=User
+php artisan module:make:request AssignRoleRequest --module=User
+
+# Step 7: Generate events and listeners
+php artisan module:make:event UserRegistered --module=User
+php artisan module:make:event UserRoleChanged --module=User
+php artisan module:make:listener SendWelcomeEmail --module=User --event=UserRegistered --queued
+php artisan module:make:listener ClearUserCache --module=User --event=UserRoleChanged
+
+# Step 8: Create mail templates
+php artisan module:make:mail WelcomeEmail --module=User --markdown=emails.user.welcome
+php artisan module:make:mail PasswordReset --module=User --markdown=emails.user.password-reset
+
+# Step 9: Add comprehensive tests
+php artisan module:make:test UserRegistrationTest --module=User --pest
+php artisan module:make:test RolePermissionTest --module=User --pest
+php artisan module:make:test UserPolicyTest --module=User --pest --unit
+```
+
+**Result:** A complete user management system with roles, permissions, authentication, email notifications, and comprehensive tests.
+
+### Example 4: E-commerce Product Catalog Module
+
+Build a product catalog module for an e-commerce application:
+
+```bash
+# Step 1: Create Product module
+php artisan module:make Module Product
+
+# Step 2: Generate core models using --all flag
+php artisan module:make:model Product --module=Product --all
+php artisan module:make:model Category --module=Product --all
+
+# Step 3: Create supporting models
+php artisan module:make:model Brand --module=Product --migration --factory
+php artisan module:make:model ProductImage --module=Product --migration --factory
+php artisan module:make:model ProductVariant --module=Product --migration --factory
+
+# Step 4: Create pivot model for product-category relationship
+php artisan module:make:model CategoryProduct --module=Product --pivot --migration
+
+# Step 5: Add request validation
+php artisan module:make:request StoreProductRequest --module=Product
+php artisan module:make:request UpdateProductRequest --module=Product
+php artisan module:make:request StoreCategoryRequest --module=Product
+
+# Step 6: Generate API resources
+php artisan module:make:resource ProductResource --module=Product
+php artisan module:make:resource ProductCollection --module=Product --collection
+php artisan module:make:resource CategoryResource --module=Product
+
+# Step 7: Create jobs for background processing
+php artisan module:make:job ProcessProductImport --module=Product
+php artisan module:make:job GenerateProductThumbnails --module=Product
+php artisan module:make:job UpdateProductInventory --module=Product
+
+# Step 8: Add events and listeners
+php artisan module:make:event ProductCreated --module=Product
+php artisan module:make:event ProductPriceChanged --module=Product
+php artisan module:make:listener UpdateSearchIndex --module=Product --event=ProductCreated --queued
+php artisan module:make:listener NotifyPriceWatchers --module=Product --event=ProductPriceChanged --queued
+
+# Step 9: Create view components
+php artisan module:make:component ProductCard --module=Product --test
+php artisan module:make:component CategoryMenu --module=Product
+php artisan module:make:component PriceDisplay --module=Product --inline
+
+# Step 10: Generate comprehensive tests
+php artisan module:make:test ProductCrudTest --module=Product --pest
+php artisan module:make:test CategoryTest --module=Product --pest
+php artisan module:make:test ProductSearchTest --module=Product --pest
+```
+
+**Result:** A complete e-commerce product catalog with categories, brands, variants, images, import jobs, and real-time notifications.
+
+### Example 5: Order Processing Module
+
+Create an order processing module with events and notifications:
+
+```bash
+# Step 1: Create Order module
+php artisan module:make Module Order
+
+# Step 2: Generate Order model with all files
+php artisan module:make:model Order --module=Order --all
+
+# Step 3: Create related models
+php artisan module:make:model OrderItem --module=Order --migration --factory
+php artisan module:make:model OrderStatus --module=Order --migration --seeder
+php artisan module:make:model ShippingAddress --module=Order --migration
+
+# Step 4: Add request validation
+php artisan module:make:request CreateOrderRequest --module=Order
+php artisan module:make:request UpdateOrderStatusRequest --module=Order
+php artisan module:make:request CancelOrderRequest --module=Order
+
+# Step 5: Create jobs for order processing
+php artisan module:make:job ProcessOrder --module=Order
+php artisan module:make:job CalculateOrderTotals --module=Order
+php artisan module:make:job SendOrderToWarehouse --module=Order
+
+# Step 6: Create events for order lifecycle
+php artisan module:make:event OrderPlaced --module=Order
+php artisan module:make:event OrderShipped --module=Order
+php artisan module:make:event OrderDelivered --module=Order
+php artisan module:make:event OrderCancelled --module=Order
+
+# Step 7: Create listeners for notifications
+php artisan module:make:listener SendOrderConfirmation --module=Order --event=OrderPlaced --queued
+php artisan module:make:listener UpdateInventory --module=Order --event=OrderPlaced --queued
+php artisan module:make:listener SendShippingNotification --module=Order --event=OrderShipped --queued
+php artisan module:make:listener ProcessRefund --module=Order --event=OrderCancelled --queued
+
+# Step 8: Generate mail templates
+php artisan module:make:mail OrderConfirmation --module=Order --markdown=emails.order.confirmation
+php artisan module:make:mail ShippingUpdate --module=Order --markdown=emails.order.shipping
+php artisan module:make:mail OrderCancellation --module=Order --markdown=emails.order.cancellation
+
+# Step 9: Create notifications
+php artisan module:make:notification OrderStatusChanged --module=Order
+php artisan module:make:notification PaymentReceived --module=Order
+
+# Step 10: Add API resources
+php artisan module:make:resource OrderResource --module=Order
+php artisan module:make:resource OrderCollection --module=Order --collection
+
+# Step 11: Generate tests
+php artisan module:make:test OrderProcessingTest --module=Order --pest
+php artisan module:make:test OrderStatusTest --module=Order --pest
+php artisan module:make:test OrderEventTest --module=Order --pest --unit
+```
+
+**Result:** A complete order processing module with lifecycle events, notifications, background jobs, and comprehensive testing.
+
+### Example 6: Quick Prototyping with --all Flag
+
+When you need to rapidly prototype a feature, use the `--all` flag to generate everything at once:
+
+```bash
+# Create a new Invoice module with complete CRUD in seconds
+php artisan module:make Module Invoice
+
+# Generate everything for the Invoice model in ONE command
+php artisan module:make:model Invoice --module=Invoice --all
+
+# What gets created:
+# ✓ Invoice Model (modules/Invoice/Models/Invoice.php)
+# ✓ CreateInvoicesTable Migration (modules/Invoice/Database/Migrations/...)
+# ✓ InvoiceFactory (modules/Invoice/Database/Factories/InvoiceFactory.php)
+# ✓ InvoiceSeeder (modules/Invoice/Database/Seeders/InvoiceSeeder.php)
+# ✓ InvoicePolicy (modules/Invoice/Policies/InvoicePolicy.php)
+# ✓ InvoiceController with all CRUD methods (modules/Invoice/Controllers/InvoiceController.php)
+
+# Add validation and you're ready to go
+php artisan module:make:request StoreInvoiceRequest --module=Invoice
+php artisan module:make:request UpdateInvoiceRequest --module=Invoice
+
+# Add a quick test
+php artisan module:make:test InvoiceTest --module=Invoice --pest
+
+# View your module
+php artisan module:list
+```
+
+**Result:** A complete CRUD module ready for development in under a minute!
+
+### Example 7: Multi-Tenant Application Structure
+
+Organize a multi-tenant SaaS application with separate domain modules:
+
+```bash
+# Step 1: Create Tenant management module
+php artisan module:make Module Tenant
+php artisan module:make:model Tenant --module=Tenant --all
+php artisan module:make:model TenantUser --module=Tenant --pivot --migration
+php artisan module:make:middleware IdentifyTenant --module=Tenant
+
+# Step 2: Create Subscription module
+php artisan module:make Module Subscription
+php artisan module:make:model Plan --module=Subscription --migration --seeder
+php artisan module:make:model Subscription --module=Subscription --all
+php artisan module:make:job ProcessSubscriptionRenewal --module=Subscription
+php artisan module:make:event SubscriptionExpired --module=Subscription
+
+# Step 3: Create Billing module
+php artisan module:make Module Billing
+php artisan module:make:model Invoice --module=Billing --all
+php artisan module:make:model Payment --module=Billing --migration --factory
+php artisan module:make:job ProcessPayment --module=Billing
+php artisan module:make:mail InvoiceCreated --module=Billing --markdown=emails.billing.invoice
+
+# Step 4: Create Dashboard module (tenant-specific)
+php artisan module:make Module Dashboard
+php artisan module:make:controller DashboardController --module=Dashboard --resource
+php artisan module:make:view index --module=Dashboard --test
+php artisan module:make:component StatsCard --module=Dashboard --test
+
+# Step 5: Verify all modules
+php artisan module:list
+```
+
+**Result:** A well-organized multi-tenant application with clear separation of concerns across Tenant, Subscription, Billing, and Dashboard modules.
+
 ## Advance Usage
 
 ### Generate Controller
