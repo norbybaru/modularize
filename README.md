@@ -241,6 +241,680 @@ php artisan module:make:model Article --module=Blog --all
 php artisan module:make:model PostTag --module=Blog --pivot --migration
 ```
 
+### Generate Migration
+
+Create a database migration for a module using the `module:make:migration` command.
+
+#### Basic Migration
+
+Generate a plain migration:
+
+```bash
+php artisan module:make:migration create_users_table --module=User
+```
+
+This creates a migration file in `modules/User/Database/Migrations/`.
+
+#### Migration Options
+
+##### Create Table (`--create`)
+
+Generate a migration to create a new table:
+
+```bash
+php artisan module:make:migration create_products_table --module=Product --create=products
+```
+
+The table name will automatically be pluralized.
+
+##### Update Table (`--table`)
+
+Generate a migration to modify an existing table:
+
+```bash
+php artisan module:make:migration add_status_to_orders --module=Order --table=orders
+```
+
+The table name will automatically be pluralized.
+
+#### Combined Options
+
+```bash
+# Create users table migration
+php artisan module:make:migration create_users_table --module=User --create=user
+
+# Modify existing products table
+php artisan module:make:migration add_price_to_products --module=Product --table=product
+```
+
+### Generate Request
+
+Create a form request validation class for a module using the `module:make:request` command.
+
+#### Basic Request
+
+Generate a form request:
+
+```bash
+php artisan module:make:request StoreUserRequest --module=User
+```
+
+This creates a request class in `modules/User/Requests/StoreUserRequest.php`.
+
+#### Request Options
+
+##### Force Creation (`--force`)
+
+Overwrite existing request:
+
+```bash
+php artisan module:make:request UpdateProductRequest --module=Product --force
+```
+
+#### Example Usage
+
+```bash
+# Create store request
+php artisan module:make:request StoreOrderRequest --module=Order
+
+# Create update request
+php artisan module:make:request UpdateOrderRequest --module=Order
+```
+
+### Generate Factory
+
+Create a model factory for a module using the `module:make:factory` command.
+
+#### Basic Factory
+
+Generate a factory:
+
+```bash
+php artisan module:make:factory UserFactory --module=User
+```
+
+This creates a factory in `modules/User/Database/Factories/UserFactory.php`.
+
+#### Factory Options
+
+##### Model-Based Factory (`--model`)
+
+Generate a factory for a specific model:
+
+```bash
+php artisan module:make:factory ProductFactory --module=Product --model=Product
+```
+
+##### Force Creation (`--force`)
+
+Overwrite existing factory:
+
+```bash
+php artisan module:make:factory UserFactory --module=User --force
+```
+
+#### Combined Options
+
+```bash
+# Factory with model
+php artisan module:make:factory OrderFactory --module=Order --model=Order
+
+# Force overwrite factory with model
+php artisan module:make:factory ProductFactory --module=Product --model=Product --force
+```
+
+### Generate Seeder
+
+Create a database seeder for a module using the `module:make:seeder` command.
+
+#### Basic Seeder
+
+Generate a seeder:
+
+```bash
+php artisan module:make:seeder UserSeeder --module=User
+```
+
+This creates a seeder in `modules/User/Database/Seeders/UserSeeder.php`.
+
+#### Seeder Options
+
+##### Model-Based Seeder (`--model`)
+
+Generate a seeder for a specific model:
+
+```bash
+php artisan module:make:seeder ProductSeeder --module=Product --model=Product
+```
+
+##### Force Creation (`--force`)
+
+Overwrite existing seeder:
+
+```bash
+php artisan module:make:seeder UserSeeder --module=User --force
+```
+
+#### Combined Options
+
+```bash
+# Seeder with model
+php artisan module:make:seeder CategorySeeder --module=Blog --model=Category
+
+# Force overwrite seeder
+php artisan module:make:seeder ProductSeeder --module=Product --model=Product --force
+```
+
+### Generate Policy
+
+Create an authorization policy for a module using the `module:make:policy` command.
+
+#### Basic Policy
+
+Generate a policy:
+
+```bash
+php artisan module:make:policy UserPolicy --module=User
+```
+
+This creates a policy in `modules/User/Policies/UserPolicy.php`.
+
+#### Policy Options
+
+##### Model-Based Policy (`--model`)
+
+Generate a policy with model methods (view, create, update, delete, etc.):
+
+```bash
+php artisan module:make:policy ProductPolicy --module=Product --model=Product
+```
+
+##### Guard Option (`--guard`)
+
+Specify the guard for the policy:
+
+```bash
+php artisan module:make:policy AdminPolicy --module=User --guard=admin
+```
+
+#### Combined Options
+
+```bash
+# Policy with model
+php artisan module:make:policy OrderPolicy --module=Order --model=Order
+
+# Policy with model and guard
+php artisan module:make:policy PostPolicy --module=Blog --model=Post --guard=web
+```
+
+### Generate Job
+
+Create a queueable job for a module using the `module:make:job` command.
+
+#### Basic Job
+
+Generate a job:
+
+```bash
+php artisan module:make:job ProcessPayment --module=Payment
+```
+
+This creates a job in `modules/Payment/Jobs/ProcessPayment.php`.
+
+#### Job Options
+
+##### Synchronous Job (`--sync`)
+
+Generate a synchronous job (not queued):
+
+```bash
+php artisan module:make:job GenerateReport --module=Reporting --sync
+```
+
+##### Force Creation (`--force`)
+
+Overwrite existing job:
+
+```bash
+php artisan module:make:job ProcessPayment --module=Payment --force
+```
+
+#### Combined Options
+
+```bash
+# Sync job with force
+php artisan module:make:job SendEmail --module=Notification --sync --force
+```
+
+### Generate Event
+
+Create an event class for a module using the `module:make:event` command.
+
+#### Basic Event
+
+Generate an event:
+
+```bash
+php artisan module:make:event UserRegistered --module=User
+```
+
+This creates an event in `modules/User/Events/UserRegistered.php`.
+
+#### Event Options
+
+##### Force Creation (`--force`)
+
+Overwrite existing event:
+
+```bash
+php artisan module:make:event OrderPlaced --module=Order --force
+```
+
+### Generate Listener
+
+Create an event listener for a module using the `module:make:listener` command.
+
+#### Basic Listener
+
+Generate a listener:
+
+```bash
+php artisan module:make:listener SendWelcomeEmail --module=User
+```
+
+This creates a listener in `modules/User/Listeners/SendWelcomeEmail.php`.
+
+#### Listener Options
+
+##### Event-Based Listener (`--event`)
+
+Generate a listener for a specific event:
+
+```bash
+php artisan module:make:listener SendWelcomeEmail --module=User --event=UserRegistered
+```
+
+##### Queued Listener (`--queued`)
+
+Generate a queued listener:
+
+```bash
+php artisan module:make:listener SendNotification --module=Notification --queued
+```
+
+##### Force Creation (`--force`)
+
+Overwrite existing listener:
+
+```bash
+php artisan module:make:listener SendWelcomeEmail --module=User --force
+```
+
+#### Combined Options
+
+```bash
+# Queued listener for specific event
+php artisan module:make:listener SendOrderConfirmation --module=Order --event=OrderPlaced --queued
+
+# Event listener with force
+php artisan module:make:listener ProcessPayment --module=Payment --event=PaymentReceived --force
+```
+
+### Generate Middleware
+
+Create a middleware for a module using the `module:make:middleware` command.
+
+#### Basic Middleware
+
+Generate a middleware:
+
+```bash
+php artisan module:make:middleware CheckUserRole --module=User
+```
+
+This creates a middleware in `modules/User/Middleware/CheckUserRole.php`.
+
+#### Middleware Options
+
+##### Force Creation (`--force`)
+
+Overwrite existing middleware:
+
+```bash
+php artisan module:make:middleware AuthenticateApi --module=Auth --force
+```
+
+### Generate Provider
+
+Create a service provider for a module using the `module:make:provider` command.
+
+#### Basic Provider
+
+Generate a provider:
+
+```bash
+php artisan module:make:provider RepositoryServiceProvider --module=User
+```
+
+This creates a provider in `modules/User/Providers/RepositoryServiceProvider.php`.
+
+#### Provider Options
+
+##### Force Creation (`--force`)
+
+Overwrite existing provider:
+
+```bash
+php artisan module:make:provider EventServiceProvider --module=Blog --force
+```
+
+### Generate Test
+
+Create a test class for a module using the `module:make:test` command.
+
+#### Basic Test
+
+Generate a feature test:
+
+```bash
+php artisan module:make:test UserTest --module=User
+```
+
+This creates a feature test in `modules/User/Tests/Feature/UserTest.php`.
+
+#### Test Options
+
+##### Unit Test (`--unit` or `-u`)
+
+Generate a unit test:
+
+```bash
+php artisan module:make:test CalculatorTest --module=Math --unit
+```
+
+##### Pest Test (`--pest` or `-p`)
+
+Generate a Pest test:
+
+```bash
+php artisan module:make:test UserTest --module=User --pest
+```
+
+##### View Test (`--view`)
+
+Generate a view test:
+
+```bash
+php artisan module:make:test dashboard --module=Admin --view
+```
+
+This creates a test in `modules/Admin/Tests/Feature/View/DashboardTest.php`.
+
+##### Force Creation (`--force`)
+
+Overwrite existing test:
+
+```bash
+php artisan module:make:test UserTest --module=User --force
+```
+
+#### Combined Options
+
+```bash
+# Pest unit test
+php artisan module:make:test HelperTest --module=Utilities --pest --unit
+
+# View Pest test
+php artisan module:make:test home --module=Frontend --view --pest
+
+# Feature test with force
+php artisan module:make:test OrderTest --module=Order --force
+```
+
+### Generate View
+
+Create a Blade view for a module using the `module:make:view` command.
+
+#### Basic View
+
+Generate a view:
+
+```bash
+php artisan module:make:view index --module=User
+```
+
+This creates a view in `modules/User/Views/index.blade.php`.
+
+#### View Options
+
+##### With Test (`--test`)
+
+Generate a view with a PHPUnit test:
+
+```bash
+php artisan module:make:view dashboard --module=Admin --test
+```
+
+##### With Pest Test (`--pest`)
+
+Generate a view with a Pest test:
+
+```bash
+php artisan module:make:view profile --module=User --pest
+```
+
+##### Force Creation (`--force`)
+
+Overwrite existing view:
+
+```bash
+php artisan module:make:view index --module=Product --force
+```
+
+#### Combined Options
+
+```bash
+# View with test
+php artisan module:make:view checkout --module=Order --test
+
+# View with Pest test (force)
+php artisan module:make:view home --module=Frontend --pest --force
+```
+
+### Generate Component
+
+Create a Blade component for a module using the `module:make:component` command.
+
+#### Basic Component
+
+Generate a component:
+
+```bash
+php artisan module:make:component Alert --module=UI
+```
+
+This creates:
+- Component class: `modules/UI/Components/Alert.php`
+- Component view: `modules/UI/Views/Components/alert.blade.php`
+
+#### Component Options
+
+##### Inline Component (`--inline`)
+
+Generate a component with inline view:
+
+```bash
+php artisan module:make:component Button --module=UI --inline
+```
+
+##### Anonymous Component (`--view`)
+
+Generate an anonymous component (view only, no class):
+
+```bash
+php artisan module:make:component Card --module=UI --view
+```
+
+##### With Test (`--test`)
+
+Generate a component with a PHPUnit test:
+
+```bash
+php artisan module:make:component Modal --module=UI --test
+```
+
+##### With Pest Test (`--pest`)
+
+Generate a component with a Pest test:
+
+```bash
+php artisan module:make:component Dropdown --module=UI --pest
+```
+
+##### Force Creation (`--force`)
+
+Overwrite existing component:
+
+```bash
+php artisan module:make:component Alert --module=UI --force
+```
+
+#### Combined Options
+
+```bash
+# Inline component with Pest test
+php artisan module:make:component Badge --module=UI --inline --pest
+
+# Component with test (force)
+php artisan module:make:component Table --module=UI --test --force
+```
+
+### Generate Console Command
+
+Create an Artisan console command for a module using the `module:make:console` command.
+
+#### Basic Console Command
+
+Generate a console command:
+
+```bash
+php artisan module:make:console SendEmails --module=Email
+```
+
+This creates a command in `modules/Email/Console/SendEmails.php`.
+
+#### Console Command Options
+
+##### Force Creation (`--force`)
+
+Overwrite existing command:
+
+```bash
+php artisan module:make:console ProcessQueue --module=Queue --force
+```
+
+### Generate Mail
+
+Create a mailable class for a module using the `module:make:mail` command.
+
+#### Basic Mail
+
+Generate a mailable:
+
+```bash
+php artisan module:make:mail WelcomeEmail --module=User
+```
+
+This creates a mailable in `modules/User/Mail/WelcomeEmail.php`.
+
+#### Mail Options
+
+##### Markdown Mail (`--markdown`)
+
+Generate a mailable with a Markdown template:
+
+```bash
+php artisan module:make:mail OrderShipped --module=Order --markdown=emails.orders.shipped
+```
+
+##### Force Creation (`--force`)
+
+Overwrite existing mailable:
+
+```bash
+php artisan module:make:mail WelcomeEmail --module=User --force
+```
+
+#### Combined Options
+
+```bash
+# Markdown mail with force
+php artisan module:make:mail InvoicePaid --module=Billing --markdown=emails.invoice --force
+```
+
+### Generate Notification
+
+Create a notification class for a module using the `module:make:notification` command.
+
+#### Basic Notification
+
+Generate a notification:
+
+```bash
+php artisan module:make:notification InvoicePaid --module=Billing
+```
+
+This creates a notification in `modules/Billing/Notifications/InvoicePaid.php`.
+
+#### Notification Options
+
+##### Force Creation (`--force`)
+
+Overwrite existing notification:
+
+```bash
+php artisan module:make:notification OrderShipped --module=Order --force
+```
+
+### Generate Resource
+
+Create an API resource for a module using the `module:make:resource` command.
+
+#### Basic Resource
+
+Generate a resource:
+
+```bash
+php artisan module:make:resource UserResource --module=User
+```
+
+This creates a resource in `modules/User/Resources/UserResource.php`.
+
+#### Resource Options
+
+##### Resource Collection (`--collection`)
+
+Generate a resource collection:
+
+```bash
+php artisan module:make:resource UserCollection --module=User --collection
+```
+
+##### Force Creation (`--force`)
+
+Overwrite existing resource:
+
+```bash
+php artisan module:make:resource ProductResource --module=Product --force
+```
+
+#### Combined Options
+
+```bash
+# Collection with force
+php artisan module:make:resource OrderCollection --module=Order --collection --force
+```
+
 Credits to:
 - ["Modular Structure in Laravel 5" tutorial](http://ziyahanalbeniz.blogspot.com.tr/2015/03/modular-structure-in-laravel-5.html)
 - ["Artem Schander - L5 Modular"](https://github.com/Artem-Schander/L5Modular)
