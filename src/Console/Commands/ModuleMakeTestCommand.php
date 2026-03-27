@@ -73,12 +73,7 @@ class ModuleMakeTestCommand extends ModuleMakerCommand
             $prefix = 'pest';
         }
 
-        $this->setStubFile("{$prefix}.{$type}");
-        $this->makeDirectory($path);
-
-        $this->files->put($path, $this->buildClass($name));
-
-        $this->logFileCreated($name);
+        $this->generateFileWithCustomStub($path, $name, "{$prefix}.{$type}");
 
         $this->updatePhpUnitXmlFile();
 
