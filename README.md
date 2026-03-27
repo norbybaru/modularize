@@ -915,6 +915,193 @@ php artisan module:make:resource ProductResource --module=Product --force
 php artisan module:make:resource OrderCollection --module=Order --collection --force
 ```
 
+### List Modules
+
+View all existing modules in your project using the `module:list` command.
+
+#### Basic Usage
+
+List all modules:
+
+```bash
+php artisan module:list
+```
+
+This displays a detailed overview of all modules in your project with the following information:
+
+- **Module Name**: The name of each module
+- **Path**: The relative path to the module directory
+- **Service Provider**: Whether the module has a service provider (✓ or ✗)
+- **Routes**: Number of route files in the module
+- **Components**: Number of component files in the module
+
+#### Example Output
+
+```
+Module                          Details
+
+User                            Path: modules/User
+  Service Provider              ✓
+  Routes                        2
+  Components                    0
+
+Product                         Path: modules/Product
+  Service Provider              ✓
+  Routes                        1
+  Components                    3
+
+Blog                            Path: modules/Blog
+  Service Provider              ✓
+  Routes                        2
+  Components                    5
+
+Total modules: 3
+```
+
+This command is helpful for:
+- Getting an overview of your modular architecture
+- Verifying module structure and completeness
+- Checking if service providers are properly configured
+- Auditing routes and components across modules
+
+### Practical Workflow Examples
+
+#### Scaffolding a Complete Module
+
+To quickly scaffold a complete module with all essential components:
+
+```bash
+# Create the module structure
+php artisan module:make Module YourModuleName
+
+# Generate a complete model with all related files
+php artisan module:make:model Article --module=Blog --all
+
+# This creates:
+# - Model with migrations
+# - Factory for testing
+# - Seeder for sample data
+# - Policy for authorization
+# - Resource controller with CRUD methods
+```
+
+#### Building a REST API Module
+
+Create a complete API module with all necessary components:
+
+```bash
+# Step 1: Create the module
+php artisan module:make Module Api
+
+# Step 2: Generate model with API controller and related files
+php artisan module:make:model Product --module=Api --migration --factory --controller --api
+
+# Step 3: Generate API resources for JSON responses
+php artisan module:make:resource ProductResource --module=Api
+php artisan module:make:resource ProductCollection --module=Api --collection
+
+# Step 4: Add request validation
+php artisan module:make:request StoreProductRequest --module=Api
+php artisan module:make:request UpdateProductRequest --module=Api
+
+# Step 5: List modules to verify structure
+php artisan module:list
+```
+
+#### Creating an Event-Driven Module
+
+Build a module with events, listeners, and jobs:
+
+```bash
+# Step 1: Create the module
+php artisan module:make Module Notification
+
+# Step 2: Generate event and listeners
+php artisan module:make:event OrderPlaced --module=Notification
+php artisan module:make:listener SendOrderConfirmation --module=Notification --event=OrderPlaced --queued
+php artisan module:make:listener UpdateInventory --module=Notification --event=OrderPlaced --queued
+
+# Step 3: Generate jobs for background processing
+php artisan module:make:job SendEmailNotification --module=Notification
+php artisan module:make:job ProcessOrderNotification --module=Notification
+
+# Step 4: Generate mailable
+php artisan module:make:mail OrderConfirmation --module=Notification --markdown=emails.order-confirmation
+```
+
+#### Building a Feature Module with Testing
+
+Create a module with comprehensive test coverage:
+
+```bash
+# Step 1: Create module and model
+php artisan module:make Module Payment
+php artisan module:make:model Transaction --module=Payment --migration --factory --policy
+
+# Step 2: Generate controllers with tests
+php artisan module:make:controller PaymentController --module=Payment --resource
+php artisan module:make:test PaymentControllerTest --module=Payment
+
+# Step 3: Generate unit tests
+php artisan module:make:test TransactionModelTest --module=Payment --unit
+
+# Step 4: Generate feature tests with Pest
+php artisan module:make:test ProcessPaymentTest --module=Payment --pest
+```
+
+#### Using the --all Flag for Rapid Development
+
+The `--all` flag is perfect for rapid prototyping and development:
+
+```bash
+# Generate a complete CRUD module in one command
+php artisan module:make:model Post --module=Blog --all
+
+# This single command creates:
+# ✓ Model class
+# ✓ Database migration
+# ✓ Model factory for testing
+# ✓ Database seeder
+# ✓ Authorization policy
+# ✓ Resource controller with all CRUD methods
+
+# Follow up with additional components as needed
+php artisan module:make:request StorePostRequest --module=Blog
+php artisan module:make:request UpdatePostRequest --module=Blog
+php artisan module:make:resource PostResource --module=Blog
+php artisan module:make:test PostTest --module=Blog --pest
+```
+
+#### Multi-Module Project Structure
+
+Organize a large application with multiple domain modules:
+
+```bash
+# User management module
+php artisan module:make Module User
+php artisan module:make:model User --module=User --all
+php artisan module:make:middleware CheckUserRole --module=User
+
+# Product catalog module
+php artisan module:make Module Product
+php artisan module:make:model Product --module=Product --all
+php artisan module:make:model Category --module=Product --migration --factory
+
+# Order processing module
+php artisan module:make Module Order
+php artisan module:make:model Order --module=Order --all
+php artisan module:make:event OrderPlaced --module=Order
+php artisan module:make:job ProcessOrder --module=Order
+
+# Payment processing module
+php artisan module:make Module Payment
+php artisan module:make:model Transaction --module=Payment --migration --factory
+php artisan module:make:job ProcessPayment --module=Payment
+
+# Verify all modules are properly set up
+php artisan module:list
+```
+
 Credits to:
 - ["Modular Structure in Laravel 5" tutorial](http://ziyahanalbeniz.blogspot.com.tr/2015/03/modular-structure-in-laravel-5.html)
 - ["Artem Schander - L5 Modular"](https://github.com/Artem-Schander/L5Modular)
