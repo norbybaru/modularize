@@ -38,11 +38,7 @@ class ModuleMakeViewCommand extends ModuleMakerCommand
 
         $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
 
-        // Custom extension handling for blade.php
-        $path = $this->getPath($name, 'blade.php');
-        if ($this->files->exists($path) && ! $this->option('force')) {
-            $this->logFileExist($path);
-
+        if (! $path = $this->getFilePath(name: $name, force: $this->option('force'))) {
             return true;
         }
 
@@ -79,5 +75,16 @@ class ModuleMakeViewCommand extends ModuleMakerCommand
     protected function getFolderPath(): string
     {
         return 'Views';
+    }
+
+    protected function getFilePath(string $name, bool $force = false): ?string
+    {
+        if ($this->files->exists($path = $this->getPath($name, 'blade.php')) && ! $force) {
+            $this->logFileExist($path);
+
+            return null;
+        }
+
+        return $path;
     }
 }

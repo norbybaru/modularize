@@ -42,9 +42,7 @@ class ModuleMakeProviderCommand extends ModuleMakerCommand
             return true;
         }
 
-        $type = '';
-
-        $this->generateFile($path, $name, $type);
+        $this->generateFile($path, $name, '');
 
         return null;
     }

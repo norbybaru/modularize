@@ -14,7 +14,8 @@ class ModuleMakeMailCommand extends ModuleMakerCommand
     protected $signature = 'module:make:mail
                             {name : The name of the mail}
                             {--module= : Name of module mail should belong to}
-                            {--markdown= : Create a new Markdown template for the mailable}';
+                            {--markdown= : Create a new Markdown template for the mailable}
+                            {--force : Create the class even if the component already exists}';
 
     /**
      * The console command description.
@@ -38,7 +39,7 @@ class ModuleMakeMailCommand extends ModuleMakerCommand
 
         $name = $this->qualifyClass($module.'\\'.$folder.'\\'.$filename);
 
-        if (! $path = $this->getFilePath(name: $name, force: false)) {
+        if (! $path = $this->getFilePath(name: $name, force: $this->option('force'))) {
             return true;
         }
 
