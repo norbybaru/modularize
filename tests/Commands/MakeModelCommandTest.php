@@ -175,4 +175,25 @@ class MakeModelCommandTest extends MakeCommandTestCase
             ->expectsOutputToContain('--force')         // Verify --force suggestion is shown
             ->assertFailed();
     }
+
+    public function test_it_displays_summary_table_with_all_option()
+    {
+        $this->artisan(
+            command: 'module:make:model',
+            parameters: [
+                'name' => 'Product',
+                '--module' => $this->moduleName,
+                '--all' => true,
+            ]
+        )
+            ->expectsOutputToContain('Generated Files')
+            ->expectsOutputToContain('Total files generated:')
+            ->assertSuccessful();
+
+        // Verify files were actually created
+        $this->assertFileExists(filename: $this->getModulePath().'/Models/Product.php');
+        $this->assertMigrationFile(module: $this->moduleName, migrationFilename: 'create_products_table.php');
+        $this->assertFactoryFile(module: $this->moduleName, filename: 'ProductFactory');
+        $this->assertSeederFile(module: $this->moduleName, filename: 'ProductSeeder');
+    }
 }
