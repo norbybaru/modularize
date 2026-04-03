@@ -9,3 +9,6 @@ composer.lock
 .auto-claude/
 .auto-claude*
 .claude_settings.json
+
+# Superpower
+/docs
