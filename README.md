@@ -47,7 +47,9 @@ The published config file (`config/modularize.php`) exposes the following option
 | `enable` | `true` | Autoload all modules found in `root_path` |
 | `root_path` | `modules` | Root directory where modules are created |
 | `autoload_routes` | `true` | Automatically register routes from each module's `Routes/` directory |
-| `autoload_service_provider` | `true` | Automatically register each module's service provider |
+| `autoload_service_provider` | `true` | Automatically register each module's `Providers/<ModuleName>ServiceProvider.php` |
+
+When `enable` is `true`, modules are automatically discovered and booted — no manual registration required.
 
 ## Creating Your First Module
 
@@ -68,17 +70,13 @@ modules/
     │   ├── Factories/
     │   │   └── UserFactory.php
     │   ├── Migrations/
-    │   │   └── 2024_01_01_000000_create_users_table.php
+    │   │   └── <timestamp>_create_users_table.php
     │   └── Seeders/
     │       └── UserSeeder.php
     ├── Models/
     │   └── User.php
-    ├── Policies/
-    │   └── UserPolicy.php
-    ├── Providers/
-    │   └── AuthServiceProvider.php
-    └── Routes/
-        └── web.php
+    └── Policies/
+        └── UserPolicy.php
 ```
 
 ## Command Reference
@@ -95,8 +93,8 @@ All generator commands accept `--module=<name>` to specify the target module and
 
 | Command | Key Options | Description |
 |---|---|---|
-| `module:make:model` | `-a/--all`, `-m/--migration`, `-f/--factory`, `-s/--seed`, `-c/--controller`, `--policy`, `--api`, `-r/--resource`, `-i/--invokable`, `-p/--pivot` | Generate a model; `--all` also creates migration, factory, seeder, policy, and resource controller |
-| `module:make:controller` | `--api`, `-r/--resource`, `-i/--invokable`, `-m/--model=` | Generate a controller |
+| `module:make:model` | `-a/--all`, `-m/--migration`, `-f/--factory`, `-s/--seed`, `-c/--controller`, `--policy`, `--api`, `-r/--resource`, `-i/--invokable`, `-p/--pivot` | Generate a model; `--all` also creates a migration, factory, seeder, policy, and resource controller |
+| `module:make:controller` | `--api`, `-r/--resource`, `-i/--invokable`, `-m/--model=` | Generate a controller (`--api` omits `create` and `edit` methods) |
 | `module:make:migration` | `--create=`, `--table=` | Generate a migration |
 | `module:make:factory` | `--model=` | Generate a model factory |
 | `module:make:seeder` | — | Generate a seeder |
