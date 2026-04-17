@@ -9,26 +9,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
-use NorbyBaru\Modularize\Console\Commands\ModuleListCommand;
-use NorbyBaru\Modularize\Console\Commands\ModuleMakeComponentCommand;
-use NorbyBaru\Modularize\Console\Commands\ModuleMakeConsoleCommand;
-use NorbyBaru\Modularize\Console\Commands\ModuleMakeControllerCommand;
-use NorbyBaru\Modularize\Console\Commands\ModuleMakeEventCommand;
-use NorbyBaru\Modularize\Console\Commands\ModuleMakeFactoryCommand;
-use NorbyBaru\Modularize\Console\Commands\ModuleMakeJobCommand;
-use NorbyBaru\Modularize\Console\Commands\ModuleMakeListenerCommand;
-use NorbyBaru\Modularize\Console\Commands\ModuleMakeMailCommand;
-use NorbyBaru\Modularize\Console\Commands\ModuleMakeMiddlewareCommand;
-use NorbyBaru\Modularize\Console\Commands\ModuleMakeMigrationCommand;
-use NorbyBaru\Modularize\Console\Commands\ModuleMakeModelCommand;
-use NorbyBaru\Modularize\Console\Commands\ModuleMakeNotificationCommand;
-use NorbyBaru\Modularize\Console\Commands\ModuleMakePolicyCommand;
-use NorbyBaru\Modularize\Console\Commands\ModuleMakeProviderCommand;
-use NorbyBaru\Modularize\Console\Commands\ModuleMakeRequestCommand;
-use NorbyBaru\Modularize\Console\Commands\ModuleMakeResourceCommand;
-use NorbyBaru\Modularize\Console\Commands\ModuleMakeSeederCommand;
-use NorbyBaru\Modularize\Console\Commands\ModuleMakeTestCommand;
-use NorbyBaru\Modularize\Console\Commands\ModuleMakeViewCommand;
 use ReflectionClass;
 use Symfony\Component\Finder\Finder;
 
@@ -289,26 +269,26 @@ class ModularizeServiceProvider extends ServiceProvider
     protected function registerMakeCommand()
     {
         $this->commands([
-            ModuleMakeComponentCommand::class,
-            ModuleMakeConsoleCommand::class,
-            ModuleMakeControllerCommand::class,
-            ModuleMakeEventCommand::class,
-            ModuleMakeFactoryCommand::class,
-            ModuleMakeJobCommand::class,
-            ModuleListCommand::class,
-            ModuleMakeListenerCommand::class,
-            ModuleMakeMailCommand::class,
-            ModuleMakeModelCommand::class,
-            ModuleMakeMiddlewareCommand::class,
-            ModuleMakeMigrationCommand::class,
-            ModuleMakeNotificationCommand::class,
-            ModuleMakeProviderCommand::class,
-            ModuleMakePolicyCommand::class,
-            ModuleMakeResourceCommand::class,
-            ModuleMakeRequestCommand::class,
-            ModuleMakeSeederCommand::class,
-            ModuleMakeTestCommand::class,
-            ModuleMakeViewCommand::class,
+            'NorbyBaru\Modularize\Console\Commands\ModuleMakeComponentCommand',
+            'NorbyBaru\Modularize\Console\Commands\ModuleMakeConsoleCommand',
+            'NorbyBaru\Modularize\Console\Commands\ModuleMakeControllerCommand',
+            'NorbyBaru\Modularize\Console\Commands\ModuleMakeEventCommand',
+            'NorbyBaru\Modularize\Console\Commands\ModuleMakeFactoryCommand',
+            'NorbyBaru\Modularize\Console\Commands\ModuleMakeJobCommand',
+            'NorbyBaru\Modularize\Console\Commands\ModuleListCommand',
+            'NorbyBaru\Modularize\Console\Commands\ModuleMakeListenerCommand',
+            'NorbyBaru\Modularize\Console\Commands\ModuleMakeMailCommand',
+            'NorbyBaru\Modularize\Console\Commands\ModuleMakeModelCommand',
+            'NorbyBaru\Modularize\Console\Commands\ModuleMakeMiddlewareCommand',
+            'NorbyBaru\Modularize\Console\Commands\ModuleMakeMigrationCommand',
+            'NorbyBaru\Modularize\Console\Commands\ModuleMakeNotificationCommand',
+            'NorbyBaru\Modularize\Console\Commands\ModuleMakeProviderCommand',
+            'NorbyBaru\Modularize\Console\Commands\ModuleMakePolicyCommand',
+            'NorbyBaru\Modularize\Console\Commands\ModuleMakeResourceCommand',
+            'NorbyBaru\Modularize\Console\Commands\ModuleMakeRequestCommand',
+            'NorbyBaru\Modularize\Console\Commands\ModuleMakeSeederCommand',
+            'NorbyBaru\Modularize\Console\Commands\ModuleMakeTestCommand',
+            'NorbyBaru\Modularize\Console\Commands\ModuleMakeViewCommand',
         ]);
     }
 }
