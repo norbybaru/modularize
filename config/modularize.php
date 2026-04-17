@@ -22,4 +22,17 @@ return [
      * Setting value to false will prevent autloading of module service provider. Eg. ModuleNameServiceProvider
      */
     'autoload_service_provider' => true,
+
+    /**
+     * Enable caching of module discovery results to improve boot performance.
+     * When enabled, module discovery results are cached to avoid repeated filesystem scans on every request.
+     * Use 'php artisan modularize:cache' to generate cache and 'php artisan modularize:clear' to clear it.
+     */
+    'cache_enabled' => true,
+
+    /**
+     * Define the path where the module discovery cache file will be stored.
+     * Relative to application base path. Defaults to Laravel's bootstrap/cache directory.
+     */
+    'cache_path' => 'bootstrap/cache/modularize.php',
 ];
