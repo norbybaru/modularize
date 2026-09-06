@@ -5,7 +5,6 @@ namespace NorbyBaru\Modularize;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Foundation\CachesRoutes;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -141,23 +140,18 @@ class ModularizeServiceProvider extends ServiceProvider
 
         $path = "{$moduleRootPath}/{$module}/Console";
 
-        $paths = array_unique(Arr::wrap($path));
-
-        $paths = array_filter($paths, function ($path) {
-            return is_dir($path);
-        });
-
-        if (empty($paths)) {
+        if (! is_dir($path)) {
             return;
         }
 
         $namespace = $this->rootNamespace;
+        $rootPath = realpath($this->moduleRootPath).DIRECTORY_SEPARATOR;
 
-        foreach ((new Finder)->in($paths)->files() as $command) {
+        foreach ((new Finder)->in($path)->files() as $command) {
             $command = $namespace.str_replace(
                 ['/', '.php'],
                 ['\\', ''],
-                Str::after($command->getRealPath(), realpath($this->moduleRootPath).DIRECTORY_SEPARATOR)
+                Str::after($command->getRealPath(), $rootPath)
             );
 
             if (
