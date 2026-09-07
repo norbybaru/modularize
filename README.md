@@ -69,23 +69,46 @@ modules/
     ├── Database/
     │   ├── Factories/
     │   │   └── UserFactory.php
-    │   ├── Migrations/
+    │   ├── migrations/
     │   │   └── <timestamp>_create_users_table.php
     │   └── Seeders/
     │       └── UserSeeder.php
     ├── Models/
     │   └── User.php
     └── Policies/
-        └── UserPolicy.php
+        └── User.php
 ```
 
 ## Command Reference
 
 ### Module Management
 
-| Command | Description |
-|---|---|
-| `module:list` | List all existing modules |
+| Command | Options | Description |
+|---|---|---|
+| `module:list` | `-v` | List all existing modules; `-v` adds a per-module breakdown of the artifacts each one contains |
+
+By default `module:list` prints just the module name and path:
+
+```
+  Module   Path
+ ──────── ─────────────────
+  Auth     modules/Auth
+  Blog     modules/Blog
+
+  Total modules: 2
+```
+
+Add `-v` to see what each module holds. Only artifact types that are actually present are listed, except the service provider, which is always reported because its absence changes whether the module boots:
+
+```
+  Blog ................................................... modules/Blog
+    Service Provider ................................................ ✓
+    Routes .......................................................... 3
+    Migrations ...................................................... 5
+    Models .......................................................... 4
+    Views ........................................................... 7
+    Jobs ............................................................ 1
+```
 
 ### Generators
 
