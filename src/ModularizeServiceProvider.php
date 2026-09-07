@@ -33,6 +33,20 @@ use Symfony\Component\Finder\Finder;
 
 class ModularizeServiceProvider extends ServiceProvider
 {
+    /**
+     * Route files loaded for every module, relative to the module directory.
+     *
+     * Read by ModuleListCommand so the count it reports can never claim a route file is
+     * registered when autoloadRoutes() does not load it.
+     *
+     * @var array<int, string>
+     */
+    public const ROUTE_FILES = [
+        'routes.php',
+        'Routes/web.php',
+        'Routes/api.php',
+    ];
+
     /** @var Filesystem */
     protected $files;
 
@@ -215,11 +229,10 @@ class ModularizeServiceProvider extends ServiceProvider
 
         $path = "{$moduleRootPath}/{$module}";
         if (! ($this->app instanceof CachesRoutes && $this->app->routesAreCached())) {
-            $routeFiles = [
-                $path.'/routes.php',
-                $path.'/Routes/web.php',
-                $path.'/Routes/api.php',
-            ];
+            $routeFiles = array_map(
+                fn (string $routeFile) => "{$path}/{$routeFile}",
+                self::ROUTE_FILES
+            );
 
             foreach ($routeFiles as $path) {
                 if ($this->files->isDirectory(directory: $path)) {
