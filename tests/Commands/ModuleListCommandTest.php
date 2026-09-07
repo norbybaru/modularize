@@ -7,6 +7,13 @@ use NorbyBaru\Modularize\Tests\MakeCommandTestCase;
 
 class ModuleListCommandTest extends MakeCommandTestCase
 {
+    protected function teardown(): void
+    {
+        $this->resetShellVerbosity();
+
+        parent::tearDown();
+    }
+
     public function test_it_fails_when_modules_directory_does_not_exist()
     {
         $this->cleanUp();
@@ -180,8 +187,13 @@ class ModuleListCommandTest extends MakeCommandTestCase
     }
 
     /**
-     * Verbosity must not persist between runs in one process: a `-v` run followed by a plain
-     * run should give detail then no detail.
+     * A plain run must be lean even in a process that already ran with `-v`.
+     *
+     * This is not hypothetical: on symfony/console < 8 the verbosity set by one
+     * Artisan::call() persists into the next call in the same process, so without the
+     * SHELL_VERBOSITY reset in listOutput() the second run here returns detail. Caught by
+     * CI on Laravel 11/12 --prefer-lowest; not reproducible on symfony/console 8.x, which
+     * restores the previous value in Application::run()'s finally block.
      */
     public function test_verbosity_does_not_persist_between_runs()
     {
@@ -202,11 +214,26 @@ class ModuleListCommandTest extends MakeCommandTestCase
      */
     private function listOutput(bool $verbose = false): string
     {
+        $this->resetShellVerbosity();
         $this->withoutMockingConsoleOutput();
 
         $this->artisan('module:list', $verbose ? ['-v' => true] : []);
 
         return Artisan::output();
+    }
+
+    /**
+     * Clear the verbosity Symfony stashes in the environment.
+     *
+     * Application::configureIO() writes SHELL_VERBOSITY to putenv/$_ENV/$_SERVER and its
+     * default branch reads it back, so verbosity from one run bleeds into the next.
+     * symfony/console 8.x restores the previous value itself, but 7.x does not — without
+     * this, `-v` tests contaminate every later run in the same process on Laravel 11/12.
+     */
+    private function resetShellVerbosity(): void
+    {
+        putenv('SHELL_VERBOSITY');
+        unset($_ENV['SHELL_VERBOSITY'], $_SERVER['SHELL_VERBOSITY']);
     }
 
     /**
